@@ -4,6 +4,7 @@ export interface TelemetryData {
   fatigue_level: number
   blink_rate: number
   active_app: string
+  ear?: number
 }
 
 export interface UseTelemetryReturn {
@@ -15,7 +16,8 @@ export interface UseTelemetryReturn {
 const DEFAULT_TELEMETRY: TelemetryData = {
   fatigue_level: 18,
   blink_rate: 18,
-  active_app: 'VS Code'
+  active_app: 'VS Code',
+  ear: 0.28
 }
 
 export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryReturn {
@@ -35,6 +37,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
 
         ws.onopen = () => {
           if (!isMounted) return
+          console.log('Conexión establecida con ws://localhost:8765')
           setIsConnected(true)
           setError(null)
         }
@@ -43,6 +46,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
           if (!isMounted) return
           try {
             const parsed = JSON.parse(event.data) as TelemetryData
+            console.log('Datos recibidos:', parsed)
             setData((prev) => ({
               ...prev,
               ...parsed

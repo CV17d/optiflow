@@ -27,7 +27,7 @@ export const Dashboard: React.FC = () => {
           className="flex flex-col items-center justify-center"
           id="dashboard-col-center"
         >
-          <EyeBiometricsWidget />
+          <EyeBiometricsWidget ear={telemetry.ear} />
         </div>
 
         {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo */}
@@ -41,7 +41,9 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <VisualHealthIndexWidget />
         <PauseRegistryWidget />
-        <TemporalCorrelationWidget />
+        <TemporalCorrelationWidget
+          ear={typeof telemetry.ear === 'number' ? telemetry.ear.toFixed(2) : '0.26'}
+        />
       </div>
     </div>
   )

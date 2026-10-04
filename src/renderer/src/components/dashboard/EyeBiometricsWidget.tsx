@@ -1,6 +1,10 @@
 import React from 'react'
 
-export const EyeBiometricsWidget: React.FC = () => {
+export interface EyeBiometricsWidgetProps {
+  ear?: number
+}
+
+export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({ ear = 0.28 }) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center min-h-[300px] relative select-none py-4">
       {/* Contenedor circular con borde y resplandor turquesa */}
@@ -28,7 +32,7 @@ export const EyeBiometricsWidget: React.FC = () => {
             [Render 3D del Ojo]
           </span>
           <span className="text-[10px] text-teal-600 font-mono mt-1 font-medium">
-            TRACKING 468 PTS • EAR 0.28
+            TRACKING 468 PTS • EAR {typeof ear === 'number' ? ear.toFixed(2) : ear}
           </span>
         </div>
       </div>

@@ -34,6 +34,7 @@ async def broadcast_telemetry():
     """Bucle infinito que emite métricas biométricas reales calculadas por VisionEngine."""
     while True:
         payload = vision_engine.get_telemetry_payload()
+        print(f"Emitiendo: {payload}", flush=True)
         if CONNECTED_CLIENTS:
             message = json.dumps(payload)
             await asyncio.gather(
@@ -45,14 +46,14 @@ async def broadcast_telemetry():
 
 
 async def main():
-    host = "localhost"
+    host = "0.0.0.0"
     port = 8765
 
     # Iniciar motor de visión biométrico en segundo plano
     vision_engine.start_background()
 
     async with websockets.serve(handler, host, port):
-        logging.info(f"Servidor WebSocket OptiFlow escuchando en ws://{host}:{port}")
+        logging.info(f"Servidor WebSocket OptiFlow escuchando en ws://localhost:{port} (0.0.0.0)")
         await broadcast_telemetry()
 
 
