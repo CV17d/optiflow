@@ -1,0 +1,15 @@
+node_modules/
+dist/
+out/
+.vscode/
+.idea/
+
+# Python venv and artifacts
+venv/
+**/venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+*.db
+.env
