@@ -1,6 +1,7 @@
 import React from 'react'
 import DashboardHeader from './DashboardHeader'
 import TelemetryWidget from './TelemetryWidget'
+import EyeBiometricsWidget from './EyeBiometricsWidget'
 
 export const Dashboard: React.FC = () => {
   return (
@@ -13,7 +14,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Columna Central: Modelo biométrico 3D (Ojo con retícula HUD) */}
       <div className="flex flex-col items-center justify-center" id="dashboard-col-center">
-        {/* Contenido reservado para visualizador central */}
+        <EyeBiometricsWidget />
       </div>
 
       {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo */}
