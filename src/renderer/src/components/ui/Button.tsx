@@ -17,13 +17,13 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full font-medium text-sm transition-all duration-200 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed'
+    'inline-flex items-center justify-center gap-2 px-6 py-2 rounded-full font-medium text-sm transition-all duration-200 cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed'
 
   const variantStyles: Record<ButtonVariant, string> = {
     primary:
       'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white shadow-md shadow-orange-500/25 border border-transparent focus:ring-orange-400',
     outline:
-      'bg-white/80 hover:bg-slate-50 active:bg-slate-100 text-slate-800 border border-slate-300/80 shadow-sm focus:ring-slate-300'
+      'bg-transparent hover:bg-gray-50 active:bg-gray-100 text-gray-800 border border-gray-200 shadow-xs focus:ring-gray-300'
   }
 
   return (
