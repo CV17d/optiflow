@@ -4,6 +4,7 @@ export interface TelemetryData {
   fatigue_level: number
   blink_rate: number
   active_app: string
+  app_status?: string
   ear?: number
 }
 
@@ -17,6 +18,7 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   fatigue_level: 18,
   blink_rate: 18,
   active_app: 'VS Code',
+  app_status: 'Enfoque Profundo',
   ear: 0.28
 }
 

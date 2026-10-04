@@ -19,7 +19,10 @@ export const Dashboard: React.FC = () => {
         {/* Columna Izquierda: Títulos, acciones y telemetría de aplicaciones */}
         <div className="flex flex-col gap-6" id="dashboard-col-left">
           <DashboardHeader />
-          <TelemetryWidget activeApp={telemetry.active_app} />
+          <TelemetryWidget
+            activeApp={telemetry.active_app}
+            roleDescription={telemetry.app_status}
+          />
         </div>
 
         {/* Columna Central: Modelo biométrico 3D (Ojo con retícula HUD) */}
