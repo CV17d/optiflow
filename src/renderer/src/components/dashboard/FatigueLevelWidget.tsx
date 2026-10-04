@@ -2,7 +2,17 @@ import React from 'react'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 
-export const FatigueLevelWidget: React.FC = () => {
+export interface FatigueLevelWidgetProps {
+  fatigueLevel?: number
+  sessionDuration?: string
+  nextBreakMinutes?: number
+}
+
+export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
+  fatigueLevel = 18,
+  sessionDuration = '1h 42m',
+  nextBreakMinutes = 14
+}) => {
   return (
     <Card className="p-6 flex flex-col justify-between gap-4 select-none">
       {/* Cabecera */}
@@ -35,13 +45,13 @@ export const FatigueLevelWidget: React.FC = () => {
             FATIGA
           </span>
           <span className="text-4xl font-extrabold text-slate-900 tracking-tight leading-none mt-1">
-            18%
+            {fatigueLevel}%
           </span>
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
             SESIÓN CONTINUA
           </span>
           <span className="text-sm font-semibold text-slate-700 mt-0.5">
-            1h 42m
+            {sessionDuration}
           </span>
         </div>
 
@@ -74,7 +84,7 @@ export const FatigueLevelWidget: React.FC = () => {
         </svg>
         <span>
           Próxima pausa en:{' '}
-          <strong className="font-semibold text-slate-700">14 min</strong>
+          <strong className="font-semibold text-slate-700">{nextBreakMinutes} min</strong>
         </span>
       </div>
     </Card>

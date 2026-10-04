@@ -9,9 +9,18 @@ export interface BlinkRateWidgetProps {
 
 export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
   bpm = 18,
-  statusText = 'Saludable (14 - 20)',
-  percentage = 60
+  statusText,
+  percentage
 }) => {
+  const dynamicStatus =
+    statusText ??
+    (bpm >= 14 && bpm <= 20
+      ? 'Saludable (14 - 20)'
+      : bpm < 14
+        ? 'Tensión Ocular (< 14)'
+        : 'Elevado (> 20)')
+
+  const barWidth = percentage ?? Math.min(Math.max(Math.round((bpm / 25) * 100), 15), 100)
   return (
     <Card className="p-6 flex flex-col justify-between gap-4 select-none">
       {/* Cabecera */}
@@ -45,7 +54,7 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
         <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-300"
-            style={{ width: `${percentage}%` }}
+            style={{ width: `${barWidth}%` }}
           />
         </div>
       </div>
@@ -56,7 +65,7 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
           {bpm} BPM
         </span>
         <span className="text-xs text-slate-500 font-medium">
-          {statusText}
+          {dynamicStatus}
         </span>
       </div>
     </Card>

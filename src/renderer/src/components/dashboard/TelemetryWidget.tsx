@@ -2,7 +2,15 @@ import React from 'react'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 
-export const TelemetryWidget: React.FC = () => {
+export interface TelemetryWidgetProps {
+  activeApp?: string
+  roleDescription?: string
+}
+
+export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
+  activeApp = 'VS Code',
+  roleDescription = 'Editor Principal'
+}) => {
   return (
     <Card className="p-6 flex flex-col gap-4 select-none">
       {/* Cabecera del Widget */}
@@ -48,9 +56,9 @@ export const TelemetryWidget: React.FC = () => {
           </div>
           <div>
             <h4 className="font-bold text-sm text-slate-900 leading-none">
-              VS Code
+              {activeApp}
             </h4>
-            <p className="text-[11px] text-slate-400 mt-1">Editor Principal</p>
+            <p className="text-[11px] text-slate-400 mt-1">{roleDescription}</p>
           </div>
         </div>
 

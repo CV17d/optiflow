@@ -7,8 +7,11 @@ import BlinkRateWidget from './BlinkRateWidget'
 import VisualHealthIndexWidget from './VisualHealthIndexWidget'
 import PauseRegistryWidget from './PauseRegistryWidget'
 import TemporalCorrelationWidget from './TemporalCorrelationWidget'
+import useTelemetry from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
+  const { data: telemetry } = useTelemetry()
+
   return (
     <div className="w-full max-w-[1600px] mx-auto flex flex-col">
       {/* Fila Superior: Controles, Escáner Biométrico y Estado Ocular */}
@@ -16,7 +19,7 @@ export const Dashboard: React.FC = () => {
         {/* Columna Izquierda: Títulos, acciones y telemetría de aplicaciones */}
         <div className="flex flex-col gap-6" id="dashboard-col-left">
           <DashboardHeader />
-          <TelemetryWidget />
+          <TelemetryWidget activeApp={telemetry.active_app} />
         </div>
 
         {/* Columna Central: Modelo biométrico 3D (Ojo con retícula HUD) */}
@@ -29,8 +32,8 @@ export const Dashboard: React.FC = () => {
 
         {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo */}
         <div className="flex flex-col gap-6" id="dashboard-col-right">
-          <FatigueLevelWidget />
-          <BlinkRateWidget />
+          <FatigueLevelWidget fatigueLevel={telemetry.fatigue_level} />
+          <BlinkRateWidget bpm={telemetry.blink_rate} />
         </div>
       </div>
 
