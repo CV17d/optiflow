@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type BadgeVariant = 'success-outline' | 'warning-text' | 'solid-orange' | 'default'
+export type BadgeVariant = 'success-outline' | 'warning-text' | 'solid-orange'
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant
@@ -10,7 +10,7 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export const Badge: React.FC<BadgeProps> = ({
-  variant = 'default',
+  variant = 'success-outline',
   icon,
   children,
   className = '',
@@ -21,13 +21,11 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const variantStyles: Record<BadgeVariant, string> = {
     'success-outline':
-      'bg-white text-slate-600 border border-emerald-400/70 px-3 py-1 shadow-xs',
+      'bg-white text-slate-700 border border-emerald-400 px-3 py-1 shadow-xs',
     'warning-text':
-      'bg-orange-100/70 text-orange-600 border border-orange-200/80 px-2.5 py-0.5 text-[11px] uppercase tracking-wider',
+      'bg-transparent text-orange-500 uppercase tracking-wider p-0',
     'solid-orange':
-      'bg-orange-500 text-white px-3.5 py-1 shadow-sm shadow-orange-500/30 uppercase tracking-wider',
-    default:
-      'bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5'
+      'bg-orange-500 text-white px-3.5 py-1 shadow-sm shadow-orange-500/30 uppercase tracking-wider'
   }
 
   return (
