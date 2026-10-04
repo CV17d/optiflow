@@ -24,8 +24,8 @@ def get_fused_payload() -> dict:
         "fatigue_level": bio_data.get("fatigue_level", 18),
         "blink_rate": bio_data.get("blink_rate", 16),
         "ear": bio_data.get("ear", 0.25),
-        "active_app": app_data.get("app_name", "VS Code"),
-        "app_status": app_data.get("status", "Enfoque Profundo")
+        "active_app": app_data.get("active_app", "Cursor"),
+        "app_status": app_data.get("app_status", "Enfoque Profundo")
     }
 
 
