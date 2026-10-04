@@ -1,11 +1,12 @@
 import React from 'react'
+import DashboardHeader from './DashboardHeader'
 
 export const Dashboard: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-[1600px] mx-auto">
       {/* Columna Izquierda: Títulos, acciones y telemetría de aplicaciones */}
       <div className="flex flex-col gap-6" id="dashboard-col-left">
-        {/* Contenido reservado para columna izquierda */}
+        <DashboardHeader />
       </div>
 
       {/* Columna Central: Modelo biométrico 3D (Ojo con retícula HUD) */}
