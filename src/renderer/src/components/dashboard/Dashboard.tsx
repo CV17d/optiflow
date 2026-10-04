@@ -2,6 +2,7 @@ import React from 'react'
 import DashboardHeader from './DashboardHeader'
 import TelemetryWidget from './TelemetryWidget'
 import EyeBiometricsWidget from './EyeBiometricsWidget'
+import FatigueLevelWidget from './FatigueLevelWidget'
 
 export const Dashboard: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo */}
       <div className="flex flex-col gap-6" id="dashboard-col-right">
-        {/* Contenido reservado para columna derecha */}
+        <FatigueLevelWidget />
       </div>
     </div>
   )
