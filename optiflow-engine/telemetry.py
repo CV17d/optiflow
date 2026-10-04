@@ -24,19 +24,22 @@ APP_CATEGORIES = {
 
 
 class AppTracker:
-    """Rastreador de ventanas activas y clasificador de carga cognitiva."""
+    """Rastreador de ventanas activas del sistema operativo Windows."""
 
     def __init__(self):
         pass
 
     def get_raw_active_title(self) -> str:
-        """Obtiene el título sin procesar de la ventana activa en el SO."""
+        """Obtiene el título de la ventana activa en Windows en tiempo real."""
         try:
+            window = gw.getActiveWindow()
+            if window and hasattr(window, 'title') and window.title:
+                return window.title.strip()
             title = gw.getActiveWindowTitle()
             if title and isinstance(title, str):
                 return title.strip()
         except Exception as e:
-            logging.debug(f"Error consultando ventana activa: {e}")
+            logging.debug(f"Error consultando ventana activa en Windows: {e}")
         return ""
 
     def get_active_app(self) -> str:
