@@ -1,11 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
 
+export interface SessionStats {
+  avg_fatigue: number
+  most_used_app: string
+  total_records: number
+}
+
 export interface TelemetryData {
   fatigue_level: number
   blink_rate: number
   active_app: string
   app_status?: string
   ear?: number
+  session_stats?: SessionStats
+  avg_fatigue?: number
+  most_used_app?: string
 }
 
 export interface UseTelemetryReturn {

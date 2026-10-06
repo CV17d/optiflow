@@ -65,8 +65,77 @@ class DBManager:
             logging.error(f"Error al registrar telemetría en SQLite: {e}")
             return False
 
+    def get_session_stats(self) -> Dict[str, Any]:
+        """
+        Ejecuta consultas de agregación SQL para obtener:
+        - Promedio de fatiga del día de hoy (AVG(fatigue_level)).
+        - Aplicación más utilizada en la jornada de hoy.
+        """
+        try:
+            with self._get_connection() as conn:
+                cursor = conn.cursor()
+
+                # 1. Promedio de fatiga del día de hoy
+                cursor.execute("""
+                    SELECT AVG(fatigue_level), COUNT(*)
+                    FROM session_logs
+                    WHERE date(timestamp, 'localtime') = date('now', 'localtime');
+                """)
+                row_today = cursor.fetchone()
+                avg_fatigue = row_today[0] if row_today and row_today[0] is not None else None
+                records_today = row_today[1] if row_today else 0
+
+                # Fallback al historial general si hoy aún no hay suficientes registros
+                if avg_fatigue is None:
+                    cursor.execute("SELECT AVG(fatigue_level), COUNT(*) FROM session_logs;")
+                    row_all = cursor.fetchone()
+                    avg_fatigue = row_all[0] if row_all and row_all[0] is not None else 18.0
+                    total_records = row_all[1] if row_all else 0
+                else:
+                    total_records = records_today
+
+                # 2. Aplicación más usada del día de hoy
+                cursor.execute("""
+                    SELECT active_app, COUNT(*) as usage_count
+                    FROM session_logs
+                    WHERE date(timestamp, 'localtime') = date('now', 'localtime')
+                    GROUP BY active_app
+                    ORDER BY usage_count DESC
+                    LIMIT 1;
+                """)
+                row_app = cursor.fetchone()
+                if not row_app:
+                    cursor.execute("""
+                        SELECT active_app, COUNT(*) as usage_count
+                        FROM session_logs
+                        GROUP BY active_app
+                        ORDER BY usage_count DESC
+                        LIMIT 1;
+                    """)
+                    row_app = cursor.fetchone()
+
+                most_used_app = row_app[0] if row_app and row_app[0] else "VS Code"
+
+                stats = {
+                    "avg_fatigue": round(float(avg_fatigue), 2),
+                    "most_used_app": str(most_used_app),
+                    "total_records": int(total_records)
+                }
+                logging.info(f"Estadísticas de sesión calculadas: {stats}")
+                return stats
+        except sqlite3.Error as e:
+            logging.error(f"Error consultando estadísticas de sesión en SQLite: {e}")
+            return {
+                "avg_fatigue": 18.0,
+                "most_used_app": "VS Code",
+                "total_records": 0
+            }
+
 
 if __name__ == "__main__":
     db = DBManager()
     success = db.insert_telemetry(18.5, 16, 0.28, "VS Code")
     print(f"Registro de prueba insertado: {success}")
+    stats = db.get_session_stats()
+    print(f"Estadísticas obtenidas: {stats}")
+

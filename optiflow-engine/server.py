@@ -38,10 +38,19 @@ async def handler(websocket):
     CONNECTED_CLIENTS.add(websocket)
     logging.info(f"Cliente conectado: {websocket.remote_address}")
     try:
-        current_data = get_fused_payload()
-        await websocket.send(json.dumps(current_data))
+        # Obtener estadísticas históricas de SQLite para el estado inicial de la sesión
+        session_stats = await asyncio.to_thread(db_manager.get_session_stats)
+        initial_payload = {
+            **get_fused_payload(),
+            "session_stats": session_stats,
+            "avg_fatigue": session_stats.get("avg_fatigue", 18.0),
+            "most_used_app": session_stats.get("most_used_app", "VS Code")
+        }
+        await websocket.send(json.dumps(initial_payload))
+        logging.info(f"Payload inicial con estadísticas de sesión enviado: {initial_payload}")
         async for _ in websocket:
             pass
+
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
