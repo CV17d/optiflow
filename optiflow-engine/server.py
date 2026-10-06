@@ -1,9 +1,11 @@
 import asyncio
 import json
 import logging
+import time
 import websockets
 from vision import VisionEngine
 from telemetry import AppTracker
+from database import DBManager
 
 logging.basicConfig(
     level=logging.INFO,
@@ -13,6 +15,8 @@ logging.basicConfig(
 CONNECTED_CLIENTS = set()
 vision_engine = VisionEngine(camera_index=0, show_preview=False)
 app_tracker = AppTracker()
+db_manager = DBManager()
+
 
 
 def get_fused_payload() -> dict:
@@ -47,9 +51,27 @@ async def handler(websocket):
 
 async def broadcast_telemetry():
     """Bucle infinito que emite métricas biométricas y del SO fusionadas en tiempo real."""
+    last_db_save_time = 0.0
+
     while True:
         payload = get_fused_payload()
         print(f"Emitiendo: {payload}", flush=True)
+
+        current_time = time.time()
+        if current_time - last_db_save_time >= 10.0:
+            last_db_save_time = current_time
+            # Registro asíncrono en SQLite para no saturar disco ni bloquear el loop
+            asyncio.create_task(
+                asyncio.to_thread(
+                    db_manager.insert_telemetry,
+                    payload["fatigue_level"],
+                    payload["blink_rate"],
+                    payload["ear"],
+                    payload["active_app"]
+                )
+            )
+            logging.info("Instantánea de telemetría guardada en la base de datos local SQLite.")
+
         if CONNECTED_CLIENTS:
             message = json.dumps(payload)
             await asyncio.gather(
@@ -58,6 +80,7 @@ async def broadcast_telemetry():
             )
             logging.info(f"Emitiendo telemetría multisensorial ({len(CONNECTED_CLIENTS)} clientes): {payload}")
         await asyncio.sleep(2)
+
 
 
 async def main():
