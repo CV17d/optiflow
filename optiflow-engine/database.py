@@ -1,5 +1,6 @@
 import sqlite3
 import logging
+import sys
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
@@ -8,7 +9,13 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 
-DEFAULT_DB_PATH = Path(__file__).resolve().parent / "optiflow_local.db"
+# En entorno congelado de PyInstaller, la DB se genera junto a server.exe en lugar del directorio temporal _MEIPASS
+if getattr(sys, 'frozen', False):
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+
+DEFAULT_DB_PATH = BASE_DIR / "optiflow_local.db"
 
 
 class DBManager:

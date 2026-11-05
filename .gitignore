@@ -1,8 +1,14 @@
 node_modules/
 dist/
+**/dist/
+build/
+**/build/
 out/
 .vscode/
 .idea/
+
+# PyInstaller specs
+*.spec
 
 # Python venv and artifacts
 venv/
