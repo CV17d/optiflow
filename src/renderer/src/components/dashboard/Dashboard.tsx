@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import DashboardHeader from './DashboardHeader'
 import TelemetryWidget from './TelemetryWidget'
 import EyeBiometricsWidget from './EyeBiometricsWidget'
@@ -8,17 +8,56 @@ import VisualHealthIndexWidget from './VisualHealthIndexWidget'
 import PauseRegistryWidget from './PauseRegistryWidget'
 import TemporalCorrelationWidget from './TemporalCorrelationWidget'
 import useBiometrics from '../../hooks/useBiometrics'
+import type { AppUsageStat } from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
   const { biometrics, historyData } = useBiometrics()
   const [isMonitoring, setIsMonitoring] = useState<boolean>(true)
+  const [appUsageStats, setAppUsageStats] = useState<AppUsageStat[]>([])
   const pausedFatigueRef = useRef<number>(18)
+
+  // Carga reactiva de estadísticas de aplicaciones desde SQLite mediante el canal IPC del preload
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchAppUsage = async (): Promise<void> => {
+      try {
+        if (window.electron?.getAppUsageStats) {
+          const stats = await window.electron.getAppUsageStats()
+          if (isMounted && stats && stats.length > 0) {
+            setAppUsageStats(stats)
+            return
+          }
+        }
+        if (window.api?.getAppUsageStats) {
+          const stats = await window.api.getAppUsageStats()
+          if (isMounted && stats && stats.length > 0) {
+            setAppUsageStats(stats)
+          }
+        }
+      } catch (err) {
+        console.error('[Dashboard] Error al consultar estadísticas de SQLite vía IPC:', err)
+      }
+    }
+
+    fetchAppUsage()
+    const interval = setInterval(fetchAppUsage, 10000)
+
+    return () => {
+      isMounted = false
+      clearInterval(interval)
+    }
+  }, [])
 
   // Congelar fatiga cuando el monitoreo se encuentra pausado por el usuario
   if (isMonitoring) {
     pausedFatigueRef.current = biometrics.fatigue_level
   }
   const currentFatigue = isMonitoring ? biometrics.fatigue_level : pausedFatigueRef.current
+
+  // Vinculación de telemetría de SQLite: prioriza IPC directo y utiliza historyData inicial como respaldo
+  const currentUsageStats =
+    appUsageStats.length > 0 ? appUsageStats : historyData?.app_usage_stats || []
 
   const handleToggleMonitoring = (): void => {
     setIsMonitoring((prev) => {
@@ -51,7 +90,7 @@ export const Dashboard: React.FC = () => {
             activeApp={isMonitoring ? biometrics.active_app : `${biometrics.active_app} (Pausado)`}
             appStatus={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
             roleDescription={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
-            appUsageStats={historyData?.app_usage_stats}
+            appUsageStats={currentUsageStats}
           />
         </div>
 
@@ -83,7 +122,7 @@ export const Dashboard: React.FC = () => {
           averageFatigue={historyData?.average_fatigue}
         />
         <PauseRegistryWidget
-          appUsageStats={historyData?.app_usage_stats}
+          appUsageStats={currentUsageStats}
         />
         <TemporalCorrelationWidget
           ear={biometrics.ear.toFixed(2)}

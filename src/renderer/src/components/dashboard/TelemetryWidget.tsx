@@ -23,6 +23,14 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
   const currentApp = activeApp || active_app || 'Buscando...'
   const currentStatus = appStatus || app_status || roleDescription || 'Enfoque Profundo'
 
+  const secondaryApps =
+    appUsageStats && appUsageStats.length > 0
+      ? (appUsageStats.filter((item) => item.app !== currentApp).length > 0
+          ? appUsageStats.filter((item) => item.app !== currentApp)
+          : appUsageStats
+        ).slice(0, 2)
+      : []
+
   return (
     <Card className="p-6 flex flex-col gap-4 select-none">
       {/* Cabecera del Widget */}
@@ -106,25 +114,22 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
         </div>
       </div>
 
-      {/* Lista Inferior: Historial de apps desde SQLite (filtrado de mock data) */}
-      {appUsageStats && appUsageStats.length > 1 ? (
+      {/* Lista Inferior: Estadísticas reales de apps desde SQLite vía IPC */}
+      {secondaryApps.length > 0 ? (
         <div className="flex items-center justify-between text-xs text-slate-600 pt-1 px-1">
-          {appUsageStats
-            .filter((item) => item.app !== currentApp)
-            .slice(0, 2)
-            .map((item, index) => (
-              <div key={item.app} className="flex items-center gap-2 min-w-0">
-                <span
-                  className={`w-2 h-2 rounded-full shrink-0 ${
-                    index === 0 ? 'bg-orange-400' : 'bg-slate-300'
-                  }`}
-                />
-                <span className="truncate max-w-[130px]" title={item.app}>
-                  {index + 1}. {item.app}{' '}
-                  <span className="text-slate-400 font-medium">({item.percentage}%)</span>
-                </span>
-              </div>
-            ))}
+          {secondaryApps.map((item, index) => (
+            <div key={item.app} className="flex items-center gap-2 min-w-0">
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${
+                  index === 0 ? 'bg-orange-400' : 'bg-slate-300'
+                }`}
+              />
+              <span className="truncate max-w-[130px]" title={item.app}>
+                {index + 1}. {item.app}{' '}
+                <span className="text-slate-400 font-medium">({item.percentage}%)</span>
+              </span>
+            </div>
+          ))}
         </div>
       ) : null}
     </Card>

@@ -3,6 +3,7 @@ import { join } from 'path'
 import { existsSync } from 'fs'
 import { spawn, ChildProcess } from 'child_process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { DatabaseSync } from 'node:sqlite'
 import icon from '../../resources/icon.png?asset'
 
 let pythonProcess: ChildProcess | null = null
@@ -25,6 +26,67 @@ function getPythonBinaryPath(): string {
     return altProdPath
   }
   return devPath
+}
+
+/**
+ * Resuelve la ruta a la base de datos SQLite optiflow_local.db dinámicamente.
+ */
+function getDatabasePath(): string {
+  const devPath = join(app.getAppPath(), 'optiflow-engine', 'optiflow_local.db')
+  const prodResourcePath = join(process.resourcesPath, 'optiflow-engine', 'dist', 'optiflow_local.db')
+  const altProdPath = join(process.resourcesPath, 'optiflow_local.db')
+
+  if (!app.isPackaged && existsSync(devPath)) {
+    return devPath
+  }
+  if (existsSync(prodResourcePath)) {
+    return prodResourcePath
+  }
+  if (existsSync(altProdPath)) {
+    return altProdPath
+  }
+  return devPath
+}
+
+export interface AppUsageStat {
+  app: string
+  count: number
+  percentage: number
+}
+
+/**
+ * Consulta agregada de uso de aplicaciones directamente desde SQLite.
+ */
+function getAppUsageStatsFromDB(limit = 10): AppUsageStat[] {
+  const dbPath = getDatabasePath()
+  if (!existsSync(dbPath)) {
+    console.warn(`[Main Process] Base de datos no encontrada en: ${dbPath}`)
+    return []
+  }
+
+  try {
+    const db = new DatabaseSync(dbPath, { readOnly: true })
+    const rows = db
+      .prepare(
+        `SELECT active_app, COUNT(*) as count
+         FROM session_logs
+         GROUP BY active_app
+         ORDER BY count DESC
+         LIMIT ?`
+      )
+      .all(limit) as Array<{ active_app: string; count: number }>
+    db.close()
+
+    const total = rows.reduce((acc, r) => acc + (Number(r.count) || 0), 0)
+    return rows.map((r) => ({
+      app: r.active_app || 'Desconocido',
+      count: Number(r.count) || 0,
+      percentage: total > 0 ? Math.round(((Number(r.count) || 0) / total) * 1000) / 10 : 0
+    }))
+  } catch (err) {
+    console.error('[Main Process] Error consultando estadísticas de SQLite:', err)
+    return []
+  }
 }
 
 /**
@@ -151,6 +213,11 @@ app.whenReady().then(() => {
   // IPC para pausar/reanudar monitoreo
   ipcMain.on('toggle-monitoring', (_, isMonitoring) => {
     console.log(`[Main Process] Estado de monitoreo biométrico: ${isMonitoring ? 'ACTIVO' : 'PAUSADO'}`)
+  })
+
+  // IPC para consultar estadísticas de uso de aplicaciones desde SQLite
+  ipcMain.handle('get-app-usage-stats', async () => {
+    return getAppUsageStatsFromDB()
   })
 
   createWindow()

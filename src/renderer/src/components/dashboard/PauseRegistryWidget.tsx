@@ -8,13 +8,6 @@ export interface PauseRegistryWidgetProps {
   appUsageStats?: AppUsageStat[]
 }
 
-const defaultBarData = [
-  { label: 'Ayer', heightPx: 56, color: 'bg-orange-500' },
-  { label: 'Obj.', heightPx: 32, color: 'bg-orange-200' },
-  { label: 'Hoy', heightPx: 64, color: 'bg-orange-500' },
-  { label: 'Bara', heightPx: 24, color: 'bg-orange-200/80' }
-]
-
 /**
  * Formatea etiquetas del eje X para evitar colisiones y superposiciones de texto.
  */
@@ -39,13 +32,18 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
   postponed = 'Mínima (2)',
   appUsageStats = []
 }) => {
-  // Gráfico de barras dinamizado con estadísticas de uso por aplicación registradas en SQLite
+  // Gráfico de barras dinamizado con estadísticas reales de uso por aplicación registradas en SQLite
   const bars = useMemo(() => {
     if (!appUsageStats || appUsageStats.length === 0) {
-      return defaultBarData
+      return [
+        { label: 'App 1', heightPx: 20, color: 'bg-slate-200/60', title: 'Sin registros' },
+        { label: 'App 2', heightPx: 14, color: 'bg-slate-200/50', title: 'Sin registros' },
+        { label: 'App 3', heightPx: 16, color: 'bg-slate-200/40', title: 'Sin registros' },
+        { label: 'App 4', heightPx: 10, color: 'bg-slate-200/30', title: 'Sin registros' }
+      ]
     }
 
-    // Tomar hasta 4 aplicaciones con mayor presencia en la sesión
+    // Tomar hasta 4 aplicaciones con mayor presencia registradas en la base de datos
     return appUsageStats.slice(0, 4).map((stat, idx) => {
       // Normalizar altura de barra entre 18px y 68px según el porcentaje de uso
       const heightPx = Math.max(18, Math.min(68, Math.round((stat.percentage / 100) * 68)))
@@ -53,7 +51,8 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
       return {
         label: stat.app,
         heightPx,
-        color
+        color,
+        title: `${stat.app}: ${stat.percentage}% (${stat.count} registros)`
       }
     })
   }, [appUsageStats])
@@ -110,6 +109,7 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
               <div
                 key={`${bar.label}-${index}`}
                 className="flex flex-col items-center gap-1.5 w-7"
+                title={bar.title}
               >
                 <div
                   style={{ height: `${bar.heightPx}px` }}
