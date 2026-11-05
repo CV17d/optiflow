@@ -7,6 +7,36 @@ export interface TemporalCorrelationWidgetProps {
   earHistory?: HistoricalEarRecord[]
 }
 
+/**
+ * Genera un path SVG con curvas cúbicas de Bézier continuas y suaves (Spline Catmull-Rom)
+ * para eliminar picos rectos y suavizar la visualización de fatiga ocular.
+ */
+function generateBezierCurve(points: { x: number; y: number }[]): string {
+  if (points.length === 0) return ''
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`
+  if (points.length === 2) {
+    const cpX = (points[0].x + points[1].x) / 2
+    return `M ${points[0].x} ${points[0].y} Q ${cpX} ${points[0].y}, ${points[1].x} ${points[1].y}`
+  }
+
+  let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = i === 0 ? points[i] : points[i - 1]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = i + 2 < points.length ? points[i + 2] : p2
+
+    // Puntos de control Bézier con curvatura ergonómica
+    const cp1x = p1.x + (p2.x - p0.x) / 5.5
+    const cp1y = p1.y + (p2.y - p0.y) / 5.5
+    const cp2x = p2.x - (p3.x - p1.x) / 5.5
+    const cp2y = p2.y - (p3.y - p1.y) / 5.5
+
+    path += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`
+  }
+  return path
+}
+
 export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps> = ({
   ear = '0.26',
   distance = '58.4 cm',
@@ -21,13 +51,22 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
     return ear
   }, [earHistory, ear])
 
-  // Generar dinámicamente el trazado SVG con base en la serie temporal de EAR
+  // Generar trazado SVG suavizado con curvas de Bézier y relleno degradado
   const { linePath, areaPath, lastPoint } = useMemo(() => {
     if (!earHistory || earHistory.length === 0) {
+      const fallbackPoints = [
+        { x: 0, y: 58 },
+        { x: 70, y: 55 },
+        { x: 140, y: 46 },
+        { x: 210, y: 28 },
+        { x: 265, y: 20 },
+        { x: 300, y: 24 }
+      ]
+      const fallbackLine = generateBezierCurve(fallbackPoints)
       return {
-        linePath: 'M0 60 Q 80 60, 150 50 T 260 20 T 300 25',
-        areaPath: 'M0 60 Q 80 60, 150 50 T 260 20 T 300 25 L 300 70 L 0 70 Z',
-        lastPoint: { x: 275, y: 21 }
+        linePath: fallbackLine,
+        areaPath: `${fallbackLine} L 300 70 L 0 70 Z`,
+        lastPoint: { x: 265, y: 20 }
       }
     }
 
@@ -47,18 +86,13 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
 
     const points = earHistory.map((item, index) => {
       const x = (index / (count - 1)) * 300
-      // A mayor apertura de ojo (EAR), más alto en el gráfico HUD (menor Y)
+      // A mayor apertura ocular (EAR), mayor altura en el gráfico (menor Y)
       const normalized = (item.ear - minEar) / range
-      const y = 60 - normalized * 42
+      const y = 58 - normalized * 40
       return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)) }
     })
 
-    const line =
-      `M ${points[0].x} ${points[0].y} ` +
-      points
-        .slice(1)
-        .map((p) => `L ${p.x} ${p.y}`)
-        .join(' ')
+    const line = generateBezierCurve(points)
     const area = `${line} L 300 70 L 0 70 Z`
     const last = points[points.length - 1]
 
@@ -114,7 +148,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         </div>
       </div>
 
-      {/* Gráfico de Tendencia con Curva Naranja Dinámica y Punto Final */}
+      {/* Gráfico de Tendencia con Curva Bézier Naranja y Relleno Degradado */}
       <div className="w-full mt-4 pt-2">
         <svg
           className="w-full h-20 overflow-visible"
@@ -124,23 +158,25 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         >
           <defs>
             <linearGradient id="orangeTrendGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#F97316" stopOpacity="0.45" />
+              <stop offset="0%" stopColor="#F97316" stopOpacity="0.5" />
+              <stop offset="65%" stopColor="#F97316" stopOpacity="0.15" />
               <stop offset="100%" stopColor="#F97316" stopOpacity="0.0" />
             </linearGradient>
           </defs>
 
-          {/* Relleno degradado dinámico */}
+          {/* Relleno degradado Bézier suave */}
           <path d={areaPath} fill="url(#orangeTrendGradient)" />
 
-          {/* Línea de tendencia dinámica */}
+          {/* Línea de tendencia suavizada continua */}
           <path
             d={linePath}
             stroke="#F97316"
-            strokeWidth="3"
+            strokeWidth="3.2"
             strokeLinecap="round"
+            strokeLinejoin="round"
           />
 
-          {/* Círculo indicador blanco con borde naranja al final de la curva */}
+          {/* Círculo indicador blanco con resplandor y borde naranja en el extremo */}
           <circle
             cx={lastPoint.x}
             cy={lastPoint.y}
@@ -148,6 +184,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
             fill="#FFFFFF"
             stroke="#F97316"
             strokeWidth="2.5"
+            className="filter drop-shadow-[0_0_6px_rgba(249,115,22,0.8)]"
           />
         </svg>
       </div>
