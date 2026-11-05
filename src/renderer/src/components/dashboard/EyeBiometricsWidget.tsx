@@ -3,9 +3,13 @@ import EyeRender3D from './EyeRender3D'
 
 export interface EyeBiometricsWidgetProps {
   ear?: number
+  trackingPoints?: number
 }
 
-export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({ ear = 0.28 }) => {
+export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
+  ear = 0.28,
+  trackingPoints = 468
+}) => {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center min-h-[340px] relative select-none py-2">
       {/* Contenedor circular con borde y resplandor turquesa */}
@@ -41,10 +45,10 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({ ear = 
         </div>
       </div>
 
-      {/* Etiqueta de Telemetría Biometría en Vivo */}
+      {/* Etiqueta de Telemetría Biometría en Vivo conectada con el socket */}
       <div className="mt-4 flex flex-col items-center gap-1 z-10">
         <span className="text-[10px] text-teal-700 tracking-widest font-mono uppercase bg-teal-100/70 border border-teal-300/50 px-3 py-0.5 rounded-full font-semibold shadow-xs">
-          TRACKING 468 PTS • EAR {typeof ear === 'number' ? ear.toFixed(2) : ear}
+          TRACKING {trackingPoints} PTS • EAR {typeof ear === 'number' ? ear.toFixed(2) : ear}
         </span>
       </div>
     </div>

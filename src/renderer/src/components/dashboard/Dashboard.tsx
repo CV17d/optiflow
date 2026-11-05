@@ -7,10 +7,10 @@ import BlinkRateWidget from './BlinkRateWidget'
 import VisualHealthIndexWidget from './VisualHealthIndexWidget'
 import PauseRegistryWidget from './PauseRegistryWidget'
 import TemporalCorrelationWidget from './TemporalCorrelationWidget'
-import useTelemetry from '../../hooks/useTelemetry'
+import useBiometrics from '../../hooks/useBiometrics'
 
 export const Dashboard: React.FC = () => {
-  const { data: telemetry, historyData } = useTelemetry()
+  const { biometrics, historyData } = useBiometrics()
 
   return (
     <div className="w-full max-w-[1600px] mx-auto flex flex-col">
@@ -20,9 +20,9 @@ export const Dashboard: React.FC = () => {
         <div className="flex flex-col gap-6" id="dashboard-col-left">
           <DashboardHeader />
           <TelemetryWidget
-            activeApp={telemetry.active_app}
-            appStatus={telemetry.app_status}
-            roleDescription={telemetry.app_status}
+            activeApp={biometrics.active_app}
+            appStatus={biometrics.app_status}
+            roleDescription={biometrics.app_status}
             appUsageStats={historyData?.app_usage_stats}
           />
         </div>
@@ -32,13 +32,20 @@ export const Dashboard: React.FC = () => {
           className="flex flex-col items-center justify-center"
           id="dashboard-col-center"
         >
-          <EyeBiometricsWidget ear={telemetry.ear} />
+          <EyeBiometricsWidget
+            ear={biometrics.ear}
+            trackingPoints={biometrics.tracking_points}
+          />
         </div>
 
-        {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo */}
+        {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo en tiempo real */}
         <div className="flex flex-col gap-6" id="dashboard-col-right">
-          <FatigueLevelWidget fatigueLevel={telemetry.fatigue_level} />
-          <BlinkRateWidget bpm={telemetry.blink_rate} />
+          <FatigueLevelWidget
+            fatigueLevel={biometrics.fatigue_level}
+            sessionDuration={biometrics.session_time}
+            nextBreakMinutes={biometrics.next_break_minutes}
+          />
+          <BlinkRateWidget bpm={biometrics.bpm} />
         </div>
       </div>
 
@@ -51,7 +58,7 @@ export const Dashboard: React.FC = () => {
           appUsageStats={historyData?.app_usage_stats}
         />
         <TemporalCorrelationWidget
-          ear={typeof telemetry.ear === 'number' ? telemetry.ear.toFixed(2) : '0.26'}
+          ear={biometrics.ear.toFixed(2)}
           earHistory={historyData?.historical_ear}
         />
       </div>

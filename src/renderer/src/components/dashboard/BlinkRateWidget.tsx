@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Card from '../ui/Card'
 
 export interface BlinkRateWidgetProps {
@@ -12,15 +12,19 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
   statusText,
   percentage
 }) => {
-  const dynamicStatus =
-    statusText ??
-    (bpm >= 14 && bpm <= 20
-      ? 'Saludable (14 - 20)'
-      : bpm < 14
-        ? 'Tensión Ocular (< 14)'
-        : 'Elevado (> 20)')
+  const dynamicStatus = useMemo(() => {
+    if (statusText) return statusText
+    if (bpm >= 14 && bpm <= 25) return 'Saludable (14 - 25)'
+    if (bpm < 14) return 'Tensión Ocular (< 14)'
+    return 'Elevado (> 25)'
+  }, [bpm, statusText])
 
-  const barWidth = percentage ?? Math.min(Math.max(Math.round((bpm / 25) * 100), 15), 100)
+  // Normalización del ancho de barra reactiva en tiempo real (escala 0 a 35+ BPM)
+  const barWidth = useMemo(() => {
+    if (typeof percentage === 'number') return Math.min(100, Math.max(0, percentage))
+    return Math.min(Math.max(Math.round((bpm / 35) * 100), 10), 100)
+  }, [bpm, percentage])
+
   return (
     <Card className="p-6 flex flex-col justify-between gap-4 select-none">
       {/* Cabecera */}
@@ -46,14 +50,14 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
         </button>
       </div>
 
-      {/* Contenido: Barra de Progreso */}
+      {/* Contenido: Barra de Progreso Dinámica */}
       <div className="flex flex-col gap-2 mt-1">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
           RITMO DE PARPADEO
         </span>
-        <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-2.5 bg-gray-200/80 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-500 ease-out"
             style={{ width: `${barWidth}%` }}
           />
         </div>
@@ -61,7 +65,7 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
 
       {/* Footer */}
       <div className="flex items-center justify-between text-xs pt-1">
-        <span className="text-sm font-bold text-slate-900">
+        <span className="text-sm font-black text-slate-900">
           {bpm} BPM
         </span>
         <span className="text-xs text-slate-500 font-medium">

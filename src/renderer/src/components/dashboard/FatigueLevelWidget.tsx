@@ -10,9 +10,11 @@ export interface FatigueLevelWidgetProps {
 
 export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
   fatigueLevel = 18,
-  sessionDuration = '1h 42m',
-  nextBreakMinutes = 14
+  sessionDuration = '0m',
+  nextBreakMinutes = 20
 }) => {
+  const badgeLabel = fatigueLevel > 60 ? 'ALTO' : fatigueLevel > 30 ? 'MODERADO' : 'OPTIMO'
+
   return (
     <Card className="p-6 flex flex-col justify-between gap-4 select-none">
       {/* Cabecera */}
@@ -55,14 +57,14 @@ export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
           </span>
         </div>
 
-        {/* Círculo indicador de estado Óptimo */}
+        {/* Círculo indicador de estado Óptimo / Alerta */}
         <div className="flex items-center justify-center">
           <div className="w-20 h-20 rounded-full border-4 border-orange-100 flex items-center justify-center p-1">
             <Badge
               variant="solid-orange"
-              className="w-full h-full rounded-full flex items-center justify-center text-xs font-bold shadow-md shadow-orange-500/25 p-0"
+              className="w-full h-full rounded-full flex items-center justify-center text-[11px] font-bold shadow-md shadow-orange-500/25 p-0"
             >
-              OPTIMO
+              {badgeLabel}
             </Badge>
           </div>
         </div>
