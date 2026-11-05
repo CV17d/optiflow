@@ -21,7 +21,9 @@ export const Dashboard: React.FC = () => {
           <DashboardHeader />
           <TelemetryWidget
             activeApp={telemetry.active_app}
+            appStatus={telemetry.app_status}
             roleDescription={telemetry.app_status}
+            appUsageStats={historyData?.app_usage_stats}
           />
         </div>
 
