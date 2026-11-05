@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Card from '../ui/Card'
 
 export interface VisualHealthIndexWidgetProps {
@@ -11,8 +11,32 @@ export interface VisualHealthIndexWidgetProps {
 export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = ({
   status = 'Excelente',
   degradation = 'Baja',
-  score = 92
+  score = 92,
+  averageFatigue
 }) => {
+  // Score Ergonómico (0 a 100) basado en el promedio de fatiga acumulado
+  const calculatedScore = useMemo(() => {
+    if (typeof averageFatigue === 'number' && !isNaN(averageFatigue)) {
+      return Math.max(0, Math.min(100, Math.round(100 - averageFatigue)))
+    }
+    return score
+  }, [averageFatigue, score])
+
+  // Estado descriptivo de salud visual
+  const calculatedStatus = useMemo(() => {
+    if (calculatedScore >= 80) return 'Excelente'
+    if (calculatedScore >= 60) return 'Bueno'
+    if (calculatedScore >= 40) return 'Moderado'
+    return 'Fatigado'
+  }, [calculatedScore])
+
+  // Nivel de degradación ocular
+  const calculatedDegradation = useMemo(() => {
+    if (calculatedScore >= 80) return 'Baja'
+    if (calculatedScore >= 60) return 'Moderada'
+    return 'Alta'
+  }, [calculatedScore])
+
   return (
     <Card className="p-6 flex flex-col justify-between select-none">
       {/* Cabecera */}
@@ -36,7 +60,7 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
         </button>
       </div>
 
-      {/* Contenido: Bloques de estado y medidor circular */}
+      {/* Contenido: Bloques de estado dinámico y medidor circular */}
       <div className="flex justify-between items-center mt-4">
         {/* Bloque Izquierdo */}
         <div className="flex flex-col">
@@ -44,14 +68,14 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
             ESTADO
           </span>
           <span className="text-sm font-bold text-slate-800 mt-0.5">
-            {status}
+            {calculatedStatus || status}
           </span>
 
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
             DEGRADACIÓN
           </span>
           <span className="text-sm font-bold text-slate-800 mt-0.5">
-            {degradation}
+            {calculatedDegradation || degradation}
           </span>
         </div>
 
@@ -61,7 +85,7 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
             HEALTH SCORE
           </span>
           <span className="text-sm font-black text-slate-900 mt-1">
-            {score}
+            {calculatedScore}
             <span className="text-xs font-semibold text-slate-400">/100</span>
           </span>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import type { HistoricalEarRecord } from '../../hooks/useTelemetry'
 
 export interface TemporalCorrelationWidgetProps {
@@ -9,8 +9,66 @@ export interface TemporalCorrelationWidgetProps {
 
 export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps> = ({
   ear = '0.26',
-  distance = '58.4 cm'
+  distance = '58.4 cm',
+  earHistory = []
 }) => {
+  // Calcular promedio real de EAR a partir del historial persistido en SQLite
+  const displayEar = useMemo(() => {
+    if (earHistory && earHistory.length > 0) {
+      const sum = earHistory.reduce((acc, curr) => acc + (curr.ear || 0), 0)
+      return (sum / earHistory.length).toFixed(2)
+    }
+    return ear
+  }, [earHistory, ear])
+
+  // Generar dinámicamente el trazado SVG con base en la serie temporal de EAR
+  const { linePath, areaPath, lastPoint } = useMemo(() => {
+    if (!earHistory || earHistory.length === 0) {
+      return {
+        linePath: 'M0 60 Q 80 60, 150 50 T 260 20 T 300 25',
+        areaPath: 'M0 60 Q 80 60, 150 50 T 260 20 T 300 25 L 300 70 L 0 70 Z',
+        lastPoint: { x: 275, y: 21 }
+      }
+    }
+
+    const count = earHistory.length
+    if (count === 1) {
+      return {
+        linePath: 'M 0 45 L 300 45',
+        areaPath: 'M 0 45 L 300 45 L 300 70 L 0 70 Z',
+        lastPoint: { x: 300, y: 45 }
+      }
+    }
+
+    const earValues = earHistory.map((h) => h.ear)
+    const minEar = Math.min(...earValues)
+    const maxEar = Math.max(...earValues)
+    const range = maxEar - minEar === 0 ? 0.1 : maxEar - minEar
+
+    const points = earHistory.map((item, index) => {
+      const x = (index / (count - 1)) * 300
+      // A mayor apertura de ojo (EAR), más alto en el gráfico HUD (menor Y)
+      const normalized = (item.ear - minEar) / range
+      const y = 60 - normalized * 42
+      return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)) }
+    })
+
+    const line =
+      `M ${points[0].x} ${points[0].y} ` +
+      points
+        .slice(1)
+        .map((p) => `L ${p.x} ${p.y}`)
+        .join(' ')
+    const area = `${line} L 300 70 L 0 70 Z`
+    const last = points[points.length - 1]
+
+    return {
+      linePath: line,
+      areaPath: area,
+      lastPoint: last
+    }
+  }, [earHistory])
+
   return (
     <div className="bg-gray-900 text-white rounded-3xl p-6 shadow-md h-full flex flex-col justify-between select-none">
       {/* Cabecera */}
@@ -36,14 +94,14 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         </button>
       </div>
 
-      {/* Métricas: EAR y Distancia */}
+      {/* Métricas: EAR Promedio Real y Distancia */}
       <div className="flex items-center gap-8 mt-4">
         <div className="flex flex-col">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
             EAR PROM.
           </span>
           <span className="text-xl font-extrabold text-white mt-0.5">
-            {ear}
+            {displayEar}
           </span>
         </div>
         <div className="flex flex-col">
@@ -56,7 +114,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         </div>
       </div>
 
-      {/* Gráfico de Tendencia con Curva Naranja y Punto Final */}
+      {/* Gráfico de Tendencia con Curva Naranja Dinámica y Punto Final */}
       <div className="w-full mt-4 pt-2">
         <svg
           className="w-full h-20 overflow-visible"
@@ -71,24 +129,21 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
             </linearGradient>
           </defs>
 
-          {/* Relleno degradado */}
-          <path
-            d="M0 60 Q 80 60, 150 50 T 260 20 T 300 25 L 300 70 L 0 70 Z"
-            fill="url(#orangeTrendGradient)"
-          />
+          {/* Relleno degradado dinámico */}
+          <path d={areaPath} fill="url(#orangeTrendGradient)" />
 
-          {/* Línea de tendencia */}
+          {/* Línea de tendencia dinámica */}
           <path
-            d="M0 60 Q 80 60, 150 50 T 260 20 T 300 25"
+            d={linePath}
             stroke="#F97316"
             strokeWidth="3"
             strokeLinecap="round"
           />
 
-          {/* Círculo indicador blanco con borde naranja al final */}
+          {/* Círculo indicador blanco con borde naranja al final de la curva */}
           <circle
-            cx="275"
-            cy="21"
+            cx={lastPoint.x}
+            cy={lastPoint.y}
             r="4.5"
             fill="#FFFFFF"
             stroke="#F97316"

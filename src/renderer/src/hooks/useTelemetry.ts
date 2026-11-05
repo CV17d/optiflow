@@ -69,19 +69,19 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
   useEffect(() => {
     let isMounted = true
 
-    function connect() {
+    function connect(): void {
       try {
         const ws = new WebSocket(url)
         wsRef.current = ws
 
-        ws.onopen = () => {
+        ws.onopen = (): void => {
           if (!isMounted) return
           console.log('Conexión establecida con ws://localhost:8765')
           setIsConnected(true)
           setError(null)
         }
 
-        ws.onmessage = (event: MessageEvent) => {
+        ws.onmessage = (event: MessageEvent): void => {
           if (!isMounted) return
           try {
             const parsed = JSON.parse(event.data)
@@ -113,12 +113,12 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
           }
         }
 
-        ws.onerror = () => {
+        ws.onerror = (): void => {
           if (!isMounted) return
           setError('Error en la conexión con el motor de telemetría')
         }
 
-        ws.onclose = () => {
+        ws.onclose = (): void => {
           if (!isMounted) return
           setIsConnected(false)
           // Reintentar conexión automáticamente tras 2 segundos
