@@ -43,7 +43,7 @@ def calculate_ear(eye_points: list) -> float:
 
 
 class VisionEngine:
-    """Motor biométrico con cálculo de EAR y tasa de parpadeo en segundo plano."""
+    """Motor biométrico con cálculo de EAR, tasa de parpadeo y heurística dinámica de fatiga."""
 
     def __init__(self, camera_index: int = 0, show_preview: bool = False):
         self.camera_index = camera_index
@@ -64,16 +64,28 @@ class VisionEngine:
         self.blink_timestamps = deque()
         self.is_eye_closed = False
         self.current_ear = 0.28
+        self.smooth_ear = 0.28
         self.blink_rate = 16
-        self.fatigue_level = 18
+        self.fatigue_level = 18.0
+        self.last_update_time = time.time()
 
     def _extract_eye_points(self, landmarks, indices, w: int, h: int) -> list:
         return [(landmarks.landmark[idx].x * w, landmarks.landmark[idx].y * h) for idx in indices]
 
     def _update_metrics(self, ear: float):
-        """Actualiza el estado de parpadeos, BPM y calcula nivel de fatiga."""
-        self.current_ear = round(ear, 3)
+        """
+        Actualiza el estado de parpadeos, BPM y calcula nivel de fatiga con:
+        1. Factor de Recuperación (Decay) en rangos saludables.
+        2. Incremento suave ante esfuerzo visual sostenido.
+        3. Límites estrictos [0.0, 100.0].
+        """
         now = time.time()
+        dt = min(1.0, max(0.001, now - self.last_update_time))
+        self.last_update_time = now
+
+        # Suavizado exponencial del EAR para filtrar ruido de cámara
+        self.smooth_ear = round(0.85 * self.smooth_ear + 0.15 * ear, 3)
+        self.current_ear = self.smooth_ear
 
         # Detección de parpadeo por cruce de umbral
         if ear < EAR_THRESHOLD:
@@ -83,7 +95,7 @@ class VisionEngine:
         else:
             self.is_eye_closed = False
 
-        # Depurar parpadeos mayores a 60 segundos
+        # Depurar parpadeos mayores a 60 segundos (ventana deslizante)
         while self.blink_timestamps and now - self.blink_timestamps[0] > 60:
             self.blink_timestamps.popleft()
 
@@ -91,17 +103,31 @@ class VisionEngine:
         count = len(self.blink_timestamps)
         self.blink_rate = max(count, 12) if count > 0 else 16
 
-        # Algoritmo de fatiga ocular basado en EAR y BPM
-        base_fatigue = 15
-        if self.blink_rate < 14:
-            base_fatigue += (14 - self.blink_rate) * 5
-        elif self.blink_rate > 22:
-            base_fatigue += (self.blink_rate - 22) * 3
+        # Heurística de fatiga ocular:
+        # Factor de Recuperación (Decay): si el parpadeo es saludable (14-25 BPM) y el ojo está abierto (EAR >= 0.24)
+        if 14 <= self.blink_rate <= 25 and self.current_ear >= 0.24:
+            # Recuperación ocular gradual (~12% por minuto de descanso)
+            decay = 0.20 * dt
+            self.fatigue_level -= decay
+        else:
+            # Incremento progresivo ante esfuerzo visual prolongado
+            strain = 0.0
 
-        if ear < 0.23:
-            base_fatigue += 10
+            # Baja tasa de parpadeo (< 14 BPM, tensión ocular por pantalla)
+            if self.blink_rate < 14:
+                strain += (14.0 - self.blink_rate) * 0.06 * dt
+            # Alta tasa de parpadeo (> 25 BPM, irritación o sequedad ocular)
+            elif self.blink_rate > 25:
+                strain += (self.blink_rate - 25.0) * 0.04 * dt
 
-        self.fatigue_level = max(10, min(90, base_fatigue))
+            # Apertura ocular reducida (< 0.22, pesadez palpebral)
+            if self.current_ear < 0.22:
+                strain += (0.22 - self.current_ear) * 1.8 * dt
+
+            self.fatigue_level += strain
+
+        # Límites estrictos [0.0, 100.0]
+        self.fatigue_level = min(100.0, max(0.0, self.fatigue_level))
 
     def _process_loop(self):
         """Bucle de inferencia continuo en segundo plano."""
@@ -152,7 +178,7 @@ class VisionEngine:
     def get_telemetry_payload(self) -> dict:
         """Devuelve la telemetría actual procesada por la cámara."""
         return {
-            "fatigue_level": int(self.fatigue_level),
+            "fatigue_level": round(float(self.fatigue_level), 1),
             "blink_rate": int(self.blink_rate),
             "active_app": "VS Code",
             "ear": self.current_ear
