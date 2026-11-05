@@ -104,7 +104,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
   }, [earHistory])
 
   return (
-    <div className="bg-gray-900 text-white rounded-3xl p-6 shadow-md h-full flex flex-col justify-between select-none">
+    <div className="bg-gray-900 text-white rounded-3xl p-6 shadow-[0_10px_35px_rgba(0,0,0,0.22)] border border-gray-800/80 h-full flex flex-col justify-between select-none transition-all duration-300">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
