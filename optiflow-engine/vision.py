@@ -19,6 +19,9 @@ RIGHT_EYE_INDICES = [33, 160, 158, 133, 153, 144]
 # Umbral anatómico para parpadeo real (ojo cerrado suele ser < 0.15)
 EAR_THRESHOLD = 0.17
 
+# Ventana deslizante reducida a 15 segundos para eliminar rápidamente ráfagas de parpadeo pasadas
+BPM_WINDOW_SECONDS = 15.0
+
 
 def euclidean_dist(p1: tuple, p2: tuple) -> float:
     """Calcula la distancia euclidiana entre dos puntos 2D."""
@@ -44,7 +47,7 @@ def calculate_ear(eye_points: list) -> float:
 
 
 class VisionEngine:
-    """Motor biométrico con cálculo de EAR, tasa de parpadeo y heurística dinámica calibrada."""
+    """Motor biométrico con cálculo de EAR, tasa de parpadeo reactiva y heurística dinámica."""
 
     def __init__(self, camera_index: int = 0, show_preview: bool = False):
         self.camera_index = camera_index
@@ -61,7 +64,7 @@ class VisionEngine:
             min_tracking_confidence=0.5
         )
 
-        # Historial de parpadeos y EAR
+        # Historial de parpadeos en ventana temporal reducida
         self.blink_timestamps = deque()
         self.is_eye_closed = False
         self.current_ear = 0.28
@@ -75,17 +78,16 @@ class VisionEngine:
 
     def _update_metrics(self, ear: float):
         """
-        Actualiza el estado de parpadeos, BPM y calcula nivel de fatiga con:
-        1. Umbral anatómico relajado (EAR >= 0.18) para activación confiable de descanso.
-        2. Factor de Recuperación acelerado (decay = 1.0 * dt) para respuesta visual rápida.
-        3. Límite de incremento en parpadeo rápido (máx 1.5 * dt) para evitar saltos a 100%.
-        4. Límites dinámicos [0.0, 100.0].
+        Actualiza métricas en tiempo real con:
+        1. Prioridad de Recuperación (Override Instantáneo): Si smooth_ear > 0.18, descanso inmediato.
+        2. Ventana de memoria reducida a 15 segundos para olvidar tics/sprints de parpadeo rápidamente.
+        3. Límites dinámicos estrictos [0.0, 100.0].
         """
         now = time.time()
         dt = min(1.0, max(0.001, now - self.last_update_time))
         self.last_update_time = now
 
-        # Suavizado exponencial del EAR para filtrar ruido de cámara
+        # Suavizado exponencial del EAR para mitigar ruido y jitter de cámara
         self.smooth_ear = round(0.85 * self.smooth_ear + 0.15 * ear, 3)
         self.current_ear = self.smooth_ear
 
@@ -97,38 +99,42 @@ class VisionEngine:
         else:
             self.is_eye_closed = False
 
-        # Depurar parpadeos mayores a 60 segundos (ventana deslizante)
-        while self.blink_timestamps and now - self.blink_timestamps[0] > 60:
+        # Depurar parpadeos mayores a la ventana reducida (15 segundos)
+        while self.blink_timestamps and (now - self.blink_timestamps[0] > BPM_WINDOW_SECONDS):
             self.blink_timestamps.popleft()
 
-        # Cálculo de BPM en ventana deslizante
+        # Cálculo de BPM extrapolado a 60 segundos desde la ventana de 15 segundos
         count = len(self.blink_timestamps)
-        self.blink_rate = max(count, 12) if count > 0 else 16
+        if count > 0:
+            # Extrapolación precisa: (parpadeos en 15s) * (60s / 15s) = count * 4
+            extrapolated_bpm = int(round(count * (60.0 / BPM_WINDOW_SECONDS)))
+            self.blink_rate = max(10, min(60, extrapolated_bpm))
+        else:
+            self.blink_rate = 16
 
-        # Heurística dinámica de fatiga ocular calibrada:
-        # Condición de descanso anatómico: parpadeo saludable (14-25 BPM) y ojo abierto (EAR >= 0.18)
-        if 14 <= self.blink_rate <= 25 and self.current_ear >= 0.18:
-            # Recuperación acelerada: ~60% por minuto de descanso ocular relajado
+        # -------------------------------------------------------------
+        # HEURÍSTICA DE FATIGA EN TIEMPO REAL:
+        # PRIORIDAD DE RECUPERACIÓN (OVERRIDE INSTANTÁNEO):
+        # Si el ojo está abierto (smooth_ear > 0.18), se activa el decay
+        # inmediatamente, ignorando cualquier ráfaga o sprint previo de BPM.
+        # -------------------------------------------------------------
+        if self.smooth_ear > 0.18:
             decay = 1.0 * dt
             self.fatigue_level -= decay
         else:
-            # Incremento progresivo y acotado ante esfuerzo visual
+            # Ojo cerrado o con párpados caídos (EAR <= 0.18)
             strain = 0.0
 
-            # Baja tasa de parpadeo (< 14 BPM, fatiga por fijación estática)
-            if self.blink_rate < 14:
-                strain += min(1.5, (14.0 - self.blink_rate) * 0.08) * dt
+            # Esfuerzo por párpado caído / cierre sostenido
+            ear_deficit = (0.18 - self.smooth_ear) * 5.0
+            strain += min(1.5, ear_deficit) * dt
 
-            # Alta tasa de parpadeo (> 25 BPM, tic o irritación ocular):
-            # Se limita el incremento máximo a un valor razonable (máx +1.5 * dt)
-            elif self.blink_rate > 25:
+            # Penalización por frecuencia anormal solo cuando el ojo está en fatiga/cerrándose
+            if self.blink_rate > 25:
                 fast_blink_strain = (self.blink_rate - 25.0) * 0.04
                 strain += min(1.5, fast_blink_strain) * dt
-
-            # Apertura ocular reducida (< 0.18, pesadez palpebral severa)
-            if self.current_ear < 0.18:
-                ear_strain = (0.18 - self.current_ear) * 5.0
-                strain += min(1.5, ear_strain) * dt
+            elif self.blink_rate < 14:
+                strain += min(1.5, (14.0 - self.blink_rate) * 0.06) * dt
 
             self.fatigue_level += strain
 
