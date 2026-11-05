@@ -42,6 +42,7 @@ export interface UseTelemetryReturn {
   historyData: HistoryData | null
   isConnected: boolean
   error: string | null
+  sendCommand: (cmd: { action: string; [key: string]: unknown }) => void
 }
 
 const DEFAULT_TELEMETRY: TelemetryData = {
@@ -148,7 +149,18 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
     }
   }, [url])
 
-  return { data, historyData, isConnected, error }
+  const sendCommand = (cmd: { action: string; [key: string]: unknown }): void => {
+    try {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify(cmd))
+        console.log('[WebSocket] Comando enviado al backend Python:', cmd)
+      }
+    } catch (err) {
+      console.error('[WebSocket] Error enviando comando:', err)
+    }
+  }
+
+  return { data, historyData, isConnected, error, sendCommand }
 }
 
 export default useTelemetry

@@ -18,6 +18,7 @@ export interface UseBiometricsReturn {
   historyData: HistoryData | null
   isConnected: boolean
   error: string | null
+  sendAction: (action: 'pause' | 'resume') => void
 }
 
 /**
@@ -25,7 +26,7 @@ export interface UseBiometricsReturn {
  * proporcionando métricas en tiempo real y contador de sesión continuo.
  */
 export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometricsReturn {
-  const { data: telemetry, historyData, isConnected, error } = useTelemetry(url)
+  const { data: telemetry, historyData, isConnected, error, sendCommand } = useTelemetry(url)
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0)
 
   // Temporizador dinámico para calcular tiempo de sesión en pantalla
@@ -65,12 +66,17 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
     }
   }, [telemetry, sessionTime, nextBreakMinutes, isConnected])
 
+  const sendAction = (action: 'pause' | 'resume'): void => {
+    sendCommand({ action })
+  }
+
   return {
     biometrics,
     telemetry,
     historyData,
     isConnected,
-    error
+    error,
+    sendAction
   }
 }
 

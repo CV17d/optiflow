@@ -11,7 +11,7 @@ import useBiometrics from '../../hooks/useBiometrics'
 import type { AppUsageStat } from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
-  const { biometrics, historyData } = useBiometrics()
+  const { biometrics, historyData, sendAction } = useBiometrics()
   const [isMonitoring, setIsMonitoring] = useState<boolean>(true)
   const [appUsageStats, setAppUsageStats] = useState<AppUsageStat[]>([])
   const pausedFatigueRef = useRef<number>(18)
@@ -65,13 +65,14 @@ export const Dashboard: React.FC = () => {
       if (window.electron?.ipcRenderer) {
         window.electron.ipcRenderer.send('toggle-monitoring', next)
       }
+      sendAction(next ? 'resume' : 'pause')
       return next
     })
   }
 
   const handleTriggerBreak = (): void => {
     if (window.electron?.ipcRenderer) {
-      window.electron.ipcRenderer.send('trigger-break-notification')
+      window.electron.ipcRenderer.send('trigger-break')
     }
   }
 

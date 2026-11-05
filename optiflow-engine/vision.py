@@ -54,6 +54,7 @@ class VisionEngine:
         self.show_preview = show_preview
         self.cap = None
         self.is_running = False
+        self.is_paused = False
         self.thread = None
 
         self.mp_face_mesh = mp.solutions.face_mesh
@@ -142,16 +143,29 @@ class VisionEngine:
         self.fatigue_level = min(100.0, max(0.0, self.fatigue_level))
 
     def _process_loop(self):
-        """Bucle de inferencia continuo en segundo plano."""
-        self.cap = cv2.VideoCapture(self.camera_index)
-        if not self.cap.isOpened():
-            logging.warning(f"No se pudo abrir la cámara {self.camera_index}. Modo simulación fallback activo.")
-            return
-
+        """Bucle de inferencia continuo en segundo plano con soporte de pausa física de hardware."""
         logging.info("Motor de visión OptiFlow iniciado activamente.")
 
         try:
             while self.is_running:
+                if self.is_paused:
+                    # Si el monitoreo está pausado, liberar explícitamente el hardware de la cámara (apagar LED)
+                    if self.cap is not None and self.cap.isOpened():
+                        self.cap.release()
+                        self.cap = None
+                        logging.info("[VisionEngine] Hardware de cámara liberado (LED apagado) por pausa de monitoreo.")
+                    time.sleep(0.1)
+                    continue
+
+                # Si no está en pausa pero la cámara no está instanciada, reactivarla
+                if self.cap is None or not self.cap.isOpened():
+                    self.cap = cv2.VideoCapture(self.camera_index)
+                    if not self.cap.isOpened():
+                        logging.warning(f"No se pudo abrir la cámara {self.camera_index}. Reintentando...")
+                        time.sleep(1.0)
+                        continue
+                    logging.info(f"[VisionEngine] Hardware de cámara {self.camera_index} activado (LED encendido).")
+
                 ret, frame = self.cap.read()
                 if not ret:
                     time.sleep(0.05)
@@ -179,6 +193,29 @@ class VisionEngine:
                         break
         finally:
             self.release()
+
+    def pause(self):
+        """Pausa el monitoreo y apaga el hardware de la cámara liberando el recurso explícitamente."""
+        self.is_paused = True
+        if self.cap is not None and self.cap.isOpened():
+            self.cap.release()
+            self.cap = None
+        logging.info("[VisionEngine] Comando pause ejecutado: self.cap.release() completado (LED apagado).")
+
+    def resume(self):
+        """Reanuda el monitoreo y re-instancia el hardware de la cámara."""
+        self.is_paused = False
+        if self.cap is None or not self.cap.isOpened():
+            self.cap = cv2.VideoCapture(self.camera_index)
+        logging.info(f"[VisionEngine] Comando resume ejecutado: cv2.VideoCapture({self.camera_index}) iniciado.")
+
+    def handle_command(self, cmd: dict):
+        """Procesa comandos de control de hardware provenientes de WebSocket o IPC."""
+        action = cmd.get("action")
+        if action == "pause":
+            self.pause()
+        elif action == "resume":
+            self.resume()
 
     def start_background(self):
         """Inicia el procesamiento de visión en un hilo demonio desacoplado."""

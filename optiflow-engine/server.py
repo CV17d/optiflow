@@ -1,6 +1,8 @@
 import asyncio
 import json
 import logging
+import sys
+import threading
 import time
 import websockets
 from vision import VisionEngine
@@ -60,8 +62,21 @@ async def handler(websocket):
         current_data = get_fused_payload()
         await websocket.send(json.dumps(current_data))
 
-        async for _ in websocket:
-            pass
+        async for message in websocket:
+            try:
+                cmd = json.loads(message)
+                action = cmd.get("action")
+                if action in ("pause", "resume"):
+                    vision_engine.handle_command(cmd)
+                    status_response = {
+                        "type": "camera_status",
+                        "action": action,
+                        "is_paused": vision_engine.is_paused
+                    }
+                    await websocket.send(json.dumps(status_response))
+                    logging.info(f"Comando WebSocket '{action}' ejecutado para cliente {websocket.remote_address}")
+            except Exception as e:
+                logging.error(f"Error procesando mensaje entrante en WebSocket: {e}")
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
@@ -97,12 +112,34 @@ async def broadcast_telemetry():
         await asyncio.sleep(2)
 
 
+def listen_stdin_thread():
+    """Hilo para recibir comandos JSON enviados a través de stdin desde Electron (IPC nativo)."""
+    while True:
+        try:
+            line = sys.stdin.readline()
+            if not line:
+                break
+            line = line.strip()
+            if not line:
+                continue
+            cmd = json.loads(line)
+            action = cmd.get("action")
+            if action in ("pause", "resume"):
+                vision_engine.handle_command(cmd)
+                logging.info(f"[Stdin IPC] Comando '{action}' aplicado al hardware de la cámara.")
+        except Exception as e:
+            logging.error(f"Error procesando comando desde stdin: {e}")
+
+
 async def main():
     host = "0.0.0.0"
     port = 8765
 
     # Iniciar motor de visión biométrico en segundo plano
     vision_engine.start_background()
+
+    # Iniciar escucha de stdin para comandos directos de Electron
+    threading.Thread(target=listen_stdin_thread, daemon=True).start()
 
     async with websockets.serve(handler, host, port):
         logging.info(f"Servidor WebSocket OptiFlow escuchando en ws://localhost:{port} (0.0.0.0)")

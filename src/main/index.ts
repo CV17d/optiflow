@@ -7,6 +7,7 @@ import { DatabaseSync } from 'node:sqlite'
 import icon from '../../resources/icon.png?asset'
 
 let pythonProcess: ChildProcess | null = null
+let interceptWindow: BrowserWindow | null = null
 
 /**
  * Resuelve la ruta al ejecutable de Python dinámicamente según el entorno (Dev o Prod).
@@ -105,7 +106,7 @@ function startPythonBackend(): void {
     pythonProcess = spawn(binaryPath, [], {
       detached: false,
       windowsHide: true,
-      stdio: ['ignore', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe']
     })
 
     pythonProcess.stdout?.on('data', (data) => {
@@ -146,6 +147,55 @@ function stopPythonBackend(): void {
       console.error('[Main Process] Error cerrando el proceso de Python:', e)
     }
     pythonProcess = null
+  }
+}
+
+/**
+ * Abre la ventana modal de interceptación en pantalla completa (Modo Kiosco)
+ * para forzar la pausa activa y bloquear distracciones en el PC.
+ */
+function openInterceptWindow(): void {
+  if (interceptWindow && !interceptWindow.isDestroyed()) {
+    interceptWindow.focus()
+    return
+  }
+
+  interceptWindow = new BrowserWindow({
+    fullscreen: true,
+    kiosk: true,
+    alwaysOnTop: true,
+    frame: false,
+    skipTaskbar: true,
+    transparent: false,
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false
+    }
+  })
+
+  // Prioridad absoluta en la pila de ventanas (sobre la barra de tareas)
+  interceptWindow.setAlwaysOnTop(true, 'screen-saver')
+
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    interceptWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/intercept`)
+  } else {
+    interceptWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+      hash: 'intercept'
+    })
+  }
+
+  interceptWindow.on('closed', () => {
+    interceptWindow = null
+  })
+}
+
+/**
+ * Destruye la ventana Kiosk de interceptación y libera el equipo.
+ */
+function closeInterceptWindow(): void {
+  if (interceptWindow && !interceptWindow.isDestroyed()) {
+    interceptWindow.destroy()
+    interceptWindow = null
   }
 }
 
@@ -210,9 +260,30 @@ app.whenReady().then(() => {
     }
   })
 
-  // IPC para pausar/reanudar monitoreo
+  // IPC para activar bloqueo de pantalla Kiosk de Pausa Activa
+  ipcMain.on('trigger-break', () => {
+    console.log('[Main Process] Activando bloqueo Kiosk de Pausa Activa (/intercept)')
+    openInterceptWindow()
+  })
+
+  // IPC para finalizar pausa activa, autodestruir ventana Kiosk y liberar PC
+  ipcMain.on('end-break', () => {
+    console.log('[Main Process] Finalizando Pausa Activa: destruyendo ventana Kiosk')
+    closeInterceptWindow()
+  })
+
+  // IPC para pausar/reanudar monitoreo y apagar/encender hardware de cámara
   ipcMain.on('toggle-monitoring', (_, isMonitoring) => {
     console.log(`[Main Process] Estado de monitoreo biométrico: ${isMonitoring ? 'ACTIVO' : 'PAUSADO'}`)
+    if (pythonProcess && pythonProcess.stdin && !pythonProcess.stdin.destroyed) {
+      try {
+        const cmd = JSON.stringify({ action: isMonitoring ? 'resume' : 'pause' }) + '\n'
+        pythonProcess.stdin.write(cmd)
+        console.log(`[Main Process] Comando hardware '${isMonitoring ? 'resume' : 'pause'}' enviado a Python stdin`)
+      } catch (err) {
+        console.error('[Main Process] Error comunicando con pythonProcess.stdin:', err)
+      }
+    }
   })
 
   // IPC para consultar estadísticas de uso de aplicaciones desde SQLite

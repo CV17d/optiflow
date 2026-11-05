@@ -19,9 +19,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       return
     }
 
-    // Disparar Notificación Nativa de Windows vía IPC hacia el Main Process de Electron
+    // Disparar bloqueo Kiosk de Pausa Activa vía IPC hacia el Main Process de Electron
     if (window.electron?.ipcRenderer) {
-      window.electron.ipcRenderer.send('trigger-break-notification')
+      window.electron.ipcRenderer.send('trigger-break')
     } else if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('OptiFlow • Pausa Activa Ergonómica', {
         body: '¡Momento de descansar la vista! Mira a 6 metros por 20 segundos.'
