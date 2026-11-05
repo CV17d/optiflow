@@ -5,6 +5,7 @@ export interface VisualHealthIndexWidgetProps {
   status?: string
   degradation?: string
   score?: number
+  averageFatigue?: number
 }
 
 export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = ({

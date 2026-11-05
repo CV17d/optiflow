@@ -1,8 +1,10 @@
 import React from 'react'
+import type { HistoricalEarRecord } from '../../hooks/useTelemetry'
 
 export interface TemporalCorrelationWidgetProps {
   ear?: string
   distance?: string
+  earHistory?: HistoricalEarRecord[]
 }
 
 export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps> = ({

@@ -1,9 +1,11 @@
 import React from 'react'
 import Card from '../ui/Card'
+import type { AppUsageStat } from '../../hooks/useTelemetry'
 
 export interface PauseRegistryWidgetProps {
   adherence?: string
   postponed?: string
+  appUsageStats?: AppUsageStat[]
 }
 
 const barData = [

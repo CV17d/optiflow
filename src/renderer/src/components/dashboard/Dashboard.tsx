@@ -10,7 +10,7 @@ import TemporalCorrelationWidget from './TemporalCorrelationWidget'
 import useTelemetry from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
-  const { data: telemetry } = useTelemetry()
+  const { data: telemetry, historyData } = useTelemetry()
 
   return (
     <div className="w-full max-w-[1600px] mx-auto flex flex-col">
@@ -42,10 +42,15 @@ export const Dashboard: React.FC = () => {
 
       {/* Fila Inferior: Widgets de Salud Visual, Registro de Pausas y Correlación */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        <VisualHealthIndexWidget />
-        <PauseRegistryWidget />
+        <VisualHealthIndexWidget
+          averageFatigue={historyData?.average_fatigue}
+        />
+        <PauseRegistryWidget
+          appUsageStats={historyData?.app_usage_stats}
+        />
         <TemporalCorrelationWidget
           ear={typeof telemetry.ear === 'number' ? telemetry.ear.toFixed(2) : '0.26'}
+          earHistory={historyData?.historical_ear}
         />
       </div>
     </div>
