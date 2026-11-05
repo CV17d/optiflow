@@ -37,8 +37,29 @@ async def handler(websocket):
     CONNECTED_CLIENTS.add(websocket)
     logging.info(f"Cliente conectado: {websocket.remote_address}")
     try:
+        # Enviar estadísticas históricas agregadas desde SQLite antes del streaming en vivo
+        avg_fatigue = await asyncio.to_thread(db_manager.get_average_fatigue)
+        app_stats = await asyncio.to_thread(db_manager.get_app_usage_stats)
+        ear_history = await asyncio.to_thread(db_manager.get_historical_ear)
+
+        initial_history_payload = {
+            "type": "initial_history",
+            "historical_stats": {
+                "average_fatigue": avg_fatigue,
+                "app_usage_stats": app_stats,
+                "historical_ear": ear_history
+            },
+            "average_fatigue": avg_fatigue,
+            "app_usage_stats": app_stats,
+            "historical_ear": ear_history
+        }
+        await websocket.send(json.dumps(initial_history_payload))
+        logging.info(f"Estadísticas históricas enviadas al cliente {websocket.remote_address}")
+
+        # Enviar estado biométrico y contextual actual al conectarse
         current_data = get_fused_payload()
         await websocket.send(json.dumps(current_data))
+
         async for _ in websocket:
             pass
     except websockets.exceptions.ConnectionClosed:
