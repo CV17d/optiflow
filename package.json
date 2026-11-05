@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "OptiFlow Desktop Application",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "OptiFlow Team",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
@@ -51,5 +51,21 @@
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3",
     "vite": "^7.2.6"
+  },
+  "build": {
+    "appId": "com.optiflow.app",
+    "productName": "OptiFlow",
+    "extraResources": [
+      {
+        "from": "optiflow-engine/dist/",
+        "to": "optiflow-engine/dist/",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "executableName": "OptiFlow"
+    }
   }
 }
