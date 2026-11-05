@@ -7,6 +7,8 @@ out/
 # Python venv and artifacts
 venv/
 **/venv/
+.venv/
+**/.venv/
 __pycache__/
 *.py[cod]
 *$py.class

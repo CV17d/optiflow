@@ -1,5 +1,10 @@
 import logging
-import pygetwindow as gw
+import sys
+
+try:
+    import pygetwindow as gw  # type: ignore
+except ImportError:
+    gw = None
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,15 +33,32 @@ class AppTracker:
 
     def get_raw_active_title(self) -> str:
         """Obtiene el título de la ventana activa en Windows en tiempo real."""
-        try:
-            window = gw.getActiveWindow()
-            if window and hasattr(window, 'title') and window.title:
-                return window.title.strip()
-            title = gw.getActiveWindowTitle()
-            if title and isinstance(title, str):
-                return title.strip()
-        except Exception as e:
-            logging.debug(f"Error consultando ventana activa en Windows: {e}")
+        if gw:
+            try:
+                window = gw.getActiveWindow()
+                if window and hasattr(window, 'title') and window.title:
+                    return window.title.strip()
+                title = gw.getActiveWindowTitle()
+                if title and isinstance(title, str):
+                    return title.strip()
+            except Exception as e:
+                logging.debug(f"Error consultando ventana activa con pygetwindow: {e}")
+
+        # Fallback nativo para Windows usando ctypes (sin requerir dependencias externas)
+        if sys.platform == "win32":
+            try:
+                import ctypes
+                user32 = ctypes.windll.user32
+                hwnd = user32.GetForegroundWindow()
+                if hwnd:
+                    length = user32.GetWindowTextLengthW(hwnd)
+                    if length > 0:
+                        buff = ctypes.create_unicode_buffer(length + 1)
+                        user32.GetWindowTextW(hwnd, buff, length + 1)
+                        return buff.value.strip()
+            except Exception as e:
+                logging.debug(f"Error consultando ventana activa con ctypes nativo: {e}")
+
         return ""
 
     def get_active_app(self) -> str:
