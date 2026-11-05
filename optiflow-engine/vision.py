@@ -16,7 +16,8 @@ logging.basicConfig(
 LEFT_EYE_INDICES = [362, 385, 387, 263, 373, 380]
 RIGHT_EYE_INDICES = [33, 160, 158, 133, 153, 144]
 
-EAR_THRESHOLD = 0.20
+# Umbral anatómico para parpadeo real (ojo cerrado suele ser < 0.15)
+EAR_THRESHOLD = 0.17
 
 
 def euclidean_dist(p1: tuple, p2: tuple) -> float:
@@ -43,7 +44,7 @@ def calculate_ear(eye_points: list) -> float:
 
 
 class VisionEngine:
-    """Motor biométrico con cálculo de EAR, tasa de parpadeo y heurística dinámica de fatiga."""
+    """Motor biométrico con cálculo de EAR, tasa de parpadeo y heurística dinámica calibrada."""
 
     def __init__(self, camera_index: int = 0, show_preview: bool = False):
         self.camera_index = camera_index
@@ -75,9 +76,10 @@ class VisionEngine:
     def _update_metrics(self, ear: float):
         """
         Actualiza el estado de parpadeos, BPM y calcula nivel de fatiga con:
-        1. Factor de Recuperación (Decay) en rangos saludables.
-        2. Incremento suave ante esfuerzo visual sostenido.
-        3. Límites estrictos [0.0, 100.0].
+        1. Umbral anatómico relajado (EAR >= 0.18) para activación confiable de descanso.
+        2. Factor de Recuperación acelerado (decay = 1.0 * dt) para respuesta visual rápida.
+        3. Límite de incremento en parpadeo rápido (máx 1.5 * dt) para evitar saltos a 100%.
+        4. Límites dinámicos [0.0, 100.0].
         """
         now = time.time()
         dt = min(1.0, max(0.001, now - self.last_update_time))
@@ -103,26 +105,30 @@ class VisionEngine:
         count = len(self.blink_timestamps)
         self.blink_rate = max(count, 12) if count > 0 else 16
 
-        # Heurística de fatiga ocular:
-        # Factor de Recuperación (Decay): si el parpadeo es saludable (14-25 BPM) y el ojo está abierto (EAR >= 0.24)
-        if 14 <= self.blink_rate <= 25 and self.current_ear >= 0.24:
-            # Recuperación ocular gradual (~12% por minuto de descanso)
-            decay = 0.20 * dt
+        # Heurística dinámica de fatiga ocular calibrada:
+        # Condición de descanso anatómico: parpadeo saludable (14-25 BPM) y ojo abierto (EAR >= 0.18)
+        if 14 <= self.blink_rate <= 25 and self.current_ear >= 0.18:
+            # Recuperación acelerada: ~60% por minuto de descanso ocular relajado
+            decay = 1.0 * dt
             self.fatigue_level -= decay
         else:
-            # Incremento progresivo ante esfuerzo visual prolongado
+            # Incremento progresivo y acotado ante esfuerzo visual
             strain = 0.0
 
-            # Baja tasa de parpadeo (< 14 BPM, tensión ocular por pantalla)
+            # Baja tasa de parpadeo (< 14 BPM, fatiga por fijación estática)
             if self.blink_rate < 14:
-                strain += (14.0 - self.blink_rate) * 0.06 * dt
-            # Alta tasa de parpadeo (> 25 BPM, irritación o sequedad ocular)
-            elif self.blink_rate > 25:
-                strain += (self.blink_rate - 25.0) * 0.04 * dt
+                strain += min(1.5, (14.0 - self.blink_rate) * 0.08) * dt
 
-            # Apertura ocular reducida (< 0.22, pesadez palpebral)
-            if self.current_ear < 0.22:
-                strain += (0.22 - self.current_ear) * 1.8 * dt
+            # Alta tasa de parpadeo (> 25 BPM, tic o irritación ocular):
+            # Se limita el incremento máximo a un valor razonable (máx +1.5 * dt)
+            elif self.blink_rate > 25:
+                fast_blink_strain = (self.blink_rate - 25.0) * 0.04
+                strain += min(1.5, fast_blink_strain) * dt
+
+            # Apertura ocular reducida (< 0.18, pesadez palpebral severa)
+            if self.current_ear < 0.18:
+                ear_strain = (0.18 - self.current_ear) * 5.0
+                strain += min(1.5, ear_strain) * dt
 
             self.fatigue_level += strain
 
