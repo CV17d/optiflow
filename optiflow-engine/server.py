@@ -18,7 +18,6 @@ app_tracker = AppTracker()
 db_manager = DBManager()
 
 
-
 def get_fused_payload() -> dict:
     """Combina la telemetría biométrica de la cámara con la del sistema operativo."""
     bio_data = vision_engine.get_telemetry_payload()
@@ -38,19 +37,10 @@ async def handler(websocket):
     CONNECTED_CLIENTS.add(websocket)
     logging.info(f"Cliente conectado: {websocket.remote_address}")
     try:
-        # Obtener estadísticas históricas de SQLite para el estado inicial de la sesión
-        session_stats = await asyncio.to_thread(db_manager.get_session_stats)
-        initial_payload = {
-            **get_fused_payload(),
-            "session_stats": session_stats,
-            "avg_fatigue": session_stats.get("avg_fatigue", 18.0),
-            "most_used_app": session_stats.get("most_used_app", "VS Code")
-        }
-        await websocket.send(json.dumps(initial_payload))
-        logging.info(f"Payload inicial con estadísticas de sesión enviado: {initial_payload}")
+        current_data = get_fused_payload()
+        await websocket.send(json.dumps(current_data))
         async for _ in websocket:
             pass
-
     except websockets.exceptions.ConnectionClosed:
         pass
     finally:
@@ -61,25 +51,20 @@ async def handler(websocket):
 async def broadcast_telemetry():
     """Bucle infinito que emite métricas biométricas y del SO fusionadas en tiempo real."""
     last_db_save_time = 0.0
+    db_save_interval = 10.0  # Guardar en SQLite cada 10 segundos para no saturar el I/O del disco
 
     while True:
         payload = get_fused_payload()
         print(f"Emitiendo: {payload}", flush=True)
 
-        current_time = time.time()
-        if current_time - last_db_save_time >= 10.0:
-            last_db_save_time = current_time
-            # Registro asíncrono en SQLite para no saturar disco ni bloquear el loop
-            asyncio.create_task(
-                asyncio.to_thread(
-                    db_manager.insert_telemetry,
-                    payload["fatigue_level"],
-                    payload["blink_rate"],
-                    payload["ear"],
-                    payload["active_app"]
-                )
-            )
-            logging.info("Instantánea de telemetría guardada en la base de datos local SQLite.")
+        now = time.time()
+        if now - last_db_save_time >= db_save_interval:
+            try:
+                await asyncio.to_thread(db_manager.insert_payload, payload)
+                last_db_save_time = now
+                logging.info(f"Registro de telemetría persistido en SQLite: {payload}")
+            except Exception as e:
+                logging.error(f"Error al persistir telemetría en SQLite: {e}")
 
         if CONNECTED_CLIENTS:
             message = json.dumps(payload)
@@ -89,7 +74,6 @@ async def broadcast_telemetry():
             )
             logging.info(f"Emitiendo telemetría multisensorial ({len(CONNECTED_CLIENTS)} clientes): {payload}")
         await asyncio.sleep(2)
-
 
 
 async def main():
