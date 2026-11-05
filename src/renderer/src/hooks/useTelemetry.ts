@@ -17,8 +17,29 @@ export interface TelemetryData {
   most_used_app?: string
 }
 
+export interface AppUsageStat {
+  app: string
+  count: number
+  percentage: number
+}
+
+export interface HistoricalEarRecord {
+  id: number
+  timestamp: string
+  ear: number
+  fatigue_level?: number
+  blink_rate?: number
+}
+
+export interface HistoryData {
+  average_fatigue: number
+  app_usage_stats: AppUsageStat[]
+  historical_ear: HistoricalEarRecord[]
+}
+
 export interface UseTelemetryReturn {
   data: TelemetryData
+  historyData: HistoryData | null
   isConnected: boolean
   error: string | null
 }
@@ -31,8 +52,15 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   ear: 0.28
 }
 
+const DEFAULT_HISTORY: HistoryData = {
+  average_fatigue: 20,
+  app_usage_stats: [],
+  historical_ear: []
+}
+
 export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryReturn {
   const [data, setData] = useState<TelemetryData>(DEFAULT_TELEMETRY)
+  const [historyData, setHistoryData] = useState<HistoryData | null>(DEFAULT_HISTORY)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -56,12 +84,30 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
         ws.onmessage = (event: MessageEvent) => {
           if (!isMounted) return
           try {
-            const parsed = JSON.parse(event.data) as TelemetryData
-            console.log('Datos recibidos:', parsed)
-            setData((prev) => ({
-              ...prev,
-              ...parsed
-            }))
+            const parsed = JSON.parse(event.data)
+
+            // Detectar si el mensaje entrante es el paquete inicial de historial de SQLite
+            if (parsed.type === 'initial_history' || parsed.event === 'initial_history') {
+              const stats = parsed.historical_stats || parsed
+              const parsedHistory: HistoryData = {
+                average_fatigue: Number(stats.average_fatigue ?? parsed.average_fatigue ?? 0),
+                app_usage_stats: Array.isArray(stats.app_usage_stats)
+                  ? stats.app_usage_stats
+                  : parsed.app_usage_stats || [],
+                historical_ear: Array.isArray(stats.historical_ear)
+                  ? stats.historical_ear
+                  : parsed.historical_ear || []
+              }
+              console.log('Historial inicial de SQLite recibido:', parsedHistory)
+              setHistoryData(parsedHistory)
+            } else {
+              // Telemetría normal en tiempo real
+              console.log('Telemetría en tiempo real recibida:', parsed)
+              setData((prev) => ({
+                ...prev,
+                ...parsed
+              }))
+            }
           } catch (err) {
             console.error('Error al parsear telemetría WebSocket:', err)
           }
@@ -102,7 +148,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
     }
   }, [url])
 
-  return { data, isConnected, error }
+  return { data, historyData, isConnected, error }
 }
 
 export default useTelemetry
