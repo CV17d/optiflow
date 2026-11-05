@@ -1,13 +1,97 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import { existsSync } from 'fs'
+import { spawn, ChildProcess } from 'child_process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+let pythonProcess: ChildProcess | null = null
+
+/**
+ * Resuelve la ruta al ejecutable de Python dinámicamente según el entorno (Dev o Prod).
+ */
+function getPythonBinaryPath(): string {
+  const devPath = join(app.getAppPath(), 'optiflow-engine', 'dist', 'server.exe')
+  const prodResourcePath = join(process.resourcesPath, 'optiflow-engine', 'dist', 'server.exe')
+  const altProdPath = join(process.resourcesPath, 'server.exe')
+
+  if (!app.isPackaged && existsSync(devPath)) {
+    return devPath
+  }
+  if (existsSync(prodResourcePath)) {
+    return prodResourcePath
+  }
+  if (existsSync(altProdPath)) {
+    return altProdPath
+  }
+  return devPath
+}
+
+/**
+ * Inicia el binario de Python silenciosamente en segundo plano.
+ */
+function startPythonBackend(): void {
+  const binaryPath = getPythonBinaryPath()
+  console.log(`[Main Process] Iniciando motor Python desde: ${binaryPath}`)
+
+  if (!existsSync(binaryPath)) {
+    console.error(`[Main Process] No se encontró el binario del motor de Python en: ${binaryPath}`)
+    return
+  }
+
+  try {
+    pythonProcess = spawn(binaryPath, [], {
+      detached: false,
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'pipe']
+    })
+
+    pythonProcess.stdout?.on('data', (data) => {
+      console.log(`[Python Engine]: ${data.toString().trim()}`)
+    })
+
+    pythonProcess.stderr?.on('data', (data) => {
+      console.error(`[Python Engine Error]: ${data.toString().trim()}`)
+    })
+
+    pythonProcess.on('error', (err) => {
+      console.error('[Main Process] Error al instanciar el motor de Python:', err)
+    })
+
+    pythonProcess.on('exit', (code, signal) => {
+      console.log(`[Main Process] Motor de Python finalizado (código: ${code}, señal: ${signal})`)
+      pythonProcess = null
+    })
+  } catch (err) {
+    console.error('[Main Process] Excepción al lanzar el proceso de Python:', err)
+  }
+}
+
+/**
+ * Termina el proceso hijo de Python limpiamente para evitar procesos huérfanos en el SO.
+ */
+function stopPythonBackend(): void {
+  if (pythonProcess && pythonProcess.pid) {
+    console.log(`[Main Process] Finalizando proceso del motor de Python (PID: ${pythonProcess.pid})...`)
+    try {
+      if (process.platform === 'win32') {
+        // En Windows, taskkill /pid /T /F asegura terminar el proceso y todos sus subprocesos
+        spawn('taskkill', ['/pid', pythonProcess.pid.toString(), '/T', '/F'])
+      } else {
+        pythonProcess.kill('SIGTERM')
+      }
+    } catch (e) {
+      console.error('[Main Process] Error cerrando el proceso de Python:', e)
+    }
+    pythonProcess = null
+  }
+}
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 800,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -35,16 +119,16 @@ function createWindow(): void {
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+// Inicialización de Electron
 app.whenReady().then(() => {
+  // Iniciar silenciosamente el backend de Python
+  startPythonBackend()
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
@@ -55,20 +139,22 @@ app.whenReady().then(() => {
   createWindow()
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// Limpieza garantizada del proceso hijo en todos los eventos de cierre
 app.on('window-all-closed', () => {
+  stopPythonBackend()
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+app.on('will-quit', () => {
+  stopPythonBackend()
+})
+
+app.on('before-quit', () => {
+  stopPythonBackend()
+})
