@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
 import { join } from 'path'
 import { existsSync } from 'fs'
 import { spawn, ChildProcess } from 'child_process'
@@ -135,6 +135,23 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // IPC para Notificación Nativa de Windows al probar pausa activa
+  ipcMain.on('trigger-break-notification', () => {
+    console.log('[Main Process] Disparando Notificación Nativa de Pausa Activa')
+    if (Notification.isSupported()) {
+      new Notification({
+        title: 'OptiFlow • Pausa Activa Ergonómica',
+        body: '¡Momento de descansar la vista! Mira a 6 metros durante 20 segundos (Regla 20-20-20).',
+        icon
+      }).show()
+    }
+  })
+
+  // IPC para pausar/reanudar monitoreo
+  ipcMain.on('toggle-monitoring', (_, isMonitoring) => {
+    console.log(`[Main Process] Estado de monitoreo biométrico: ${isMonitoring ? 'ACTIVO' : 'PAUSADO'}`)
+  })
 
   createWindow()
 
