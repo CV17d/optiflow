@@ -4,13 +4,15 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   getAppUsageStats: (): Promise<unknown> => ipcRenderer.invoke('get-app-usage-stats'),
-  getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats')
+  getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
+  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data')
 }
 
 const extendedElectron = {
   ...electronAPI,
   getAppUsageStats: (): Promise<unknown> => ipcRenderer.invoke('get-app-usage-stats'),
-  getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats')
+  getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
+  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
