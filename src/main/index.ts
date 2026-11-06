@@ -1,6 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
 import { join } from 'path'
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync, chmodSync } from 'fs'
 import { spawn, spawnSync, ChildProcess } from 'child_process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { DatabaseSync } from 'node:sqlite'
@@ -10,23 +10,62 @@ let pythonProcess: ChildProcess | null = null
 let interceptWindow: BrowserWindow | null = null
 
 /**
- * Resuelve la ruta al ejecutable de Python dinámicamente según el entorno (Dev o Prod).
+ * Resuelve la ruta al ejecutable de Python dinámicamente según la plataforma (Windows, macOS, Linux)
+ * y el entorno de ejecución (Desarrollo o Producción empaquetada con electron-builder).
  */
 function getPythonBinaryPath(): string {
-  const devPath = join(app.getAppPath(), 'optiflow-engine', 'dist', 'server.exe')
-  const prodResourcePath = join(process.resourcesPath, 'optiflow-engine', 'dist', 'server.exe')
-  const altProdPath = join(process.resourcesPath, 'server.exe')
+  const isWin = process.platform === 'win32'
+  const binaryName = isWin ? 'optiflow-engine.exe' : 'optiflow-engine'
 
-  if (!app.isPackaged && existsSync(devPath)) {
-    return devPath
+  // Rutas en producción empaquetada (extraResources: resources/backend/)
+  const prodResourceBackend = join(process.resourcesPath, 'resources', 'backend', binaryName)
+  const prodBackend = join(process.resourcesPath, 'backend', binaryName)
+  const prodDirect = join(process.resourcesPath, binaryName)
+  const legacyProdServer = join(process.resourcesPath, 'optiflow-engine', 'dist', isWin ? 'server.exe' : 'server')
+
+  // Rutas en desarrollo local
+  const devResourceBackend = join(app.getAppPath(), 'resources', 'backend', binaryName)
+  const devDistEngine = join(app.getAppPath(), 'optiflow-engine', 'dist', binaryName)
+  const devLegacyServer = join(app.getAppPath(), 'optiflow-engine', 'dist', isWin ? 'server.exe' : 'server')
+
+  let resolvedPath = ''
+
+  if (app.isPackaged) {
+    if (existsSync(prodResourceBackend)) {
+      resolvedPath = prodResourceBackend
+    } else if (existsSync(prodBackend)) {
+      resolvedPath = prodBackend
+    } else if (existsSync(prodDirect)) {
+      resolvedPath = prodDirect
+    } else if (existsSync(legacyProdServer)) {
+      resolvedPath = legacyProdServer
+    }
+  } else {
+    if (existsSync(devResourceBackend)) {
+      resolvedPath = devResourceBackend
+    } else if (existsSync(devDistEngine)) {
+      resolvedPath = devDistEngine
+    } else if (existsSync(devLegacyServer)) {
+      resolvedPath = devLegacyServer
+    }
   }
-  if (existsSync(prodResourcePath)) {
-    return prodResourcePath
+
+  // Fallback seguro si aún no se ha compilado o está en resources/backend
+  if (!resolvedPath) {
+    resolvedPath = app.isPackaged ? prodResourceBackend : devResourceBackend
   }
-  if (existsSync(altProdPath)) {
-    return altProdPath
+
+  // En macOS (darwin) o Linux, otorgar permisos de ejecución (chmod +x / 0o755)
+  if (!isWin && existsSync(resolvedPath)) {
+    try {
+      chmodSync(resolvedPath, 0o755)
+      console.log(`[Main Process] Permisos de ejecución (chmod +x) aplicados a: ${resolvedPath}`)
+    } catch (err) {
+      console.warn(`[Main Process] Advertencia al aplicar chmod +x en ${resolvedPath}:`, err)
+    }
   }
-  return devPath
+
+  return resolvedPath
 }
 
 /**
@@ -34,7 +73,7 @@ function getPythonBinaryPath(): string {
  */
 function getDatabasePath(): string {
   const devPath = join(app.getAppPath(), 'optiflow-engine', 'optiflow_local.db')
-  const prodResourcePath = join(process.resourcesPath, 'optiflow-engine', 'dist', 'optiflow_local.db')
+  const prodResourcePath = join(process.resourcesPath, 'resources', 'backend', 'optiflow_local.db')
   const altProdPath = join(process.resourcesPath, 'optiflow_local.db')
 
   if (!app.isPackaged && existsSync(devPath)) {
@@ -660,13 +699,28 @@ function restartBreakTimer(): void {
 }
 
 /**
- * Limpia instancias huérfanas previas de server.exe para evitar colisiones en el puerto 8765.
+ * Limpia instancias huérfanas previas del motor para evitar colisiones en el puerto 8765.
  */
 function cleanOrphanedPythonProcesses(): void {
   if (process.platform === 'win32') {
     try {
+      spawnSync('taskkill', ['/IM', 'optiflow-engine.exe', '/T', '/F'], {
+        windowsHide: true,
+        stdio: 'ignore'
+      })
       spawnSync('taskkill', ['/IM', 'server.exe', '/T', '/F'], {
         windowsHide: true,
+        stdio: 'ignore'
+      })
+    } catch {
+      // Silencioso si no había instancias previas
+    }
+  } else {
+    try {
+      spawnSync('pkill', ['-f', 'optiflow-engine'], {
+        stdio: 'ignore'
+      })
+      spawnSync('pkill', ['-f', 'server'], {
         stdio: 'ignore'
       })
     } catch {

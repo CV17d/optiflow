@@ -7,8 +7,9 @@ out/
 .vscode/
 .idea/
 
-# PyInstaller specs
-*.spec
+# PyInstaller binary outputs
+resources/backend/*
+!resources/backend/.gitkeep
 
 # Python venv and artifacts
 venv/

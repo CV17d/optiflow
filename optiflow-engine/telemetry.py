@@ -1,5 +1,6 @@
 import logging
 import os
+import platform
 import subprocess
 import sys
 
@@ -28,17 +29,19 @@ APP_CATEGORIES = {
 
 
 class AppTracker:
-    """Rastreador de ventanas activas y extractor de iconos nativos del sistema operativo Windows."""
+    """Rastreador de ventanas activas y telemetría de aplicaciones multiplataforma (Windows, macOS, Linux)."""
 
     def __init__(self):
         self.icon_cache: dict[str, str] = {}
         self.last_exe_path: str = ""
+        self.os_platform: str = sys.platform
 
     def get_foreground_window_info(self) -> tuple[str, str]:
         """
-        Obtiene el título de la ventana activa y la ruta absoluta de su ejecutable (.exe).
-        Utiliza ctypes con las APIs nativas de Win32 (GetForegroundWindow, GetWindowThreadProcessId,
-        OpenProcess y QueryFullProcessImageNameW).
+        Obtiene el título de la ventana activa y la ruta absoluta de su ejecutable.
+        En Windows: Utiliza ctypes con las APIs nativas de Win32 (GetForegroundWindow, etc.).
+        En macOS: Utiliza AppleScript (osascript) nativo.
+        En Linux: Utiliza xdotool o xprop.
         """
         title = ""
         exe_path = ""
@@ -85,9 +88,30 @@ class AppTracker:
                             finally:
                                 kernel32.CloseHandle(hProcess)
             except Exception as e:
-                logging.debug(f"Error consultando ventana activa con ctypes nativo: {e}")
+                logging.debug(f"Error consultando ventana activa con ctypes Win32: {e}")
 
-        # Respaldo secundario para el título con pygetwindow
+        elif sys.platform == "darwin":
+            # macOS: AppleScript para obtener el proceso activo de primer plano
+            try:
+                cmd = "osascript -e 'tell application \"System Events\" to get name of first application process whose frontmost is true'"
+                res = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=1)
+                front_app = res.stdout.strip()
+                if front_app:
+                    title = front_app
+                    exe_path = f"/Applications/{front_app}.app"
+            except Exception as e:
+                logging.debug(f"Error consultando ventana activa en macOS: {e}")
+
+        elif sys.platform.startswith("linux"):
+            # Linux: xdotool o xprop fallback
+            try:
+                res = subprocess.run(["xdotool", "getwindowfocus", "getwindowname"], capture_output=True, text=True, timeout=1)
+                if res.returncode == 0 and res.stdout.strip():
+                    title = res.stdout.strip()
+            except Exception as e:
+                logging.debug(f"Error consultando ventana activa en Linux: {e}")
+
+        # Respaldo secundario para el título con pygetwindow si está disponible
         if not title and gw:
             try:
                 t = gw.getActiveWindowTitle()
@@ -99,18 +123,22 @@ class AppTracker:
         return title, exe_path
 
     def get_raw_active_title(self) -> str:
-        """Obtiene el título de la ventana activa en Windows en tiempo real."""
+        """Obtiene el título de la ventana activa en tiempo real."""
         title, _ = self.get_foreground_window_info()
         return title
 
     def extract_icon_base64(self, exe_path: str) -> str:
         """
-        Extrae el icono nativo real (.ico / .png) asociado al ejecutable .exe de Windows.
-        Invoca un script optimizado de PowerShell usando System.Drawing.Icon::ExtractAssociatedIcon
-        y devuelve un data URL en Base64 ('data:image/png;base64,...').
+        Extrae el icono nativo real (.ico / .png) asociado al ejecutable.
+        En Windows: Invoca PowerShell con System.Drawing.Icon.
+        En macOS y Linux: Retorna fallback seguro (cadena vacía) para evitar llamadas a herramientas exclusivas de Windows.
         Implementa caché en memoria para 0ms de latencia en llamadas consecutivas.
         """
         if not exe_path or not os.path.exists(exe_path):
+            return ""
+
+        # Retorno por defecto para sistemas no-Windows (macOS / Linux)
+        if sys.platform != "win32":
             return ""
 
         # Verificar caché en memoria
@@ -148,19 +176,41 @@ if ($icon) {{
     def find_fallback_exe(self, app_name: str) -> str:
         """
         Busca la ruta del ejecutable para aplicaciones conocidas instaladas en el sistema
-        cuando no se puede inferir directamente desde el HWND activo.
+        cuando no se puede inferir directamente desde la ventana activa.
+        Soporta rutas estándar de Windows, macOS y Linux.
         """
-        local_app_data = os.environ.get("LOCALAPPDATA", "")
-        candidates = [
-            os.path.join(local_app_data, r"Programs\Antigravity IDE\Antigravity IDE.exe"),
-            os.path.join(local_app_data, r"Programs\antigravity\Antigravity.exe"),
-            r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-            r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-            os.path.join(local_app_data, r"Programs\Microsoft VS Code\Code.exe"),
-            os.path.join(local_app_data, r"Programs\cursor\Cursor.exe"),
-            os.path.join(local_app_data, r"cursor\Cursor.exe"),
-            r"C:\Program Files\Mozilla Firefox\firefox.exe"
-        ]
+        candidates: list[str] = []
+
+        if sys.platform == "win32":
+            local_app_data = os.environ.get("LOCALAPPDATA", "")
+            candidates = [
+                os.path.join(local_app_data, r"Programs\Antigravity IDE\Antigravity IDE.exe"),
+                os.path.join(local_app_data, r"Programs\antigravity\Antigravity.exe"),
+                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                os.path.join(local_app_data, r"Programs\Microsoft VS Code\Code.exe"),
+                os.path.join(local_app_data, r"Programs\cursor\Cursor.exe"),
+                os.path.join(local_app_data, r"cursor\Cursor.exe"),
+                r"C:\Program Files\Mozilla Firefox\firefox.exe"
+            ]
+        elif sys.platform == "darwin":
+            candidates = [
+                "/Applications/Antigravity IDE.app",
+                "/Applications/Google Chrome.app",
+                "/Applications/Visual Studio Code.app",
+                "/Applications/Cursor.app",
+                "/Applications/Firefox.app",
+                "/Applications/Safari.app"
+            ]
+        else:
+            # Linux
+            candidates = [
+                "/usr/bin/google-chrome",
+                "/usr/bin/google-chrome-stable",
+                "/usr/bin/code",
+                "/usr/bin/cursor",
+                "/usr/bin/firefox"
+            ]
 
         lower_app = app_name.lower()
         for c in candidates:
@@ -169,7 +219,7 @@ if ($icon) {{
                 if lower_app in base_c or any(part in base_c for part in lower_app.split()):
                     return c
 
-        # Si ninguna coincide pero existe alguna instalada (ej. Antigravity IDE), devolverla como fallback
+        # Si ninguna coincide pero existe alguna instalada, devolverla como fallback
         for c in candidates:
             if os.path.exists(c):
                 return c
@@ -180,44 +230,44 @@ if ($icon) {{
         """Extrae y normaliza el nombre de la aplicación activa a partir del ejecutable o del título."""
         if exe_path:
             base_exe = os.path.basename(exe_path).lower()
-            if "antigravity ide.exe" in base_exe:
+            if "antigravity" in base_exe:
                 return "Antigravity IDE"
-            if "antigravity.exe" in base_exe:
-                return "Antigravity"
-            if "code.exe" in base_exe:
+            if "code" in base_exe or "vscode" in base_exe:
                 return "VS Code"
-            if "cursor.exe" in base_exe:
+            if "cursor" in base_exe:
                 return "Cursor"
-            if "idea64.exe" in base_exe or "idea.exe" in base_exe:
+            if "idea" in base_exe or "intellij" in base_exe:
                 return "IntelliJ IDEA"
             if "pycharm" in base_exe:
                 return "PyCharm"
-            if "chrome.exe" in base_exe:
+            if "chrome" in base_exe:
                 return "Chrome"
-            if "msedge.exe" in base_exe:
+            if "edge" in base_exe or "msedge" in base_exe:
                 return "Edge"
-            if "firefox.exe" in base_exe:
+            if "firefox" in base_exe:
                 return "Firefox"
-            if "discord.exe" in base_exe:
+            if "safari" in base_exe:
+                return "Safari"
+            if "discord" in base_exe:
                 return "Discord"
-            if "slack.exe" in base_exe:
+            if "slack" in base_exe:
                 return "Slack"
-            if "spotify.exe" in base_exe:
+            if "spotify" in base_exe:
                 return "Spotify"
-            if "notion.exe" in base_exe:
+            if "notion" in base_exe:
                 return "Notion"
-            if "windowsterminal.exe" in base_exe:
+            if "windowsterminal" in base_exe or "terminal" in base_exe:
                 return "Terminal"
-            if "powershell.exe" in base_exe:
+            if "powershell" in base_exe:
                 return "PowerShell"
-            if "cmd.exe" in base_exe:
+            if "cmd" in base_exe:
                 return "CMD"
-            if "excel.exe" in base_exe:
+            if "excel" in base_exe:
                 return "Excel"
-            if "winword.exe" in base_exe:
+            if "word" in base_exe or "winword" in base_exe:
                 return "Word"
 
-            # Nombre limpio del ejecutable sin extensión
+            # Nombre limpio del ejecutable sin extensión (.exe o .app)
             clean_name = os.path.splitext(os.path.basename(exe_path))[0]
             if clean_name:
                 return clean_name
@@ -243,6 +293,8 @@ if ($icon) {{
             return "Edge"
         elif "firefox" in lower_title:
             return "Firefox"
+        elif "safari" in lower_title:
+            return "Safari"
         elif "word" in lower_title:
             return "Word"
         elif "excel" in lower_title:

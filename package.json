@@ -14,12 +14,14 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "electron-vite dev",
+    "build:backend": "node scripts/build-backend.js",
     "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux",
+    "build:all": "npm run build && electron-builder --win --mac --linux"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -59,10 +61,13 @@
   "build": {
     "appId": "com.optiflow.app",
     "productName": "OptiFlow",
+    "directories": {
+      "buildResources": "build"
+    },
     "extraResources": [
       {
-        "from": "optiflow-engine/dist/",
-        "to": "optiflow-engine/dist/",
+        "from": "resources/backend/",
+        "to": "resources/backend/",
         "filter": [
           "**/*"
         ]
@@ -70,7 +75,56 @@
     ],
     "win": {
       "executableName": "OptiFlow",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "artifactName": "${name}-${version}-setup.${ext}",
+      "shortcutName": "${productName}",
+      "uninstallDisplayName": "${productName}",
+      "createDesktopShortcut": "always"
+    },
+    "portable": {
+      "artifactName": "${name}-${version}-portable.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.healthcare-fitness",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Application requests access to the device's camera.",
+        "NSMicrophoneUsageDescription": "Application requests access to the device's microphone.",
+        "NSDocumentsFolderUsageDescription": "Application requests access to the user's Documents folder.",
+        "NSDownloadsFolderUsageDescription": "Application requests access to the user's Downloads folder."
+      },
+      "notarize": false
+    },
+    "dmg": {
+      "artifactName": "${name}-${version}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "maintainer": "OptiFlow Team",
+      "category": "Utility",
+      "icon": "build/icons"
+    },
+    "appImage": {
+      "artifactName": "${name}-${version}.${ext}"
+    },
+    "deb": {
+      "packageCategory": "utility",
+      "priority": "optional",
+      "artifactName": "${name}-${version}.${ext}"
     }
   }
 }

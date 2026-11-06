@@ -12,18 +12,29 @@ files:
 asarUnpack:
   - resources/**
 extraResources:
-  - from: optiflow-engine/dist/
-    to: optiflow-engine/dist/
+  - from: resources/backend/
+    to: resources/backend/
     filter:
       - '**/*'
 win:
   executableName: OptiFlow
+  icon: build/icon.ico
+  target:
+    - nsis
+    - portable
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
+portable:
+  artifactName: ${name}-${version}-portable.${ext}
 mac:
+  category: public.app-category.healthcare-fitness
+  target:
+    - dmg
+    - zip
+  icon: build/icon.icns
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -36,11 +47,15 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: OptiFlow Team
   category: Utility
+  icon: build/icons
 appImage:
+  artifactName: ${name}-${version}.${ext}
+deb:
+  packageCategory: utility
+  priority: optional
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
