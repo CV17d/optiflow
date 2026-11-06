@@ -1,35 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { NavLink } from 'react-router-dom'
 import Badge from '../ui/Badge'
 
 export interface HeaderProps {
   activeTab?: string
   onTabChange?: (tab: string) => void
+  className?: string
 }
 
 const navTabs = [
-  'Panel Principal',
-  'Análisis Ergonómico',
-  'Historial y Pausas',
-  'Calibración & Privacidad',
-  'Configuración'
+  { name: 'Panel Principal', path: '/' },
+  { name: 'Análisis Ergonómico', path: '/analisis' },
+  { name: 'Historial y Pausas', path: '/historial' },
+  { name: 'Calibración & Privacidad', path: '/calibracion' },
+  { name: 'Configuración', path: '/configuracion' }
 ]
 
-export const Header: React.FC<HeaderProps> = ({
-  activeTab: controlledTab,
-  onTabChange
-}) => {
-  const [internalTab, setInternalTab] = useState('Panel Principal')
-  const currentTab = controlledTab ?? internalTab
-
-  const handleTabClick = (tab: string) => {
-    setInternalTab(tab)
-    onTabChange?.(tab)
-  }
-
+export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   return (
-    <header className="flex justify-between items-center w-full px-8 py-4">
+    <header className={`flex justify-between items-center w-full px-8 py-4 ${className}`}>
       {/* Izquierda: Logotipo */}
-      <div className="flex items-center gap-2 select-none">
+      <NavLink
+        to="/"
+        className="flex items-center gap-2 select-none hover:opacity-90 transition-opacity"
+      >
         <div className="text-orange-500 flex items-center justify-center">
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -38,26 +32,26 @@ export const Header: React.FC<HeaderProps> = ({
         <span className="font-bold text-lg tracking-tight text-slate-900">
           OptiFlow<span className="text-orange-500">.</span>
         </span>
-      </div>
+      </NavLink>
 
-      {/* Centro: Barra de Navegación */}
+      {/* Centro: Barra de Navegación con NavLink y estados dinámicos */}
       <nav className="bg-white/90 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-sm border border-slate-200/60 flex items-center gap-1">
-        {navTabs.map((tab) => {
-          const isActive = currentTab === tab
-          return (
-            <button
-              key={tab}
-              onClick={() => handleTabClick(tab)}
-              className={`px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-150 cursor-pointer ${
+        {navTabs.map((tab) => (
+          <NavLink
+            key={tab.path}
+            to={tab.path}
+            end={tab.path === '/'}
+            className={({ isActive }) =>
+              `px-3.5 py-1.5 text-xs rounded-full transition-all duration-150 cursor-pointer ${
                 isActive
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-400 hover:text-slate-600'
-              }`}
-            >
-              {tab}
-            </button>
-          )
-        })}
+                  ? 'bg-white text-slate-900 shadow-xs font-bold'
+                  : 'text-slate-400 hover:text-slate-600 font-medium'
+              }`
+            }
+          >
+            {tab.name}
+          </NavLink>
+        ))}
       </nav>
 
       {/* Derecha: Privacidad, Notificaciones y Avatar */}

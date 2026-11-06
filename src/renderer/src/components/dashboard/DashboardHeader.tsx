@@ -84,3 +84,4 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }
 
 export default DashboardHeader
+export { Header as NavHeader } from '../layout/Header'
