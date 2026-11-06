@@ -67,14 +67,14 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
         : 'text-rose-600'
 
   return (
-    <Card className="p-6 flex flex-col justify-between select-none">
+    <Card className="p-4 flex flex-col justify-between select-none">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-sm text-slate-900 leading-tight">
+          <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
             Índice de Salud Visual
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">Score Ergonómico</p>
+          <p className="text-[11px] text-slate-400 mt-0.5">Score Ergonómico</p>
         </div>
         <button
           type="button"
@@ -90,26 +90,26 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
       </div>
 
       {/* Contenido: Bloques de estado dinámico y Medidor de Velocímetro (Arco de 240°) */}
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center mt-2">
         {/* Bloque Izquierdo Reactivo */}
         <div className="flex flex-col">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
             ESTADO
           </span>
-          <span className={`text-sm font-bold mt-0.5 ${statusColorClass}`}>
+          <span className={`text-xs sm:text-sm font-bold mt-0.5 ${statusColorClass}`}>
             {calculatedStatus}
           </span>
 
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-2">
             DEGRADACIÓN
           </span>
-          <span className={`text-sm font-bold mt-0.5 ${degradationColorClass}`}>
+          <span className={`text-xs sm:text-sm font-bold mt-0.5 ${degradationColorClass}`}>
             {calculatedDegradation}
           </span>
         </div>
 
         {/* Medidor de Arco tipo Velocímetro HUD (240°) */}
-        <div className="relative w-28 h-24 flex items-center justify-center">
+        <div className="relative w-24 h-20 flex items-center justify-center">
           <svg
             className="w-full h-full overflow-visible"
             viewBox="0 0 104 94"

@@ -57,14 +57,14 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
   }, [appUsageStats])
 
   return (
-    <Card className="p-6 flex flex-col justify-between select-none">
+    <Card className="p-4 flex flex-col justify-between select-none">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-sm text-slate-900 leading-tight">
+          <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
             Registro de Pausas & Contexto
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-[11px] text-slate-400 mt-0.5">
             Hoy vs Sesión Anterior
           </p>
         </div>
@@ -82,26 +82,26 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
       </div>
 
       {/* Contenido: Métricas a la izquierda y Gráfico Dinámico de Barras con espaciado amplio */}
-      <div className="flex items-end justify-between mt-4 gap-2">
+      <div className="flex items-end justify-between mt-2 gap-2">
         {/* Métricas Reactivas */}
         <div className="flex flex-col shrink-0">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
             ADHERENCIA 20-20-20
           </span>
-          <span className="text-2xl font-black text-slate-900 mt-0.5 font-mono">
+          <span className="text-xl sm:text-2xl font-black text-slate-900 mt-0.5 font-mono">
             {adherence}
           </span>
 
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-2">
             POSPUESTAS
           </span>
-          <span className="text-sm font-semibold text-slate-800 mt-0.5 font-mono">
+          <span className="text-xs font-semibold text-slate-800 mt-0.5 font-mono">
             {postponed}
           </span>
         </div>
 
         {/* Gráfico de Barras con el Top 3 de Aplicaciones */}
-        <div className="flex items-end justify-end gap-3.5 h-20 pb-0.5">
+        <div className="flex items-end justify-end gap-3 h-16 pb-0.5">
           {bars.map((bar, index) => {
             const shortLabel = formatBarLabel(bar.label)
             return (

@@ -220,34 +220,34 @@ export const CalibracionPrivacidad: React.FC = () => {
   }, [calibrationState.faceMesh, calibrationState.imageB64, calibrationState.isActive])
 
   return (
-    <div className="w-full max-w-[1500px] mx-auto flex flex-col items-center justify-center select-none pb-16">
+    <div className="w-full max-w-[1500px] mx-auto h-full flex flex-col justify-between items-center select-none overflow-hidden pb-0.5">
       {/* Encabezado Principal Centrado */}
-      <div className="flex flex-col items-center text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/80 text-orange-600 text-xs font-bold mb-3 shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping inline-block" />
+      <div className="flex flex-col items-center text-center mb-1">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-600 text-[10px] font-bold mb-1 shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping inline-block" />
           <span>ESCÁNER ANATÓMICO 3D</span>
         </div>
-        <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 mb-0.5">
           Calibración Ocular & Privacidad
         </h1>
-        <p className="text-sm font-medium text-slate-500 max-w-xl">
-          Ajuste anatómico de Eye Aspect Ratio (EAR) sobre tu feed de video en tiempo real, procesado 100% de manera local.
+        <p className="text-xs font-medium text-slate-500 max-w-xl">
+          Ajuste anatómico de Eye Aspect Ratio (EAR) sobre tu feed de video en tiempo real, procesado 100% local.
         </p>
       </div>
 
       {/* Stepper de Fases en Paleta Naranja */}
-      <div className="w-full max-w-[780px] mb-8 grid grid-cols-1 md:grid-cols-3 gap-3.5">
+      <div className="w-full max-w-[680px] mb-2 grid grid-cols-3 gap-2">
         <div
-          className={`rounded-2xl p-3.5 border transition-all duration-300 flex items-center gap-3 ${
+          className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 1
-              ? 'bg-white border-orange-500/70 shadow-md shadow-orange-500/10 ring-1 ring-orange-500/20'
+              ? 'bg-white border-orange-500/70 shadow-sm ring-1 ring-orange-500/20'
               : currentStep > 1
                 ? 'bg-orange-50/70 border-orange-300 text-slate-800'
                 : 'bg-white/60 border-slate-200 opacity-60'
           }`}
         >
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
+            className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs ${
               currentStep === 1
                 ? 'bg-orange-500 text-white'
                 : currentStep > 1
@@ -258,26 +258,26 @@ export const CalibracionPrivacidad: React.FC = () => {
             {currentStep > 1 ? '✓' : '1'}
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
               Fase 1
             </span>
-            <span className="text-xs font-bold text-slate-800">
+            <span className="text-xs font-bold text-slate-800 mt-0.5 leading-none">
               Standby & Guía
             </span>
           </div>
         </div>
 
         <div
-          className={`rounded-2xl p-3.5 border transition-all duration-300 flex items-center gap-3 ${
+          className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 2
-              ? 'bg-white border-orange-500 shadow-lg shadow-orange-500/15 ring-2 ring-orange-500/30'
+              ? 'bg-white border-orange-500 shadow-md ring-2 ring-orange-500/30'
               : currentStep > 2
                 ? 'bg-orange-50/70 border-orange-300 text-slate-800'
                 : 'bg-white/60 border-slate-200 opacity-60'
           }`}
         >
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
+            className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs ${
               currentStep === 2
                 ? 'bg-orange-500 text-white animate-pulse'
                 : currentStep > 2
@@ -288,24 +288,24 @@ export const CalibracionPrivacidad: React.FC = () => {
             {currentStep > 2 ? '✓' : '2'}
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
               Fase 2
             </span>
-            <span className="text-xs font-bold text-slate-800">
+            <span className="text-xs font-bold text-slate-800 mt-0.5 leading-none">
               Escaneo Facial (15s)
             </span>
           </div>
         </div>
 
         <div
-          className={`rounded-2xl p-3.5 border transition-all duration-300 flex items-center gap-3 ${
+          className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 3
-              ? 'bg-white border-orange-500 shadow-md shadow-orange-500/10 ring-1 ring-orange-500/20'
+              ? 'bg-white border-orange-500 shadow-sm ring-1 ring-orange-500/20'
               : 'bg-white/60 border-slate-200 opacity-60'
           }`}
         >
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
+            className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs ${
               currentStep === 3
                 ? 'bg-orange-500 text-white'
                 : 'bg-slate-100 text-slate-400'
@@ -314,10 +314,10 @@ export const CalibracionPrivacidad: React.FC = () => {
             3
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600">
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
               Fase 3
             </span>
-            <span className="text-xs font-bold text-slate-800">
+            <span className="text-xs font-bold text-slate-800 mt-0.5 leading-none">
               Umbral & Guardado
             </span>
           </div>
@@ -325,16 +325,16 @@ export const CalibracionPrivacidad: React.FC = () => {
       </div>
 
       {/* NUEVO LAYOUT PRINCIPAL: CSS GRID DE 4 COLUMNAS (1 COL IZQ, 2 COLS CENTRO, 1 COL DER) */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 w-full items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 w-full items-start flex-1 min-h-0">
         {/* COLUMNA 1 (IZQUIERDA): TARJETA DE GARANTÍA DE PRIVACIDAD */}
         <div className="lg:col-span-1">
-          <Card className="p-6 border-orange-100 shadow-sm flex flex-col justify-between">
+          <Card className="p-4 border-orange-100 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600">
+                  <div className="w-7 h-7 rounded-xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600">
                     <svg
-                      className="w-4 h-4"
+                      className="w-3.5 h-3.5"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -345,42 +345,42 @@ export const CalibracionPrivacidad: React.FC = () => {
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-sm text-slate-900 leading-tight">
+                  <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
                     Garantía de Privacidad
                   </h3>
                 </div>
                 <Badge variant="solid-orange">LOCAL</Badge>
               </div>
 
-              <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                Tu video nunca sale de este equipo. Los fotogramas se procesan exclusivamente en memoria RAM volátil para calcular los vectores geométricos e inmediatamente se sobreescriben.
+              <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
+                Tu video nunca sale de este equipo. Los fotogramas se procesan en memoria volátil para calcular los vectores e inmediatamente se sobreescriben.
               </p>
 
-              <div className="flex flex-col gap-3">
-                <div className="p-3 rounded-xl bg-orange-50/70 border border-orange-200/70 text-xs text-orange-950">
+              <div className="flex flex-col gap-2">
+                <div className="p-2.5 rounded-xl bg-orange-50/70 border border-orange-200/70 text-[11px] text-orange-950">
                   <span className="font-bold block mb-0.5 text-orange-900">
                     ✓ Inferencia On-Device
                   </span>
-                  MediaPipe Face Mesh procesa los 468 puntos biométricos localmente en tu CPU/GPU.
+                  MediaPipe Face Mesh procesa los 468 puntos localmente en tu CPU/GPU.
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700">
                   <span className="font-bold block mb-0.5 text-slate-900">
                     ✓ Cero Persistencia de Video
                   </span>
-                  No se guardan archivos de video ni capturas de imagen en disco ni en la nube.
+                  No se guardan archivos ni capturas en disco ni en la nube.
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px] text-slate-700">
                   <span className="font-bold block mb-0.5 text-slate-900">
                     ✓ Configuración Local
                   </span>
-                  Tu perfil se conserva en <code className="font-mono text-[10px] bg-slate-200/60 px-1 py-0.5 rounded">calibration_config.json</code>.
+                  Tu perfil se conserva en <code className="font-mono text-[9px] bg-slate-200/60 px-1 py-0.5 rounded">calibration_config.json</code>.
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 mt-5 border-t border-slate-100 text-[11px] text-slate-400 flex items-center justify-between">
+            <div className="pt-2.5 mt-3 border-t border-slate-100 text-[10px] text-slate-400 flex items-center justify-between">
               <span>Modo del motor:</span>
               <span className="text-orange-600 font-bold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
@@ -393,9 +393,9 @@ export const CalibracionPrivacidad: React.FC = () => {
         {/* COLUMNAS 2 Y 3 (CENTRO - lg:col-span-2): HUD OVALADO Y TEXTOS DINÁMICOS EXTERIORES */}
         <div className="lg:col-span-2 flex flex-col items-center justify-center">
           {/* Contenedor del HUD ovalado */}
-          <div className="w-full flex flex-col items-center justify-center relative my-2">
+          <div className="w-full flex flex-col items-center justify-center relative my-1">
             {/* Anillo exterior punteado naranja */}
-            <div className="w-[370px] h-[480px] sm:w-[400px] sm:h-[520px] rounded-[50%] border-2 border-dashed border-orange-400/50 pointer-events-none absolute flex items-center justify-center">
+            <div className="w-[280px] h-[350px] sm:w-[300px] sm:h-[370px] rounded-[50%] border-2 border-dashed border-orange-400/50 pointer-events-none absolute flex items-center justify-center">
               {/* Marcadores de retícula en los 4 polos */}
               <div className="absolute top-0 w-3 h-1 bg-orange-500 rounded-full" />
               <div className="absolute bottom-0 w-3 h-1 bg-orange-500 rounded-full" />
@@ -405,7 +405,7 @@ export const CalibracionPrivacidad: React.FC = () => {
 
             {/* CONTENEDOR OVALADO CON MÁSCARA DIFUMINADA */}
             <div
-              className="relative w-[350px] h-[460px] sm:w-[380px] sm:h-[500px] overflow-hidden flex items-center justify-center bg-transparent"
+              className="relative w-[260px] h-[330px] sm:w-[280px] sm:h-[350px] overflow-hidden flex items-center justify-center bg-transparent"
               style={{
                 maskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 50%, transparent 100%)',
                 WebkitMaskImage: 'radial-gradient(ellipse 50% 50% at 50% 50%, black 50%, transparent 100%)'
@@ -432,21 +432,21 @@ export const CalibracionPrivacidad: React.FC = () => {
                       '0 0 18px 4px rgba(249, 115, 22, 0.95), 0 0 36px 8px rgba(234, 88, 12, 0.5)'
                   }}
                 >
-                  <div className="w-full h-24 -mt-12 bg-gradient-to-b from-orange-500/15 via-orange-500/25 to-transparent pointer-events-none" />
+                  <div className="w-full h-20 -mt-10 bg-gradient-to-b from-orange-500/15 via-orange-500/25 to-transparent pointer-events-none" />
                 </div>
               )}
             </div>
 
             {/* Píldora de Telemetría Flotante Superior */}
-            <div className="absolute top-1 bg-white/90 backdrop-blur-md border border-orange-300 rounded-full px-4 py-1 flex items-center gap-3 shadow-sm select-none">
+            <div className="absolute top-0 bg-white/90 backdrop-blur-md border border-orange-300 rounded-full px-3 py-0.5 flex items-center gap-2 shadow-xs select-none">
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                <span className="text-[11px] font-mono font-bold text-orange-600 tracking-wider">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold text-orange-600 tracking-wider">
                   OPTIFLOW HUD
                 </span>
               </div>
               <span className="text-slate-300">|</span>
-              <span className="text-[11px] font-mono text-slate-600">
+              <span className="text-[10px] font-mono text-slate-600">
                 EAR:{' '}
                 <span className="text-orange-600 font-bold">
                   {calibrationState.isActive
@@ -455,7 +455,7 @@ export const CalibracionPrivacidad: React.FC = () => {
                 </span>
               </span>
               <span className="text-slate-300">|</span>
-              <span className="text-[11px] font-mono text-orange-600 font-semibold">
+              <span className="text-[10px] font-mono text-orange-600 font-semibold">
                 {calibrationState.isActive ? '468 PUNTOS' : 'STANDBY'}
               </span>
             </div>
@@ -463,25 +463,25 @@ export const CalibracionPrivacidad: React.FC = () => {
 
           {/* REUBICACIÓN: TEXTOS DINÁMICOS FUERA Y DEBAJO DEL ÓVALO */}
           {calibrationState.isActive ? (
-            <div className="w-full max-w-[460px] flex flex-col items-center text-center mt-5">
-              <span className="text-xs font-mono font-bold uppercase tracking-widest text-orange-600 mb-1">
+            <div className="w-full max-w-[420px] flex flex-col items-center text-center mt-2">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-orange-600 mb-0.5">
                 {activeInstruction.phase}
               </span>
-              <p className="text-2xl sm:text-3xl font-extrabold text-orange-600 leading-tight mb-1">
+              <p className="text-xl sm:text-2xl font-extrabold text-orange-600 leading-tight mb-0.5">
                 {activeInstruction.text}
               </p>
-              <p className="text-xs text-slate-500 mb-4">
+              <p className="text-[11px] text-slate-500 mb-2">
                 {activeInstruction.tip}
               </p>
 
               {/* Barra de Progreso y Tiempo */}
-              <div className="w-full flex items-center justify-between text-xs font-mono text-slate-500 mb-2">
+              <div className="w-full flex items-center justify-between text-[11px] font-mono text-slate-500 mb-1">
                 <span>PROGRESO DEL ESCANEO</span>
-                <span className="font-bold text-orange-600 text-sm">
+                <span className="font-bold text-orange-600 text-xs">
                   {calibrationState.remainingSeconds.toFixed(1)}s restantes
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden border border-orange-200/80 mb-4">
+              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden border border-orange-200/80 mb-2">
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-150 rounded-full shadow-sm shadow-orange-500/30"
                   style={{ width: `${calibrationState.progress}%` }}
@@ -490,21 +490,21 @@ export const CalibracionPrivacidad: React.FC = () => {
 
               <button
                 onClick={resetCalibration}
-                className="px-4 py-2 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                className="px-3 py-1.5 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-colors cursor-pointer"
               >
                 Cancelar Escaneo
               </button>
             </div>
           ) : currentStep === 1 ? (
             /* Controles en Modo Standby */
-            <div className="flex flex-col items-center text-center mt-4 gap-3">
+            <div className="flex flex-col items-center text-center mt-2 gap-2">
               <button
                 onClick={startCalibration}
                 disabled={!isConnected}
-                className="px-8 py-3.5 bg-orange-500 hover:bg-orange-600 active:scale-98 text-white font-bold rounded-2xl shadow-lg shadow-orange-500/30 transition-all duration-200 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-98 text-white font-bold rounded-xl shadow-md shadow-orange-500/30 transition-all duration-200 flex items-center gap-2.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -518,19 +518,19 @@ export const CalibracionPrivacidad: React.FC = () => {
                   <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
                   <circle cx="12" cy="12" r="3" />
                 </svg>
-                <span className="text-sm tracking-wide">Iniciar Escaneo Facial (15s)</span>
+                <span className="text-xs tracking-wide">Iniciar Escaneo Facial (15s)</span>
               </button>
 
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <span>Umbral Activo Configurado:</span>
-                <span className="font-mono font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                <span>Umbral Activo:</span>
+                <span className="font-mono font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200 text-xs">
                   {biometrics.ear_threshold.toFixed(2)} EAR
                 </span>
               </div>
             </div>
           ) : (
             /* Modo Completado */
-            <div className="flex items-center gap-2 mt-4 text-xs text-orange-700 font-bold bg-orange-50 px-4 py-2 rounded-xl border border-orange-200">
+            <div className="flex items-center gap-2 mt-2 text-xs text-orange-700 font-bold bg-orange-50 px-3.5 py-1.5 rounded-xl border border-orange-200">
               <span>✓ Escaneo completado. Revisa tu resultado en el panel lateral.</span>
             </div>
           )}
@@ -540,44 +540,44 @@ export const CalibracionPrivacidad: React.FC = () => {
         <div className="lg:col-span-1">
           {currentStep === 3 && calibrationState.result ? (
             /* TARJETA DE RESULTADOS EN FASE 3 */
-            <Card className="p-6 border-orange-200 shadow-md shadow-orange-500/5 flex flex-col gap-5">
+            <Card className="p-4 border-orange-200 shadow-md shadow-orange-500/5 flex flex-col gap-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <div className="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-xs">
+                  <div className="w-6 h-6 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-xs">
                     ✓
                   </div>
-                  <h3 className="font-bold text-base text-slate-900 leading-tight">
+                  <h3 className="font-bold text-sm text-slate-900 leading-tight">
                     Calibración Completada
                   </h3>
                 </div>
-                <p className="text-xs text-slate-500">
+                <p className="text-[11px] text-slate-500">
                   Umbral personalizado obtenido a partir de los 468 puntos MediaPipe.
                 </p>
               </div>
 
               {/* Resumen del nuevo umbral */}
-              <div className="bg-orange-50/80 border border-orange-200 rounded-2xl p-4 flex flex-col text-center">
-                <span className="text-[10px] font-bold text-orange-800 uppercase tracking-wider">
+              <div className="bg-orange-50/80 border border-orange-200 rounded-xl p-2.5 flex flex-col text-center">
+                <span className="text-[9px] font-bold text-orange-800 uppercase tracking-wider">
                   Nuevo Umbral Ocular (EAR)
                 </span>
-                <span className="text-4xl font-mono font-extrabold text-orange-600 my-1">
+                <span className="text-3xl font-mono font-extrabold text-orange-600 my-0.5">
                   {calibrationState.result.threshold.toFixed(3)}
                 </span>
-                <span className="text-[11px] text-orange-700 font-medium">
+                <span className="text-[10px] text-orange-700 font-medium">
                   Punto de corte personalizado
                 </span>
               </div>
 
               {/* Desglose de apertura palpebral */}
-              <div className="flex flex-col gap-2">
-                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 flex items-center justify-between">
-                  <span className="text-xs text-slate-600">EAR Mínimo (Cerrados):</span>
+              <div className="flex flex-col gap-1.5">
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-600">EAR Mínimo (Cerrados):</span>
                   <span className="text-xs font-mono font-bold text-slate-900">
                     {calibrationState.result.minEar.toFixed(3)}
                   </span>
                 </div>
-                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3 flex items-center justify-between">
-                  <span className="text-xs text-slate-600">EAR Máximo (Abiertos):</span>
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-600">EAR Máximo (Abiertos):</span>
                   <span className="text-xs font-mono font-bold text-slate-900">
                     {calibrationState.result.maxEar.toFixed(3)}
                   </span>
@@ -585,18 +585,18 @@ export const CalibracionPrivacidad: React.FC = () => {
               </div>
 
               {/* Acciones */}
-              <div className="flex flex-col gap-2.5 pt-2 border-t border-slate-100">
+              <div className="flex flex-col gap-2 pt-1.5 border-t border-slate-100">
                 <button
                   onClick={() => saveCalibration(calibrationState.result!.threshold)}
                   disabled={calibrationState.isSaved}
-                  className="w-full py-3 bg-orange-500 hover:bg-orange-600 active:scale-98 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90"
+                  className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-98 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90"
                 >
                   {calibrationState.isSaved ? (
                     <span>✓ Perfil Biométrico Guardado</span>
                   ) : (
                     <>
                       <svg
-                        className="w-4 h-4"
+                        className="w-3.5 h-3.5"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -613,55 +613,55 @@ export const CalibracionPrivacidad: React.FC = () => {
 
                 <button
                   onClick={startCalibration}
-                  className="w-full py-2.5 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                  className="w-full py-2 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
                 >
                   Repetir Escaneo
                 </button>
               </div>
 
               {calibrationState.isSaved && (
-                <div className="p-3 rounded-xl bg-orange-50 border border-orange-200 text-[11px] text-orange-950 flex items-center gap-2">
+                <div className="p-2 rounded-xl bg-orange-50 border border-orange-200 text-[10px] text-orange-950 flex items-center gap-1.5">
                   <span className="font-bold text-orange-600">✓</span>
-                  <span>OptiFlow se ha adaptado a tu anatomía palpebral única.</span>
+                  <span>OptiFlow se ha adaptado a tu anatomía palpebral.</span>
                 </div>
               )}
             </Card>
           ) : (
             /* TARJETA INFORMATIVA / DE PREPARACIÓN EN FASES 1 Y 2 */
-            <Card className="p-6 border-slate-100 shadow-sm flex flex-col justify-between">
+            <Card className="p-4 border-slate-100 shadow-sm flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-bold text-sm text-slate-900">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-bold text-xs sm:text-sm text-slate-900">
                     Parámetros del Escáner
                   </h4>
                   <Badge variant="solid-orange">MediaPipe</Badge>
                 </div>
 
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">
-                  Durante el escaneo el sistema registra la variación de los vectores oculares para determinar tu descanso y parpadeo real.
+                <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
+                  Durante el escaneo se registra la variación de los vectores oculares para determinar tu descanso y parpadeo real.
                 </p>
 
-                <div className="flex flex-col gap-2 text-xs">
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                <div className="flex flex-col gap-1.5 text-[11px]">
+                  <div className="flex items-center justify-between py-1 border-b border-slate-100">
                     <span className="text-slate-400">Duración del test:</span>
                     <span className="font-semibold text-slate-800">15.0 segundos</span>
                   </div>
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                  <div className="flex items-center justify-between py-1 border-b border-slate-100">
                     <span className="text-slate-400">Puntos anatómicos:</span>
                     <span className="font-semibold text-slate-800">468 landmarks</span>
                   </div>
-                  <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
+                  <div className="flex items-center justify-between py-1 border-b border-slate-100">
                     <span className="text-slate-400">Apertura en reposo:</span>
                     <span className="font-semibold text-orange-600">&gt; 0.20 EAR</span>
                   </div>
-                  <div className="flex items-center justify-between py-1.5">
+                  <div className="flex items-center justify-between py-1">
                     <span className="text-slate-400">Oclusión de parpadeo:</span>
                     <span className="font-semibold text-orange-600">&lt; {biometrics.ear_threshold.toFixed(2)} EAR</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-slate-100 text-[11px] text-slate-400">
+              <div className="pt-2.5 mt-2.5 border-t border-slate-100 text-[10px] text-slate-400">
                 Paso siguiente: Al finalizar el escaneo, aquí aparecerá el cálculo de tu umbral y el botón para guardarlo.
               </div>
             </Card>

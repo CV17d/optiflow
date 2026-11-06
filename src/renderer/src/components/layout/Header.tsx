@@ -54,8 +54,8 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
         ))}
       </nav>
 
-      {/* Derecha: Privacidad, Notificaciones y Avatar */}
-      <div className="flex items-center gap-3">
+      {/* Derecha: Privacidad 100% Local */}
+      <div className="flex items-center justify-end">
         <Badge
           variant="success-outline"
           icon={
@@ -75,31 +75,6 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
         >
           Procesamiento 100% Local (Privado)
         </Badge>
-
-        {/* Botón Campana */}
-        <button
-          type="button"
-          aria-label="Notificaciones"
-          className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-slate-400 hover:text-slate-600 border border-slate-200/70 shadow-xs transition-colors cursor-pointer"
-        >
-          <svg
-            className="w-4 h-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-        </button>
-
-        {/* Avatar Usuario */}
-        <div className="w-8 h-8 rounded-full bg-amber-500 text-white font-semibold text-xs flex items-center justify-center shadow-xs select-none">
-          JD
-        </div>
       </div>
     </header>
   )
