@@ -102,7 +102,7 @@ export const Configuracion: React.FC = () => {
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-500/20 ${
-        checked ? 'bg-orange-500' : 'bg-slate-200 dark:bg-slate-700'
+        checked ? 'bg-orange-500' : 'bg-slate-200 dark:bg-zinc-700'
       } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <span
@@ -122,10 +122,10 @@ export const Configuracion: React.FC = () => {
   if (isLoading) {
     return (
       <div className="w-full max-w-[1600px] mx-auto flex flex-col select-none pb-16">
-        <div className="h-10 w-64 bg-slate-200 dark:bg-slate-800 rounded-2xl animate-pulse mb-8" />
+        <div className="h-10 w-64 bg-slate-200 dark:bg-zinc-800 rounded-2xl animate-pulse mb-8" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 h-96 bg-white dark:bg-slate-900 rounded-3xl animate-pulse" />
-          <div className="h-96 bg-white dark:bg-slate-900 rounded-3xl animate-pulse" />
+          <div className="lg:col-span-2 h-96 bg-white dark:bg-zinc-900 rounded-3xl animate-pulse" />
+          <div className="h-96 bg-white dark:bg-zinc-900 rounded-3xl animate-pulse" />
         </div>
       </div>
     )
@@ -135,7 +135,7 @@ export const Configuracion: React.FC = () => {
     <div className="w-full max-w-[1600px] mx-auto flex flex-col select-none pb-16 relative">
       {/* Toast Notificación Flotante de Éxito */}
       {showSuccessToast && (
-        <div className="fixed top-6 right-8 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white shadow-2xl border border-slate-700/80 animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-6 right-8 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-slate-900 dark:bg-zinc-800 text-white shadow-2xl border border-slate-700/80 animate-in fade-in slide-in-from-top-4 duration-300">
           <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0">
             <svg
               className="w-3.5 h-3.5"
@@ -159,13 +159,13 @@ export const Configuracion: React.FC = () => {
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">
             {t('settings.title', 'Configuración')}
           </h1>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">
             {t('settings.subtitle', 'Preferencias del Sistema, Apariencia, Idioma y Modo Kiosco')}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-300 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             {t('settings.persistence_active', 'Persistencia Activa (JSON & SQLite)')}
           </span>
@@ -182,7 +182,7 @@ export const Configuracion: React.FC = () => {
         <div className="lg:col-span-2 flex flex-col gap-6">
           {/* CATEGORÍA 0: APARIENCIA & IDIOMA (NUEVO) */}
           <Card className="p-7">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-zinc-800">
               <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <svg
                   className="w-5 h-5"
@@ -218,23 +218,23 @@ export const Configuracion: React.FC = () => {
               {/* Selector de Modo Claro / Oscuro */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-1">
                 <div className="max-w-md">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                  <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                     {t('settings.appearance.theme_label', 'Modo de Pantalla')}
                   </span>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                     Alterna entre el tema visual claro o la paleta oscura optimizada para descansar la vista de noche.
                   </p>
                 </div>
 
                 {/* Grupo de Botones de Tema */}
-                <div className="inline-flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 shrink-0">
+                <div className="inline-flex p-1 bg-slate-100 dark:bg-zinc-800/80 rounded-2xl border border-slate-200/80 dark:border-zinc-700 shrink-0">
                   <button
                     type="button"
                     onClick={() => setTheme('light')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       theme === 'light'
                         ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/30'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                        : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <svg
@@ -265,7 +265,7 @@ export const Configuracion: React.FC = () => {
                     className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       theme === 'dark'
                         ? 'bg-orange-500 text-white shadow-sm shadow-orange-500/30'
-                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                        : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
                     <svg
@@ -284,15 +284,15 @@ export const Configuracion: React.FC = () => {
                 </div>
               </div>
 
-              <div className="border-t border-slate-100 dark:border-slate-800" />
+              <div className="border-t border-slate-100 dark:border-zinc-800" />
 
               {/* Selector de Idioma */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-1">
                 <div className="max-w-md">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                  <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                     {t('settings.language.title', 'Idioma de la Aplicación')}
                   </span>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                     {t('settings.language.subtitle', 'Selecciona el idioma de la interfaz')}
                   </p>
                 </div>
@@ -317,7 +317,7 @@ export const Configuracion: React.FC = () => {
                   <select
                     value={i18n.language ? i18n.language.substring(0, 2) : 'es'}
                     onChange={handleLanguageChange}
-                    className="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-orange-500 appearance-none cursor-pointer transition-colors"
+                    className="w-full pl-10 pr-9 py-2.5 rounded-2xl bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs font-bold text-slate-800 dark:text-zinc-100 focus:outline-none focus:border-orange-500 appearance-none cursor-pointer transition-colors"
                   >
                     <option value="es">Español (ES)</option>
                     <option value="en">English (EN)</option>
@@ -343,7 +343,7 @@ export const Configuracion: React.FC = () => {
 
           {/* CATEGORÍA 1: SISTEMA */}
           <Card className="p-7">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-zinc-800">
               <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <svg
                   className="w-5 h-5"
@@ -372,10 +372,10 @@ export const Configuracion: React.FC = () => {
             {/* Ajuste: Iniciar automáticamente con Windows */}
             <div className="flex items-center justify-between py-2">
               <div className="max-w-md pr-4">
-                <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                   {t('settings.system.autostart_label', 'Iniciar automáticamente con el sistema')}
                 </span>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {t(
                     'settings.system.autostart_desc',
                     'Lanza OptiFlow silenciosamente al encender el equipo o iniciar sesión en Windows (openAtLogin).'
@@ -392,7 +392,7 @@ export const Configuracion: React.FC = () => {
 
           {/* CATEGORÍA 2: REGLAS DE PREVENCIÓN */}
           <Card className="p-7">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-zinc-800">
               <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <svg
                   className="w-5 h-5"
@@ -422,10 +422,10 @@ export const Configuracion: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                    <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                       {t('settings.rules.work_interval_label', 'Intervalo de Trabajo (Foco Continuo)')}
                     </span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                       {t(
                         'settings.rules.work_interval_desc',
                         'Minutos continuos de trabajo antes de sugerir o forzar una pausa activa.'
@@ -449,7 +449,7 @@ export const Configuracion: React.FC = () => {
                         className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-orange-500 text-white border-orange-500 shadow-sm shadow-orange-500/25'
-                            : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                            : 'bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'
                         }`}
                       >
                         {mins} min {mins === 20 ? '(20-20-20)' : mins === 45 ? '(Pomodoro)' : ''}
@@ -472,24 +472,24 @@ export const Configuracion: React.FC = () => {
                         workInterval: Math.max(1, parseInt(e.target.value, 10) || 20)
                       }))
                     }
-                    className="w-24 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-white focus:outline-none focus:border-orange-500 bg-white dark:bg-slate-800"
+                    className="w-24 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs font-mono font-bold text-slate-800 dark:text-white focus:outline-none focus:border-orange-500 bg-white dark:bg-zinc-800"
                   />
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-slate-500 dark:text-zinc-400">
                     {t('settings.rules.minutes_range', 'minutos (rango: 5 - 180 min)')}
                   </span>
                 </div>
               </div>
 
-              <div className="border-t border-slate-100 dark:border-slate-800" />
+              <div className="border-t border-slate-100 dark:border-zinc-800" />
 
               {/* Ajuste: Duración de Pausa */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                    <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                       {t('settings.rules.pause_duration_label', 'Duración de la Pausa (Descanso Visual)')}
                     </span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                       {t(
                         'settings.rules.pause_duration_desc',
                         'Segundos que dura la ventana modal Kiosk para relajar la acomodación ocular.'
@@ -520,7 +520,7 @@ export const Configuracion: React.FC = () => {
                         className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                           isSelected
                             ? 'bg-orange-500 text-white border-orange-500 shadow-sm shadow-orange-500/25'
-                            : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                            : 'bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'
                         }`}
                       >
                         {item.label}
@@ -543,9 +543,9 @@ export const Configuracion: React.FC = () => {
                         pauseDuration: Math.max(5, parseInt(e.target.value, 10) || 20)
                       }))
                     }
-                    className="w-24 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-800 dark:text-white focus:outline-none focus:border-orange-500 bg-white dark:bg-slate-800"
+                    className="w-24 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs font-mono font-bold text-slate-800 dark:text-white focus:outline-none focus:border-orange-500 bg-white dark:bg-zinc-800"
                   />
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className="text-xs text-slate-500 dark:text-zinc-400">
                     {t('settings.rules.seconds_range', 'segundos (rango: 5 - 600 seg)')}
                   </span>
                 </div>
@@ -555,7 +555,7 @@ export const Configuracion: React.FC = () => {
 
           {/* CATEGORÍA 3: MODO KIOSCO */}
           <Card className="p-7">
-            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-zinc-800">
               <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                 <svg
                   className="w-5 h-5"
@@ -584,7 +584,7 @@ export const Configuracion: React.FC = () => {
             <div className="flex items-center justify-between py-2">
               <div className="max-w-md pr-4">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-800 dark:text-slate-200 block">
+                  <span className="text-sm font-bold text-slate-800 dark:text-zinc-200 block">
                     {t('settings.kiosk.strict_label', 'Modo Estricto')}
                   </span>
                   {settings.strictMode && (
@@ -593,7 +593,7 @@ export const Configuracion: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {t(
                     'settings.kiosk.strict_desc',
                     "Deshabilita el botón de 'Posponer 2 min' en la pantalla de pausa. El ordenador quedará bloqueado hasta completar la totalidad de los segundos programados."
@@ -625,8 +625,8 @@ export const Configuracion: React.FC = () => {
 
               {/* Lista Resumen */}
               <div className="mt-5 flex flex-col gap-3 text-xs">
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.theme', 'Tema:')}
                   </span>
                   <span className="font-bold text-orange-600 dark:text-orange-400">
@@ -634,11 +634,11 @@ export const Configuracion: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.language', 'Idioma:')}
                   </span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                  <span className="font-bold text-slate-800 dark:text-zinc-200">
                     {i18n.language?.startsWith('en')
                       ? 'English (EN)'
                       : i18n.language?.startsWith('pt')
@@ -647,8 +647,8 @@ export const Configuracion: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.autostart', 'Inicio con Windows:')}
                   </span>
                   <span
@@ -658,8 +658,8 @@ export const Configuracion: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.work_interval', 'Intervalo de Trabajo:')}
                   </span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
@@ -667,8 +667,8 @@ export const Configuracion: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.pause_duration', 'Duración de Pausa:')}
                   </span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
@@ -676,12 +676,12 @@ export const Configuracion: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800">
+                  <span className="text-slate-500 dark:text-zinc-400 font-medium">
                     {t('settings.summary.strict_mode', 'Modo Estricto Kiosk:')}
                   </span>
                   <span
-                    className={`font-bold ${settings.strictMode ? 'text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`}
+                    className={`font-bold ${settings.strictMode ? 'text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-zinc-400'}`}
                   >
                     {settings.strictMode ? t('settings.summary.active', 'Activo (Sin escape)') : t('settings.summary.flexible', 'Permite posponer')}
                   </span>
@@ -746,17 +746,17 @@ export const Configuracion: React.FC = () => {
             <p className="text-xs text-slate-400 mt-0.5">OptiFlow Desktop v1.0.0</p>
 
             <div className="mt-4 flex flex-col gap-2.5 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
                 <span className="text-slate-400">Arquitectura:</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">Electron 35 + Node 22</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">Electron 35 + Node 22</span>
               </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
                 <span className="text-slate-400">Persistencia:</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">optiflow_settings.json</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">optiflow_settings.json</span>
               </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
                 <span className="text-slate-400">Base de Datos:</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">SQLite (user_settings)</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">SQLite (user_settings)</span>
               </div>
               <div className="flex items-center justify-between py-1.5">
                 <span className="text-slate-400">Motor de Visión:</span>

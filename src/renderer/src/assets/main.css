@@ -14,3 +14,10 @@ body,
   overflow: hidden;
   user-select: none;
 }
+
+html.dark,
+body.dark,
+.dark #root {
+  background-color: #000000;
+  color: #ffffff;
+}

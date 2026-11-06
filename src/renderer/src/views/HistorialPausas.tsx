@@ -101,16 +101,16 @@ export const HistorialPausas: React.FC = () => {
       {/* Encabezado Superior de la Sección */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-1">
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">
             Historial y Pausas
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">
             Registro Cronológico, Adherencia y Auditoría de Descanso Ocular
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 text-xs font-semibold text-slate-700 shadow-2xs">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 dark:border-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-300 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             SQLite Local (optiflow_local.db)
           </span>
@@ -118,11 +118,11 @@ export const HistorialPausas: React.FC = () => {
           <button
             onClick={handleManualRefresh}
             disabled={isRefreshing}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-slate-200/80 hover:border-orange-300 text-xs font-bold text-slate-700 hover:text-orange-600 shadow-2xs transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700/80 dark:border-zinc-800 hover:border-orange-300 text-xs font-bold text-slate-700 dark:text-zinc-300 hover:text-orange-600 shadow-2xs transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
             title="Sincronizar datos de SQLite"
           >
             <svg
-              className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-orange-500' : 'text-slate-500'}`}
+              className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-orange-500' : 'text-slate-500 dark:text-zinc-400'}`}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -144,12 +144,12 @@ export const HistorialPausas: React.FC = () => {
       {isLoading && !data && (
         <div className="flex flex-col gap-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100/80 animate-pulse flex flex-col justify-between" />
-            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100/80 animate-pulse flex flex-col justify-between" />
-            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100/80 animate-pulse flex flex-col justify-between" />
+            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100 dark:border-zinc-800/80 animate-pulse flex flex-col justify-between" />
+            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100 dark:border-zinc-800/80 animate-pulse flex flex-col justify-between" />
+            <div className="h-36 bg-white rounded-3xl p-6 border border-slate-100 dark:border-zinc-800/80 animate-pulse flex flex-col justify-between" />
           </div>
-          <div className="h-80 bg-white rounded-3xl p-8 border border-slate-100/80 animate-pulse" />
-          <div className="h-96 bg-white rounded-3xl p-8 border border-slate-100/80 animate-pulse" />
+          <div className="h-80 bg-white rounded-3xl p-8 border border-slate-100 dark:border-zinc-800/80 animate-pulse" />
+          <div className="h-96 bg-white rounded-3xl p-8 border border-slate-100 dark:border-zinc-800/80 animate-pulse" />
         </div>
       )}
 
@@ -161,7 +161,7 @@ export const HistorialPausas: React.FC = () => {
             {/* KPI 1: Pausas Completadas (Semana) */}
             <Card className="p-6 flex flex-col justify-between gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   PAUSAS COMPLETADAS (SEMANA)
                 </span>
                 <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600">
@@ -181,7 +181,7 @@ export const HistorialPausas: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-4xl font-extrabold text-slate-900 font-mono tracking-tight block">
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight block">
                   {data.totalCompletedWeek}
                 </span>
                 <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-600 font-semibold">
@@ -205,7 +205,7 @@ export const HistorialPausas: React.FC = () => {
             {/* KPI 2: Tasa de Adherencia Promedio (%) */}
             <Card className="p-6 flex flex-col justify-between gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   TASA DE ADHERENCIA PROMEDIO
                 </span>
                 <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600">
@@ -226,7 +226,7 @@ export const HistorialPausas: React.FC = () => {
 
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-extrabold text-slate-900 font-mono tracking-tight">
+                  <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                     {data.avgAdherenceWeek}%
                   </span>
                   <span
@@ -246,7 +246,7 @@ export const HistorialPausas: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500 font-medium">
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500 dark:text-zinc-400 font-medium">
                   <svg
                     className="w-4 h-4 text-emerald-600 shrink-0"
                     viewBox="0 0 24 24"
@@ -267,7 +267,7 @@ export const HistorialPausas: React.FC = () => {
             {/* KPI 3: Horas Totales Monitoreadas */}
             <Card className="p-6 flex flex-col justify-between gap-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   HORAS TOTALES MONITOREADAS
                 </span>
                 <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
@@ -288,10 +288,10 @@ export const HistorialPausas: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-4xl font-extrabold text-slate-900 font-mono tracking-tight block">
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight block">
                   {data.totalHoursMonitored} h
                 </span>
-                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500 font-medium">
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500 dark:text-zinc-400 font-medium">
                   <span className="w-2 h-2 rounded-full bg-blue-500" />
                   <span>Jornada acumulada frente al monitor</span>
                 </div>
@@ -305,23 +305,23 @@ export const HistorialPausas: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                     Tendencia de Adherencia (Últimos 7 Días)
                   </h2>
                   <Badge variant="solid-orange">SEMANAL</Badge>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
                   Porcentaje de pausas completadas vs. sugeridas por jornada de trabajo
                 </p>
               </div>
 
               {/* Leyenda del Gráfico */}
               <div className="flex items-center gap-4 text-xs font-semibold">
-                <div className="flex items-center gap-1.5 text-slate-700">
+                <div className="flex items-center gap-1.5 text-slate-700 dark:text-zinc-300">
                   <span className="w-3 h-3 rounded-md bg-gradient-to-t from-orange-500 to-amber-400 shadow-2xs" />
                   <span>Adherencia Lograda</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-slate-500">
+                <div className="flex items-center gap-1.5 text-slate-500 dark:text-zinc-400">
                   <span className="w-5 border-b-2 border-dashed border-slate-300" />
                   <span>Meta 80% (20-20-20)</span>
                 </div>
@@ -332,10 +332,10 @@ export const HistorialPausas: React.FC = () => {
             <div className="relative pt-6 pb-2">
               {/* Línea Guía de Meta 80% */}
               <div
-                className="absolute left-0 right-0 border-b border-dashed border-slate-200 pointer-events-none flex justify-end pr-2 z-0"
+                className="absolute left-0 right-0 border-b border-dashed border-slate-200 dark:border-zinc-700 pointer-events-none flex justify-end pr-2 z-0"
                 style={{ bottom: 'calc(80% * 0.72 + 56px)' }}
               >
-                <span className="text-[10px] font-bold text-slate-400 bg-white/90 px-1 rounded -translate-y-2">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-zinc-400 bg-white/90 px-1 rounded -translate-y-2">
                   Meta 80%
                 </span>
               </div>
@@ -366,7 +366,7 @@ export const HistorialPausas: React.FC = () => {
                       </div>
 
                       {/* Porcentaje numérico sobre la barra */}
-                      <span className="text-[11px] font-extrabold font-mono text-slate-600 mb-2 group-hover:text-orange-600 transition-colors">
+                      <span className="text-[11px] font-extrabold font-mono text-slate-600 dark:text-zinc-300 mb-2 group-hover:text-orange-600 transition-colors">
                         {adherenceVal}%
                       </span>
 
@@ -387,10 +387,10 @@ export const HistorialPausas: React.FC = () => {
 
                       {/* Etiquetas Inferiores del Eje X */}
                       <div className="flex flex-col items-center mt-3 text-center">
-                        <span className="text-xs font-bold text-slate-800 leading-tight">
+                        <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 leading-tight">
                           {day.dayLabel}
                         </span>
-                        <span className="text-[10px] text-slate-400 font-mono mt-0.5">
+                        <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-mono mt-0.5">
                           {formatShortDate(day.date)}
                         </span>
                         <span className="text-[10px] font-semibold text-emerald-600 mt-0.5 font-mono">
@@ -409,21 +409,21 @@ export const HistorialPausas: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                     Registro Cronológico de Sesiones
                   </h2>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:text-zinc-300">
                     {data.sesionesRecientes.length} registros
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
                   Auditoría detallada de las pausas ergonómicas almacenadas en SQLite
                 </p>
               </div>
 
-              <div className="text-xs text-slate-400 flex items-center gap-2">
+              <div className="text-xs text-slate-400 dark:text-zinc-400 flex items-center gap-2">
                 <span>Almacenamiento Local:</span>
-                <span className="font-mono font-bold text-slate-700 bg-slate-50 border border-slate-200/80 px-2.5 py-1 rounded-lg">
+                <span className="font-mono font-bold text-slate-700 dark:text-zinc-300 bg-slate-50 border border-slate-200 dark:border-zinc-700/80 px-2.5 py-1 rounded-lg">
                   optiflow_local.db • break_logs
                 </span>
               </div>
@@ -434,7 +434,7 @@ export const HistorialPausas: React.FC = () => {
               <div className="overflow-x-auto -mx-2">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                    <tr className="border-b border-slate-100 dark:border-zinc-800 text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                       <th className="py-3 px-4">ID</th>
                       <th className="py-3 px-4">FECHA</th>
                       <th className="py-3 px-4">HORA</th>
@@ -453,25 +453,25 @@ export const HistorialPausas: React.FC = () => {
                           className="hover:bg-orange-50/20 transition-colors group"
                         >
                           {/* ID */}
-                          <td className="py-3.5 px-4 font-mono font-bold text-slate-400 group-hover:text-slate-600">
+                          <td className="py-3.5 px-4 font-mono font-bold text-slate-400 dark:text-zinc-400 group-hover:text-slate-600 dark:text-zinc-300">
                             #{session.id}
                           </td>
 
                           {/* FECHA */}
-                          <td className="py-3.5 px-4 font-medium text-slate-700">
+                          <td className="py-3.5 px-4 font-medium text-slate-700 dark:text-zinc-300">
                             {session.date}
                           </td>
 
                           {/* HORA */}
-                          <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
+                          <td className="py-3.5 px-4 font-mono font-bold text-slate-900 dark:text-white">
                             {session.time}
                           </td>
 
                           {/* DURACIÓN */}
-                          <td className="py-3.5 px-4 text-slate-600 font-medium">
+                          <td className="py-3.5 px-4 text-slate-600 dark:text-zinc-300 font-medium">
                             <span className="inline-flex items-center gap-1">
                               <svg
-                                className="w-3.5 h-3.5 text-slate-400"
+                                className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-400"
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="currentColor"
@@ -487,7 +487,7 @@ export const HistorialPausas: React.FC = () => {
                           </td>
 
                           {/* INTERVENCIÓN */}
-                          <td className="py-3.5 px-4 text-slate-600">
+                          <td className="py-3.5 px-4 text-slate-600 dark:text-zinc-300">
                             <span className="inline-flex items-center gap-1.5 font-medium">
                               <span className="w-1.5 h-1.5 rounded-full bg-orange-400" />
                               Regla 20-20-20 (Descanso Ocular)
@@ -531,10 +531,10 @@ export const HistorialPausas: React.FC = () => {
                     <line x1="12" y1="16" x2="12.01" y2="16" />
                   </svg>
                 </div>
-                <h3 className="text-base font-bold text-slate-800">
+                <h3 className="text-base font-bold text-slate-800 dark:text-zinc-200">
                   Sin registros de pausas todavía
                 </h3>
-                <p className="text-xs text-slate-500 max-w-sm mt-1">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-sm mt-1">
                   Las pausas se registrarán automáticamente a medida que completes o pospongas descansos ergonómicos con OptiFlow.
                 </p>
               </div>

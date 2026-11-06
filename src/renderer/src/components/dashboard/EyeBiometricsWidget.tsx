@@ -28,15 +28,9 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       {/* 1. CONTENEDOR DEL OJO CON DESVANECIMIENTO RADIAL (SIN BORDES DUROS) */}
       {/* =================================================================== */}
       <div className="relative w-80 h-60 sm:w-96 sm:h-72 md:w-[440px] md:h-[320px] lg:w-[480px] lg:h-[350px] xl:w-[500px] xl:h-[365px] flex items-center justify-center">
-        {/* Contenedor con máscara de degradado radial progresivo hacia #F5F5F7 */}
+        {/* Contenedor con máscara de degradado radial progresivo hacia #F5F5F7 (light) o #000000 (dark) */}
         <div
-          className="relative w-full h-full flex items-center justify-center"
-          style={{
-            maskImage:
-              'radial-gradient(ellipse 65% 58% at 50% 50%, black 35%, transparent 72%)',
-            WebkitMaskImage:
-              'radial-gradient(ellipse 65% 58% at 50% 50%, black 35%, transparent 72%)'
-          }}
+          className="relative w-full h-full flex items-center justify-center [mask-image:radial-gradient(ellipse_65%_58%_at_50%_50%,black_35%,transparent_72%)] [-webkit-mask-image:radial-gradient(ellipse_65%_58%_at_50%_50%,black_35%,transparent_72%)]"
         >
           {/* Imagen base fotorrealista natural */}
           <img
@@ -51,13 +45,9 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
             }}
           />
 
-          {/* Overlay suave para asegurar transición perfecta hacia el fondo de la app #F5F5F7 */}
+          {/* Overlay suave para asegurar transición perfecta hacia el fondo de la app #F5F5F7 en light y #000000 en dark */}
           <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                'radial-gradient(ellipse 68% 60% at 50% 50%, transparent 40%, rgba(245, 245, 247, 0.45) 65%, #F5F5F7 80%)'
-            }}
+            className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_68%_60%_at_50%_50%,transparent_40%,rgba(245,245,247,0.45)_65%,#F5F5F7_80%)] dark:bg-[radial-gradient(ellipse_68%_60%_at_50%_50%,transparent_38%,rgba(0,0,0,0.7)_58%,#000000_75%)]"
           />
         </div>
 
@@ -165,7 +155,7 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       {/* =================================================================== */}
       {/* 3. ETIQUETA EXTERIOR INDEPENDIENTE (FUERA DEL CONTENEDOR DEL OJO)   */}
       {/* =================================================================== */}
-      <div className="mt-4 sm:mt-5 inline-flex items-center justify-center gap-2.5 bg-cyan-500/10 border border-cyan-500/25 rounded-full px-5 py-2 shadow-2xs transition-all duration-200">
+      <div className="mt-4 sm:mt-5 inline-flex items-center justify-center gap-2.5 bg-cyan-500/10 dark:bg-cyan-950/40 border border-cyan-500/25 dark:border-cyan-500/30 rounded-full px-5 py-2 shadow-2xs transition-all duration-200">
         <span
           className={`w-2 h-2 rounded-full ${
             isBlinking ? 'bg-cyan-500 animate-ping' : 'bg-cyan-500 animate-pulse'

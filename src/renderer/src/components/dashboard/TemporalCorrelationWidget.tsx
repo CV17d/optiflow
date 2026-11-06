@@ -115,20 +115,20 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
   }, [earHistory])
 
   return (
-    <div className="bg-gray-900 text-white rounded-3xl p-5 shadow-[0_10px_35px_rgba(0,0,0,0.22)] border border-gray-800/80 h-full flex flex-col justify-between select-none transition-all duration-300">
+    <div className="bg-gray-900 dark:bg-zinc-900 text-white rounded-3xl p-5 shadow-[0_10px_35px_rgba(0,0,0,0.22)] dark:shadow-[0_10px_35px_rgba(0,0,0,0.5)] border border-gray-800/80 dark:border-zinc-800 h-full flex flex-col justify-between select-none transition-all duration-300">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-bold text-sm sm:text-base text-white leading-tight">
             Correlación Temporal
           </h3>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <p className="text-xs text-gray-400 dark:text-zinc-400 mt-0.5">
             Fatiga vs Carga de Trabajo
           </p>
         </div>
         <button
           type="button"
-          className="text-gray-400 hover:text-white p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
+          className="text-gray-400 dark:text-zinc-400 hover:text-white p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
           aria-label="Opciones"
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
       {/* Métricas: EAR Promedio Real y Distancia en Tiempo Real */}
       <div className="flex items-center gap-8 mt-3">
         <div className="flex flex-col">
-          <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-zinc-400 uppercase tracking-wider">
             EAR PROM.
           </span>
           <span className="text-2xl sm:text-3xl font-black text-white mt-1 font-mono">
@@ -150,7 +150,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
           </span>
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-zinc-400 uppercase tracking-wider">
             DISTANCIA
           </span>
           <span className="text-2xl sm:text-3xl font-black text-white mt-1 font-mono">
@@ -202,11 +202,11 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
 
       {/* Barra Horizontal Inferior (Glow): Fatiga Acumulada */}
       <div className="w-full mt-3 pt-1">
-        <div className="flex justify-between items-center text-xs text-gray-400 mb-1.5">
+        <div className="flex justify-between items-center text-xs text-gray-400 dark:text-zinc-400 mb-1.5">
           <span className="font-semibold uppercase tracking-wider">Nivel de Carga Acumulada</span>
           <span className="font-mono text-orange-400 font-bold text-sm">{accumulatedLoad}%</span>
         </div>
-        <div className="w-full h-2.5 bg-gray-800/90 rounded-full overflow-hidden p-[1px] relative">
+        <div className="w-full h-2.5 bg-gray-800/90 dark:bg-zinc-800 rounded-full overflow-hidden p-[1px] relative">
           <div
             style={{ width: `${accumulatedLoad}%` }}
             className="h-full bg-gradient-to-r from-orange-500 via-amber-400 to-orange-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(249,115,22,0.9)]"

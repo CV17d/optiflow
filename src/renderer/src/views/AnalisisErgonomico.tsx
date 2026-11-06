@@ -45,16 +45,16 @@ export const AnalisisErgonomico: React.FC = () => {
       {/* Encabezado Superior de la Sección */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-1">
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">
             Análisis Ergonómico
           </h1>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">
             Telemetría Postural 3D, Estimación de Distancia y Simetría Ocular en Tiempo Real
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 text-xs font-semibold text-slate-700 shadow-2xs">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 text-xs font-semibold text-slate-700 dark:text-zinc-300 shadow-2xs">
             <span
               className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}
             />
@@ -106,10 +106,10 @@ export const AnalisisErgonomico: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
                     Distancia a Pantalla
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-400 dark:text-zinc-400">
                     Estimación euclidiana (puntos 234 - 454)
                   </p>
                 </div>
@@ -144,18 +144,18 @@ export const AnalisisErgonomico: React.FC = () => {
 
             {/* Métrica Central en Centímetros */}
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-5xl font-extrabold text-slate-900 font-mono tracking-tight">
+              <span className="text-5xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                 {Math.round(distVal)}
               </span>
-              <span className="text-xl font-bold text-slate-400 font-sans">cm</span>
-              <span className="ml-auto text-xs text-slate-500 font-medium font-mono">
+              <span className="text-xl font-bold text-slate-400 dark:text-zinc-400 font-sans">cm</span>
+              <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400 font-medium font-mono">
                 Ideal: 50 - 70 cm
               </span>
             </div>
 
             {/* Barra de Progreso Visual con Escala Graduada */}
             <div className="mt-6">
-              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1.5 font-mono">
+              <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 dark:text-zinc-400 mb-1.5 font-mono">
                 <span>20 cm (Riesgo)</span>
                 <span className="text-emerald-600 font-semibold">50-70 cm (Óptimo)</span>
                 <span>90 cm</span>
@@ -181,12 +181,12 @@ export const AnalisisErgonomico: React.FC = () => {
             </div>
 
             {/* Semáforo de 3 Luces LED */}
-            <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-slate-100">
+            <div className="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
               <div
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistCritical
                     ? 'bg-red-50 border-red-200 text-red-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 text-slate-400'
+                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
@@ -201,7 +201,7 @@ export const AnalisisErgonomico: React.FC = () => {
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistTooClose
                     ? 'bg-orange-50 border-orange-200 text-orange-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 text-slate-400'
+                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
@@ -218,7 +218,7 @@ export const AnalisisErgonomico: React.FC = () => {
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistOptimal
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 text-slate-400'
+                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
@@ -233,8 +233,8 @@ export const AnalisisErgonomico: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-500 leading-relaxed bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
-            <span className="font-bold text-slate-700">Norma ISO 9241-5:</span> Mantén la pantalla
+          <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
+            <span className="font-bold text-slate-700 dark:text-zinc-300">Norma ISO 9241-5:</span> Mantén la pantalla
             a una distancia equivalente a tu brazo extendido para relajar el músculo ciliar.
           </div>
         </Card>
@@ -262,10 +262,10 @@ export const AnalisisErgonomico: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
                     Postura Cervical
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-400 dark:text-zinc-400">
                     Inclinación tridimensional (Pitch &amp; Yaw)
                   </p>
                 </div>
@@ -296,10 +296,10 @@ export const AnalisisErgonomico: React.FC = () => {
 
             {/* Diagnóstico Central */}
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-4xl font-extrabold text-slate-900 font-mono tracking-tight">
+              <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                 {postureStatus}
               </span>
-              <span className="ml-auto text-xs font-mono font-bold text-slate-500">
+              <span className="ml-auto text-xs font-mono font-bold text-slate-500 dark:text-zinc-400">
                 ~{Math.round(postureAngle)}° Inclinación
               </span>
             </div>
@@ -349,10 +349,10 @@ export const AnalisisErgonomico: React.FC = () => {
             )}
 
             {/* Medidor Angular de Inclinación */}
-            <div className="mt-5 pt-4 border-t border-slate-100">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 mb-2">
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-zinc-400 mb-2">
                 <span>Inclinación Frontal</span>
-                <span className="font-mono text-slate-800">{Math.round(postureAngle)}° / 30°</span>
+                <span className="font-mono text-slate-800 dark:text-zinc-200">{Math.round(postureAngle)}° / 30°</span>
               </div>
               <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5">
                 <div
@@ -369,8 +369,8 @@ export const AnalisisErgonomico: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-500 leading-relaxed bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
-            <span className="font-bold text-slate-700">Impacto Biomecánico:</span> Por cada 15°
+          <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
+            <span className="font-bold text-slate-700 dark:text-zinc-300">Impacto Biomecánico:</span> Por cada 15°
             de inclinación hacia abajo, la cabeza ejerce 12 kg de fuerza extra sobre el cuello.
           </div>
         </Card>
@@ -397,10 +397,10 @@ export const AnalisisErgonomico: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
                     Simetría Facial &amp; EAR
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-400 dark:text-zinc-400">
                     Apertura bilateral en tiempo real
                   </p>
                 </div>
@@ -423,11 +423,11 @@ export const AnalisisErgonomico: React.FC = () => {
 
             {/* Métrica Central de Simetría */}
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-5xl font-extrabold text-slate-900 font-mono tracking-tight">
+              <span className="text-5xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                 {earSymmetry.toFixed(1)}%
               </span>
-              <span className="text-sm font-semibold text-slate-400 font-sans">balance</span>
-              <span className="ml-auto text-xs text-slate-500 font-mono">
+              <span className="text-sm font-semibold text-slate-400 dark:text-zinc-400 font-sans">balance</span>
+              <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400 font-mono">
                 EAR Prom: {avgEar.toFixed(2)}
               </span>
             </div>
@@ -435,7 +435,7 @@ export const AnalisisErgonomico: React.FC = () => {
             {/* Gráfico Dinámico: Ojo Izquierdo vs Ojo Derecho */}
             <div className="grid grid-cols-2 gap-3 mt-6">
               {/* Medidor Ojo Izquierdo */}
-              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-3.5 flex flex-col justify-between">
+              <div className="bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 rounded-2xl p-3.5 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-2">
                   <span>OJO IZQ</span>
                   <span className="font-mono text-orange-600">{leftEar.toFixed(3)}</span>
@@ -446,13 +446,13 @@ export const AnalisisErgonomico: React.FC = () => {
                     style={{ width: `${leftEarPercent}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">
+                <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-medium">
                   {leftEar > 0.18 ? 'Apertura normal' : 'Parpadeo / Cierre'}
                 </span>
               </div>
 
               {/* Medidor Ojo Derecho */}
-              <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-3.5 flex flex-col justify-between">
+              <div className="bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 rounded-2xl p-3.5 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-2">
                   <span>OJO DER</span>
                   <span className="font-mono text-orange-600">{rightEar.toFixed(3)}</span>
@@ -463,23 +463,23 @@ export const AnalisisErgonomico: React.FC = () => {
                     style={{ width: `${rightEarPercent}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">
+                <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-medium">
                   {rightEar > 0.18 ? 'Apertura normal' : 'Parpadeo / Cierre'}
                 </span>
               </div>
             </div>
 
             {/* Diferencial Bilateral */}
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-              <span className="text-slate-500 font-medium">Diferencial Bilateral (Δ):</span>
-              <span className="font-mono font-bold text-slate-800">
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+              <span className="text-slate-500 dark:text-zinc-400 font-medium">Diferencial Bilateral (Δ):</span>
+              <span className="font-mono font-bold text-slate-800 dark:text-zinc-200">
                 {Math.abs(leftEar - rightEar).toFixed(3)}
               </span>
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-500 leading-relaxed bg-slate-50/80 p-3 rounded-2xl border border-slate-100">
-            <span className="font-bold text-slate-700">Diagnóstico Ocular:</span> Una asimetría
+          <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
+            <span className="font-bold text-slate-700 dark:text-zinc-300">Diagnóstico Ocular:</span> Una asimetría
             prolongada (&gt;15%) indica fatiga lateralizada por ventanas fuera de tu eje visual.
           </div>
         </Card>
@@ -493,10 +493,10 @@ export const AnalisisErgonomico: React.FC = () => {
         <Card className="lg:col-span-2 p-7">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 Matriz de Telemetría Biomecánica Continua
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
                 Auditoría en vivo de parámetros biométricos contrastados con el estándar ISO 9241-5
               </p>
             </div>
@@ -506,22 +506,22 @@ export const AnalisisErgonomico: React.FC = () => {
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <tr className="border-b border-slate-100 dark:border-zinc-800 text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
                   <th className="py-3 px-3">PARÁMETRO BIOMÉDICO</th>
                   <th className="py-3 px-3">VALOR ACTUAL</th>
                   <th className="py-3 px-3">ESTÁNDAR SALUDABLE</th>
                   <th className="py-3 px-3 text-right">DIAGNÓSTICO EN VIVO</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 text-slate-700 dark:text-zinc-300">
                 <tr className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-3 px-3 font-semibold text-slate-800">
+                  <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
                     Distancia Focal a Pantalla
                   </td>
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                  <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {Math.round(distVal)} cm
                   </td>
-                  <td className="py-3 px-3 text-slate-500 font-mono">50 - 70 cm</td>
+                  <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">50 - 70 cm</td>
                   <td className="py-3 px-3 text-right">
                     {isDistOptimal ? (
                       <span className="text-emerald-600 font-bold">✓ Rango Óptimo</span>
@@ -534,13 +534,13 @@ export const AnalisisErgonomico: React.FC = () => {
                 </tr>
 
                 <tr className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-3 px-3 font-semibold text-slate-800">
+                  <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
                     Inclinación Cervical Sagital
                   </td>
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                  <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     ~{Math.round(postureAngle)}° ({postureStatus})
                   </td>
-                  <td className="py-3 px-3 text-slate-500 font-mono">10° - 15°</td>
+                  <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">10° - 15°</td>
                   <td className="py-3 px-3 text-right">
                     {postureStatus === 'Óptima' ? (
                       <span className="text-emerald-600 font-bold">✓ Alineación Neutral</span>
@@ -551,13 +551,13 @@ export const AnalisisErgonomico: React.FC = () => {
                 </tr>
 
                 <tr className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-3 px-3 font-semibold text-slate-800">
+                  <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
                     Simetría Palpebral Bilateral
                   </td>
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                  <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {earSymmetry.toFixed(1)}%
                   </td>
-                  <td className="py-3 px-3 text-slate-500 font-mono">&gt; 85.0%</td>
+                  <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">&gt; 85.0%</td>
                   <td className="py-3 px-3 text-right">
                     {earSymmetry >= 85 ? (
                       <span className="text-emerald-600 font-bold">✓ Balance Equilibrado</span>
@@ -568,13 +568,13 @@ export const AnalisisErgonomico: React.FC = () => {
                 </tr>
 
                 <tr className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-3 px-3 font-semibold text-slate-800">
+                  <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
                     Eye Aspect Ratio Medio (EAR)
                   </td>
-                  <td className="py-3 px-3 font-mono font-bold text-slate-900">
+                  <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {avgEar.toFixed(3)}
                   </td>
-                  <td className="py-3 px-3 text-slate-500 font-mono">&gt; 0.180</td>
+                  <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">&gt; 0.180</td>
                   <td className="py-3 px-3 text-right">
                     {avgEar > 0.18 ? (
                       <span className="text-emerald-600 font-bold">✓ Ojos Despejados</span>
@@ -591,27 +591,27 @@ export const AnalisisErgonomico: React.FC = () => {
         {/* Recomendaciones Ergonómicas Activas */}
         <Card className="p-7 flex flex-col justify-between">
           <div>
-            <h3 className="font-bold text-base text-slate-900 leading-tight">
+            <h3 className="font-bold text-base text-slate-900 dark:text-white leading-tight">
               Recomendaciones Activas
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">OptiFlow Smart Workplace</p>
+            <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">OptiFlow Smart Workplace</p>
 
             <div className="mt-4 flex flex-col gap-3">
               <div
                 className={`p-3 rounded-2xl border transition-all ${
                   isDistTooClose || isDistCritical
                     ? 'bg-orange-50 border-orange-200'
-                    : 'bg-slate-50/80 border-slate-100'
+                    : 'bg-slate-50/80 dark:bg-zinc-800/60 border-slate-100 dark:border-zinc-800'
                 }`}
               >
                 <span
                   className={`text-xs font-bold block ${
-                    isDistTooClose || isDistCritical ? 'text-orange-900' : 'text-slate-800'
+                    isDistTooClose || isDistCritical ? 'text-orange-900' : 'text-slate-800 dark:text-zinc-200'
                   }`}
                 >
                   1. Distancia de Enfoque
                 </span>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {isDistTooClose || isDistCritical
                     ? 'Estás demasiado cerca de la pantalla. Aleja tu monitor 10-15 cm para evitar sobreesfuerzo del iris.'
                     : 'Mantén tu distancia actual. Estás en la zona ergonómica confortable.'}
@@ -622,17 +622,17 @@ export const AnalisisErgonomico: React.FC = () => {
                 className={`p-3 rounded-2xl border transition-all ${
                   isBadPosture
                     ? 'bg-orange-50 border-orange-200'
-                    : 'bg-slate-50/80 border-slate-100'
+                    : 'bg-slate-50/80 dark:bg-zinc-800/60 border-slate-100 dark:border-zinc-800'
                 }`}
               >
                 <span
                   className={`text-xs font-bold block ${
-                    isBadPosture ? 'text-orange-900' : 'text-slate-800'
+                    isBadPosture ? 'text-orange-900' : 'text-slate-800 dark:text-zinc-200'
                   }`}
                 >
                   2. Elevación del Panel
                 </span>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {isBadPosture
                     ? 'Eleva el soporte de tu monitor para que la primera línea de texto quede frente a tus ojos sin bajar el mentón.'
                     : 'Tu ángulo de mirada es el idóneo. Evita cruzar las piernas para mantener la simetría lumbar.'}
@@ -641,7 +641,7 @@ export const AnalisisErgonomico: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-100 text-xs text-slate-400 flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-400 flex items-center justify-between">
             <span>Inferencia:</span>
             <span className="text-emerald-600 font-bold">MediaPipe Face Mesh (468 pts)</span>
           </div>

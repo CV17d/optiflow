@@ -23,7 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
     primary:
       'bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white shadow-md shadow-orange-500/25 border border-transparent focus:ring-orange-400',
     outline:
-      'bg-transparent hover:bg-gray-50 active:bg-gray-100 text-gray-800 border border-gray-200 shadow-xs focus:ring-gray-300'
+      'bg-transparent hover:bg-gray-50 active:bg-gray-100 text-gray-800 border border-gray-200 shadow-xs focus:ring-gray-300 dark:text-zinc-200 dark:border-zinc-800 dark:hover:bg-zinc-800 dark:active:bg-zinc-700'
   }
 
   return (

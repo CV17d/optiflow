@@ -72,7 +72,7 @@ export const Logo: React.FC<LogoProps> = ({
             className={
               variant === 'dark'
                 ? 'font-extrabold text-white'
-                : 'font-extrabold text-slate-800'
+                : 'font-extrabold text-slate-800 dark:text-white'
             }
           >
             Opti

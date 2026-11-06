@@ -32,10 +32,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   return (
     <div className="flex flex-col select-none">
-      <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-1">
+      <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-1">
         Salud Ocular
       </h1>
-      <p className="text-sm sm:text-base font-medium text-gray-500 mb-4">
+      <p className="text-sm sm:text-base font-medium text-gray-500 dark:text-zinc-400 mb-4">
         Control Biométrico de Fatiga y Enfoque
       </p>
 
@@ -55,7 +55,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           onClick={onToggleMonitoring}
           icon={
             <svg
-              className="w-4 h-4 text-gray-700"
+              className="w-4 h-4 text-gray-700 dark:text-zinc-300"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

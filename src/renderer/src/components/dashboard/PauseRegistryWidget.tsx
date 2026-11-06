@@ -36,9 +36,9 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
   const bars = useMemo(() => {
     if (!appUsageStats || appUsageStats.length === 0) {
       return [
-        { label: 'App 1', heightPx: 26, color: 'bg-slate-200/60', title: 'Sin registros' },
-        { label: 'App 2', heightPx: 18, color: 'bg-slate-200/50', title: 'Sin registros' },
-        { label: 'App 3', heightPx: 22, color: 'bg-slate-200/40', title: 'Sin registros' }
+        { label: 'App 1', heightPx: 26, color: 'bg-slate-200/60 dark:bg-zinc-800', title: 'Sin registros' },
+        { label: 'App 2', heightPx: 18, color: 'bg-slate-200/50 dark:bg-zinc-800/80', title: 'Sin registros' },
+        { label: 'App 3', heightPx: 22, color: 'bg-slate-200/40 dark:bg-zinc-800/60', title: 'Sin registros' }
       ]
     }
 
@@ -61,16 +61,16 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-sm sm:text-base text-slate-900 leading-tight">
+          <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
             Registro de Pausas & Contexto
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
             Hoy vs Sesión Anterior
           </p>
         </div>
         <button
           type="button"
-          className="text-slate-400 hover:text-slate-600 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
+          className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
           aria-label="Opciones"
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -85,17 +85,17 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
       <div className="flex items-end justify-between mt-3 gap-3">
         {/* Métricas Reactivas */}
         <div className="flex flex-col shrink-0">
-          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
             ADHERENCIA 20-20-20
           </span>
-          <span className="text-3xl sm:text-4xl font-black text-slate-900 mt-1 font-mono">
+          <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mt-1 font-mono">
             {adherence}
           </span>
 
-          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mt-3">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider mt-3">
             POSPUESTAS
           </span>
-          <span className="text-sm sm:text-base font-bold text-slate-800 mt-0.5 font-mono">
+          <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-zinc-200 mt-0.5 font-mono">
             {postponed}
           </span>
         </div>
@@ -108,7 +108,7 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
                 className={`w-7 sm:w-8 ${bar.color} rounded-t-lg transition-all duration-500 ease-out`}
                 style={{ height: `${bar.heightPx}px` }}
               />
-              <span className="text-[11px] sm:text-xs font-bold text-slate-500">
+              <span className="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-zinc-400">
                 {formatBarLabel(bar.label)}
               </span>
             </div>

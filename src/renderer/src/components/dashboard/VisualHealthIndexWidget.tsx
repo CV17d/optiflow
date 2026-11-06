@@ -54,31 +54,31 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
   // Color de acento según estado de alerta
   const statusColorClass =
     healthScore >= 80
-      ? 'text-emerald-700'
+      ? 'text-emerald-700 dark:text-emerald-400'
       : healthScore >= 50
-        ? 'text-slate-800'
-        : 'text-amber-600'
+        ? 'text-slate-800 dark:text-zinc-200'
+        : 'text-amber-600 dark:text-amber-400'
 
   const degradationColorClass =
     healthScore >= 80
-      ? 'text-slate-800'
+      ? 'text-slate-800 dark:text-zinc-200'
       : healthScore >= 50
-        ? 'text-amber-600'
-        : 'text-rose-600'
+        ? 'text-amber-600 dark:text-amber-400'
+        : 'text-rose-600 dark:text-rose-400'
 
   return (
     <Card className="p-5 flex flex-col justify-between select-none">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-sm sm:text-base text-slate-900 leading-tight">
+          <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
             Índice de Salud Visual
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">Score Ergonómico</p>
+          <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">Score Ergonómico</p>
         </div>
         <button
           type="button"
-          className="text-slate-400 hover:text-slate-600 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
+          className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
           aria-label="Opciones"
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -93,14 +93,14 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
       <div className="flex justify-between items-center mt-3">
         {/* Bloque Izquierdo Reactivo */}
         <div className="flex flex-col">
-          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
             ESTADO
           </span>
           <span className={`text-lg sm:text-xl lg:text-2xl font-black mt-0.5 ${statusColorClass}`}>
             {calculatedStatus}
           </span>
 
-          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mt-3">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider mt-3">
             DEGRADACIÓN
           </span>
           <span className={`text-base sm:text-lg lg:text-xl font-bold mt-0.5 ${degradationColorClass}`}>
@@ -129,7 +129,7 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
               strokeWidth="6"
               strokeLinecap="round"
               strokeDasharray="4 6"
-              className="opacity-75"
+              className="opacity-75 dark:stroke-zinc-800 dark:opacity-60"
             />
 
             {/* Arco de progreso activo suavizado */}
@@ -145,12 +145,12 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
 
           {/* Lectura Central de Score */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-3.5 pointer-events-none">
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">
+            <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider leading-none">
               HEALTH SCORE
             </span>
-            <span className="text-xl sm:text-2xl font-black text-slate-900 mt-1 leading-none font-mono">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 leading-none font-mono">
               {healthScore}
-              <span className="text-xs font-semibold text-slate-400 ml-0.5">/100</span>
+              <span className="text-xs font-semibold text-slate-400 dark:text-zinc-400 ml-0.5">/100</span>
             </span>
           </div>
         </div>

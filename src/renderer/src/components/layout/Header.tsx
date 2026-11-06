@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
       </NavLink>
 
       {/* Centro: Barra de Navegación con NavLink y estados dinámicos */}
-      <nav className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-md rounded-full px-3 py-2 shadow-sm border border-slate-200/70 dark:border-slate-800 flex items-center gap-1.5 transition-colors duration-200">
+      <nav className="bg-white/95 dark:bg-zinc-900/90 backdrop-blur-md rounded-full px-3 py-2 shadow-sm border border-slate-200/70 dark:border-zinc-800 flex items-center gap-1.5 transition-colors duration-200">
         {navTabs.map((tab) => (
           <NavLink
             key={tab.path}
@@ -43,8 +43,8 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
             className={({ isActive }) =>
               `px-5 py-2 text-sm sm:text-base rounded-full transition-all duration-150 cursor-pointer ${
                 isActive
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-medium'
+                  ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm font-bold'
+                  : 'text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white font-medium'
               }`
             }
           >
@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
       <div className="flex items-center justify-end">
         <Badge
           variant="success-outline"
-          className="px-4 py-1.5 text-xs sm:text-sm font-semibold dark:bg-slate-900 dark:border-emerald-500/40 dark:text-slate-200"
+          className="px-4 py-1.5 text-xs sm:text-sm font-semibold dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300"
           icon={
             <svg
               className="w-4 h-4 text-emerald-500"

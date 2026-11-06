@@ -21,7 +21,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const variantStyles: Record<BadgeVariant, string> = {
     'success-outline':
-      'bg-white text-slate-700 border border-emerald-400 px-3.5 py-1.5 shadow-xs',
+      'bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-200 border border-emerald-400 dark:border-emerald-500/50 px-3.5 py-1.5 shadow-xs',
     'warning-text':
       'bg-transparent text-orange-500 uppercase tracking-wider p-0',
     'solid-orange':
