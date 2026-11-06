@@ -32,6 +32,7 @@ def get_fused_payload() -> dict:
         "average_ear": bio_data.get("average_ear", 0.26),
         "distance": bio_data.get("distance", 58.4),
         "distance_cm": bio_data.get("distance_cm", "58.4 cm"),
+        "ear_threshold": bio_data.get("ear_threshold", 0.18),
         "active_app": app_data.get("active_app", "Cursor"),
         "app_status": app_data.get("app_status", "Enfoque Profundo")
     }
@@ -81,6 +82,24 @@ async def handler(websocket):
                     }
                     await websocket.send(json.dumps(status_response))
                     logging.info(f"Comando WebSocket '{action}' ejecutado para cliente {websocket.remote_address}")
+                elif action == "start_calibration":
+                    vision_engine.handle_command(cmd)
+                    start_response = {
+                        "type": "calibration_started",
+                        "calibration_active": True
+                    }
+                    await websocket.send(json.dumps(start_response))
+                    logging.info(f"Comando WebSocket 'start_calibration' iniciado para cliente {websocket.remote_address}")
+                elif action == "save_calibration":
+                    threshold = float(cmd.get("threshold", vision_engine.ear_threshold))
+                    vision_engine.handle_command(cmd)
+                    save_response = {
+                        "type": "calibration_saved",
+                        "threshold": vision_engine.ear_threshold,
+                        "status": "success"
+                    }
+                    await websocket.send(json.dumps(save_response))
+                    logging.info(f"Comando WebSocket 'save_calibration' guardado: {threshold}")
             except Exception as e:
                 logging.error(f"Error procesando mensaje entrante en WebSocket: {e}")
     except websockets.exceptions.ConnectionClosed:
@@ -96,6 +115,31 @@ async def broadcast_telemetry():
     db_save_interval = 10.0  # Guardar en SQLite cada 10 segundos para no saturar el I/O del disco
 
     while True:
+        # Si el modo calibración está activo, emitir el stream a alta frecuencia (~16 FPS)
+        if vision_engine.calibration_mode:
+            cal_payload = vision_engine.get_calibration_payload()
+            if CONNECTED_CLIENTS:
+                msg = json.dumps(cal_payload)
+                await asyncio.gather(
+                    *[client.send(msg) for client in CONNECTED_CLIENTS.copy()],
+                    return_exceptions=True
+                )
+            await asyncio.sleep(0.06)
+            continue
+        elif vision_engine.calibration_result is not None:
+            # Emitir payload final con el resultado de la calibración
+            res_payload = {
+                "type": "calibration_result",
+                **vision_engine.calibration_result
+            }
+            if CONNECTED_CLIENTS:
+                await asyncio.gather(
+                    *[client.send(json.dumps(res_payload)) for client in CONNECTED_CLIENTS.copy()],
+                    return_exceptions=True
+                )
+            vision_engine.calibration_result = None
+            await asyncio.sleep(0.1)
+
         payload = get_fused_payload()
         try:
             print(f"Emitiendo: {payload}", flush=True)
@@ -135,9 +179,9 @@ def listen_stdin_thread():
                 continue
             cmd = json.loads(line)
             action = cmd.get("action")
-            if action in ("pause", "resume"):
+            if action in ("pause", "resume", "start_calibration", "save_calibration"):
                 vision_engine.handle_command(cmd)
-                logging.info(f"[Stdin IPC] Comando '{action}' aplicado al hardware de la cámara.")
+                logging.info(f"[Stdin IPC] Comando '{action}' aplicado al motor biométrico.")
         except OSError:
             # En Windows con entornos desacoplados o sin consola, sys.stdin produce OSError (Errno 22).
             # Manejar silenciosamente sin romper el servidor WebSocket.

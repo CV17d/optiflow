@@ -9,6 +9,24 @@ export interface TelemetryData {
   average_ear?: number
   distance?: number
   distance_cm?: string
+  ear_threshold?: number
+}
+
+export interface CalibrationResult {
+  threshold: number
+  minEar: number
+  maxEar: number
+  completed: boolean
+}
+
+export interface CalibrationState {
+  isActive: boolean
+  progress: number
+  remainingSeconds: number
+  currentEar: number
+  faceMesh: number[][]
+  result: CalibrationResult | null
+  isSaved: boolean
 }
 
 export interface AppUsageStat {
@@ -43,9 +61,13 @@ export interface HistoryData {
 export interface UseTelemetryReturn {
   data: TelemetryData
   historyData: HistoryData | null
+  calibrationState: CalibrationState
   isConnected: boolean
   error: string | null
   sendCommand: (cmd: { action: string; [key: string]: unknown }) => void
+  startCalibration: () => void
+  saveCalibration: (threshold: number) => void
+  resetCalibration: () => void
 }
 
 const DEFAULT_TELEMETRY: TelemetryData = {
@@ -56,7 +78,18 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   ear: 0.28,
   average_ear: 0.26,
   distance: 58.4,
-  distance_cm: '58.4 cm'
+  distance_cm: '58.4 cm',
+  ear_threshold: 0.18
+}
+
+const DEFAULT_CALIBRATION: CalibrationState = {
+  isActive: false,
+  progress: 0,
+  remainingSeconds: 15,
+  currentEar: 0.25,
+  faceMesh: [],
+  result: null,
+  isSaved: false
 }
 
 const DEFAULT_HISTORY: HistoryData = {
@@ -68,6 +101,7 @@ const DEFAULT_HISTORY: HistoryData = {
 export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryReturn {
   const [data, setData] = useState<TelemetryData>(DEFAULT_TELEMETRY)
   const [historyData, setHistoryData] = useState<HistoryData | null>(DEFAULT_HISTORY)
+  const [calibrationState, setCalibrationState] = useState<CalibrationState>(DEFAULT_CALIBRATION)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -93,8 +127,59 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
           try {
             const parsed = JSON.parse(event.data)
 
-            // Detectar si el mensaje entrante es el paquete inicial de historial de SQLite
-            if (parsed.type === 'initial_history' || parsed.event === 'initial_history') {
+            // Manejo de eventos de Calibración Biométrica Interactiva
+            if (parsed.type === 'calibration_stream') {
+              setCalibrationState((prev) => ({
+                ...prev,
+                isActive: parsed.calibration_active ?? true,
+                progress: typeof parsed.progress === 'number' ? parsed.progress : prev.progress,
+                remainingSeconds:
+                  typeof parsed.remaining_seconds === 'number'
+                    ? parsed.remaining_seconds
+                    : prev.remainingSeconds,
+                currentEar:
+                  typeof parsed.current_ear === 'number' ? parsed.current_ear : prev.currentEar,
+                faceMesh: Array.isArray(parsed.face_mesh) ? parsed.face_mesh : prev.faceMesh,
+                result: parsed.result
+                  ? {
+                      threshold: parsed.result.threshold,
+                      minEar: parsed.result.min_ear,
+                      maxEar: parsed.result.max_ear,
+                      completed: parsed.result.completed
+                    }
+                  : prev.result
+              }))
+            } else if (parsed.type === 'calibration_result') {
+              setCalibrationState((prev) => ({
+                ...prev,
+                isActive: false,
+                progress: 100,
+                remainingSeconds: 0,
+                result: {
+                  threshold: parsed.threshold,
+                  minEar: parsed.min_ear,
+                  maxEar: parsed.max_ear,
+                  completed: parsed.completed ?? true
+                }
+              }))
+            } else if (parsed.type === 'calibration_saved') {
+              setCalibrationState((prev) => ({
+                ...prev,
+                isSaved: true
+              }))
+              if (typeof parsed.threshold === 'number') {
+                setData((prev) => ({ ...prev, ear_threshold: parsed.threshold }))
+              }
+            } else if (parsed.type === 'calibration_started') {
+              setCalibrationState((prev) => ({
+                ...prev,
+                isActive: true,
+                progress: 0,
+                remainingSeconds: 15,
+                result: null,
+                isSaved: false
+              }))
+            } else if (parsed.type === 'initial_history' || parsed.event === 'initial_history') {
               const stats = parsed.historical_stats || parsed
               const parsedHistory: HistoryData = {
                 average_fatigue: Number(stats.average_fatigue ?? parsed.average_fatigue ?? 0),
@@ -110,7 +195,6 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
               setHistoryData(parsedHistory)
             } else {
               // Telemetría normal en tiempo real
-              console.log('Telemetría en tiempo real recibida:', parsed)
               setData((prev) => ({
                 ...prev,
                 ...parsed
@@ -167,7 +251,40 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
     }
   }
 
-  return { data, historyData, isConnected, error, sendCommand }
+  const startCalibration = (): void => {
+    setCalibrationState({
+      isActive: true,
+      progress: 0,
+      remainingSeconds: 15,
+      currentEar: 0.25,
+      faceMesh: [],
+      result: null,
+      isSaved: false
+    })
+    sendCommand({ action: 'start_calibration' })
+  }
+
+  const saveCalibration = (threshold: number): void => {
+    sendCommand({ action: 'save_calibration', threshold })
+    setCalibrationState((prev) => ({ ...prev, isSaved: true }))
+    setData((prev) => ({ ...prev, ear_threshold: threshold }))
+  }
+
+  const resetCalibration = (): void => {
+    setCalibrationState(DEFAULT_CALIBRATION)
+  }
+
+  return {
+    data,
+    historyData,
+    calibrationState,
+    isConnected,
+    error,
+    sendCommand,
+    startCalibration,
+    saveCalibration,
+    resetCalibration
+  }
 }
 
 export default useTelemetry

@@ -1,5 +1,13 @@
 import { useState, useEffect, useMemo } from 'react'
-import { useTelemetry, HistoryData, TelemetryData } from './useTelemetry'
+import {
+  useTelemetry,
+  HistoryData,
+  TelemetryData,
+  CalibrationState,
+  CalibrationResult
+} from './useTelemetry'
+
+export type { CalibrationState, CalibrationResult }
 
 export interface BiometricsState {
   fatigue_level: number
@@ -14,15 +22,20 @@ export interface BiometricsState {
   active_app: string
   app_status: string
   tracking_points: number
+  ear_threshold: number
 }
 
 export interface UseBiometricsReturn {
   biometrics: BiometricsState
   telemetry: TelemetryData
   historyData: HistoryData | null
+  calibrationState: CalibrationState
   isConnected: boolean
   error: string | null
   sendAction: (action: 'pause' | 'resume') => void
+  startCalibration: () => void
+  saveCalibration: (threshold: number) => void
+  resetCalibration: () => void
 }
 
 /**
@@ -30,7 +43,17 @@ export interface UseBiometricsReturn {
  * proporcionando métricas en tiempo real y contador de sesión continuo.
  */
 export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometricsReturn {
-  const { data: telemetry, historyData, isConnected, error, sendCommand } = useTelemetry(url)
+  const {
+    data: telemetry,
+    historyData,
+    calibrationState,
+    isConnected,
+    error,
+    sendCommand,
+    startCalibration,
+    saveCalibration,
+    resetCalibration
+  } = useTelemetry(url)
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0)
 
   // Temporizador dinámico para calcular tiempo de sesión en pantalla
@@ -77,7 +100,8 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
       next_break_minutes: nextBreakMinutes,
       active_app: telemetry.active_app || 'VS Code',
       app_status: telemetry.app_status || 'Enfoque Profundo',
-      tracking_points: isConnected ? 468 : 0
+      tracking_points: isConnected ? 468 : 0,
+      ear_threshold: typeof telemetry.ear_threshold === 'number' ? telemetry.ear_threshold : 0.18
     }
   }, [telemetry, historyData, sessionTime, elapsedSeconds, nextBreakMinutes, isConnected])
 
@@ -89,9 +113,13 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
     biometrics,
     telemetry,
     historyData,
+    calibrationState,
     isConnected,
     error,
-    sendAction
+    sendAction,
+    startCalibration,
+    saveCalibration,
+    resetCalibration
   }
 }
 
