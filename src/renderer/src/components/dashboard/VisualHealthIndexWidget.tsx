@@ -67,21 +67,21 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
         : 'text-rose-600'
 
   return (
-    <Card className="p-4 flex flex-col justify-between select-none">
+    <Card className="p-5 flex flex-col justify-between select-none">
       {/* Cabecera */}
       <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
+          <h3 className="font-bold text-sm sm:text-base text-slate-900 leading-tight">
             Índice de Salud Visual
           </h3>
-          <p className="text-[11px] text-slate-400 mt-0.5">Score Ergonómico</p>
+          <p className="text-xs text-slate-400 mt-0.5">Score Ergonómico</p>
         </div>
         <button
           type="button"
           className="text-slate-400 hover:text-slate-600 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
           aria-label="Opciones"
         >
-          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <circle cx="5" cy="12" r="2" />
             <circle cx="12" cy="12" r="2" />
             <circle cx="19" cy="12" r="2" />
@@ -90,26 +90,26 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
       </div>
 
       {/* Contenido: Bloques de estado dinámico y Medidor de Velocímetro (Arco de 240°) */}
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex justify-between items-center mt-3">
         {/* Bloque Izquierdo Reactivo */}
         <div className="flex flex-col">
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
             ESTADO
           </span>
-          <span className={`text-xs sm:text-sm font-bold mt-0.5 ${statusColorClass}`}>
+          <span className={`text-lg sm:text-xl lg:text-2xl font-black mt-0.5 ${statusColorClass}`}>
             {calculatedStatus}
           </span>
 
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-2">
+          <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider mt-3">
             DEGRADACIÓN
           </span>
-          <span className={`text-xs sm:text-sm font-bold mt-0.5 ${degradationColorClass}`}>
+          <span className={`text-base sm:text-lg lg:text-xl font-bold mt-0.5 ${degradationColorClass}`}>
             {calculatedDegradation}
           </span>
         </div>
 
         {/* Medidor de Arco tipo Velocímetro HUD (240°) */}
-        <div className="relative w-24 h-20 flex items-center justify-center">
+        <div className="relative w-28 h-24 sm:w-32 sm:h-28 flex items-center justify-center">
           <svg
             className="w-full h-full overflow-visible"
             viewBox="0 0 104 94"
@@ -144,13 +144,13 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
           </svg>
 
           {/* Lectura Central de Score */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-3 pointer-events-none">
-            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider leading-none">
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-3.5 pointer-events-none">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none">
               HEALTH SCORE
             </span>
-            <span className="text-base font-black text-slate-900 mt-1 leading-none font-mono">
+            <span className="text-xl sm:text-2xl font-black text-slate-900 mt-1 leading-none font-mono">
               {healthScore}
-              <span className="text-[11px] font-semibold text-slate-400 ml-0.5">/100</span>
+              <span className="text-xs font-semibold text-slate-400 ml-0.5">/100</span>
             </span>
           </div>
         </div>

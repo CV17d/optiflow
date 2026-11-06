@@ -109,11 +109,11 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto h-full flex flex-col justify-between overflow-hidden gap-2.5 pb-0.5">
-      {/* Fila Superior: Controles, Escáner Biométrico y Estado Ocular */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full items-stretch">
+    <div className="w-full max-w-[1700px] mx-auto min-h-full flex flex-col justify-between gap-6 pb-4">
+      {/* Fila Superior: Controles, Escáner Biométrico Gigante y Estado Ocular */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full items-center">
         {/* Columna Izquierda: Títulos, acciones y telemetría de aplicaciones */}
-        <div className="flex flex-col gap-2.5 justify-between" id="dashboard-col-left">
+        <div className="flex flex-col gap-4 justify-between h-full" id="dashboard-col-left">
           <DashboardHeader
             isMonitoring={isMonitoring}
             onToggleMonitoring={handleToggleMonitoring}
@@ -128,9 +128,9 @@ export const Dashboard: React.FC = () => {
           />
         </div>
 
-        {/* Columna Central: Modelo biométrico 3D (Ojo con retícula HUD) */}
+        {/* Columna Central: Modelo biométrico (Ojo de alta fidelidad con retícula HUD gigante) */}
         <div
-          className="flex flex-col items-center justify-center"
+          className="flex flex-col items-center justify-center py-2"
           id="dashboard-col-center"
         >
           <EyeBiometricsWidget
@@ -140,7 +140,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Columna Derecha: Tarjetas de fatiga ocular y frecuencia de parpadeo en tiempo real */}
-        <div className="flex flex-col gap-2.5 justify-between" id="dashboard-col-right">
+        <div className="flex flex-col gap-4 justify-between h-full" id="dashboard-col-right">
           <FatigueLevelWidget
             fatigueLevel={currentFatigue}
             sessionDuration={biometrics.session_time}
@@ -151,7 +151,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Fila Inferior: Widgets Reactivos de Salud Visual, Registro de Pausas y Correlación */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-1 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 items-stretch">
         <VisualHealthIndexWidget
           fatigueLevel={currentFatigue}
           averageFatigue={historyData?.average_fatigue}

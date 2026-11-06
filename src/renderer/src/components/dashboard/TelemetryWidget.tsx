@@ -34,13 +34,13 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
       : []
 
   return (
-    <Card className="p-4 flex flex-col justify-between gap-3 select-none">
+    <Card className="p-5 flex flex-col justify-between gap-3.5 select-none">
       {/* Cabecera del Widget */}
       <div className="flex items-center justify-between">
-        <div className="flex items-start gap-2.5">
+        <div className="flex items-start gap-3">
           <div className="mt-0.5 text-slate-400">
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -55,29 +55,29 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
             </svg>
           </div>
           <div>
-            <h3 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
+            <h3 className="font-bold text-sm sm:text-base text-slate-900 leading-tight">
               Contexto de Software
             </h3>
-            <p className="text-[11px] text-slate-400 mt-0.5">Telemetría de Apps</p>
+            <p className="text-xs text-slate-400 mt-0.5">Telemetría de Apps</p>
           </div>
         </div>
-        <Badge variant="warning-text">ACTIVA</Badge>
+        <Badge variant="warning-text" className="text-xs font-bold">ACTIVA</Badge>
       </div>
 
       {/* Contenido Principal: Aplicación Activa y Estado del Sistema */}
-      <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-2.5 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
+      <div className="bg-slate-50/80 border border-slate-100 rounded-2xl p-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           {/* Icono Nativo del Sistema Operativo con fallback elegante */}
-          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
             {appIconBase64 ? (
               <img
                 src={appIconBase64}
                 alt="App Icon"
-                className="w-8 h-8 object-contain"
+                className="w-9 h-9 object-contain"
               />
             ) : (
               <svg
-                className="w-5 h-5 text-orange-500"
+                className="w-6 h-6 text-orange-500"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -93,31 +93,31 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
           </div>
           <div className="min-w-0">
             <h4
-              className="font-bold text-xs sm:text-sm text-slate-900 leading-none truncate"
+              className="font-bold text-sm sm:text-base text-slate-900 leading-tight truncate"
               title={currentApp}
             >
               {currentApp}
             </h4>
-            <p className="text-[10px] text-slate-400 mt-1 truncate">
+            <p className="text-xs text-slate-400 mt-0.5 truncate">
               {currentStatus}
             </p>
           </div>
         </div>
 
         {/* Sparkline y Estado de Enfoque Dinámico */}
-        <div className="flex items-center gap-2 shrink-0">
-          <svg className="w-14 h-6 hidden sm:block" viewBox="0 0 64 24" fill="none">
+        <div className="flex items-center gap-2.5 shrink-0">
+          <svg className="w-16 h-7 hidden sm:block" viewBox="0 0 64 24" fill="none">
             <path
               d="M2 18C12 18 16 22 24 16C32 10 38 18 46 8C52 2 58 10 62 6"
               stroke="#F97316"
-              strokeWidth="2"
+              strokeWidth="2.2"
               strokeLinecap="round"
             />
             <circle cx="62" cy="6" r="2.5" fill="#F97316" />
           </svg>
-          <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[9px] font-bold text-emerald-700 whitespace-nowrap">
+          <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] sm:text-xs font-bold text-emerald-700 whitespace-nowrap">
               {currentStatus}
             </span>
           </div>
@@ -126,22 +126,26 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
 
       {/* Lista Inferior: Estadísticas reales de apps desde SQLite vía IPC */}
       {secondaryApps.length > 0 ? (
-        <div className="flex items-center justify-between text-[11px] text-slate-600 pt-0.5 px-0.5">
+        <div className="flex items-center justify-between text-xs text-slate-600 pt-0.5 px-0.5">
           {secondaryApps.map((item, index) => (
-            <div key={item.app} className="flex items-center gap-1.5 min-w-0">
+            <div key={item.app} className="flex items-center gap-2 min-w-0">
               <span
                 className={`w-2 h-2 rounded-full shrink-0 ${
                   index === 0 ? 'bg-orange-500' : 'bg-slate-300'
                 }`}
               />
-              <span className="truncate max-w-[120px]" title={item.app}>
+              <span className="truncate max-w-[140px]" title={item.app}>
                 {index + 1}. {item.app}{' '}
                 <span className="text-slate-400 font-medium">({item.percentage}%)</span>
               </span>
             </div>
           ))}
         </div>
-      ) : null}
+      ) : (
+        <div className="text-xs text-slate-400 italic pt-0.5 px-0.5">
+          Esperando telemetría de ventanas activas...
+        </div>
+      )}
     </Card>
   )
 }

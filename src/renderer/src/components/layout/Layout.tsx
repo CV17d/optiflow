@@ -19,7 +19,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, className = '' }) => {
       <main
         className={
           isCompactView
-            ? 'flex-1 overflow-hidden px-6 pt-0 pb-2 flex flex-col min-h-0'
+            ? 'flex-1 overflow-y-auto px-8 pt-0 pb-6 flex flex-col min-h-0'
             : 'flex-1 overflow-y-auto p-8 pt-2 pb-16'
         }
       >

@@ -27,7 +27,7 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       {/* =================================================================== */}
       {/* 1. CONTENEDOR DEL OJO CON DESVANECIMIENTO RADIAL (SIN BORDES DUROS) */}
       {/* =================================================================== */}
-      <div className="relative w-72 h-52 sm:w-80 sm:h-56 lg:w-[340px] lg:h-[235px] flex items-center justify-center">
+      <div className="relative w-80 h-60 sm:w-96 sm:h-72 md:w-[440px] md:h-[320px] lg:w-[480px] lg:h-[350px] xl:w-[500px] xl:h-[365px] flex items-center justify-center">
         {/* Contenedor con máscara de degradado radial progresivo hacia #F5F5F7 */}
         <div
           className="relative w-full h-full flex items-center justify-center"
@@ -140,22 +140,22 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
 
           {/* D. Línea de Escaneo Láser Horizontal con desvanecimiento a 0 en ambos extremos */}
           <div
-            className="absolute left-10 right-10 pointer-events-none z-15 flex flex-col items-center"
+            className="absolute left-8 right-8 pointer-events-none z-15 flex flex-col items-center"
             style={{
               animation: 'cyanLaserOscillate 3.6s ease-in-out infinite',
-              height: '1.8px',
+              height: '2px',
               background:
                 'linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.15) 15%, #22D3EE 42%, #FFFFFF 50%, #22D3EE 58%, rgba(34, 211, 238, 0.15) 85%, transparent 100%)',
               boxShadow:
-                '0 0 10px 2px rgba(34, 211, 238, 0.75)'
+                '0 0 12px 2.5px rgba(34, 211, 238, 0.75)'
             }}
           >
             {/* Sutil estela difusa que también se desvanece suavemente */}
             <div
-              className="w-full h-6 -mt-3 pointer-events-none"
+              className="w-full h-8 -mt-4 pointer-events-none"
               style={{
                 background:
-                  'radial-gradient(ellipse 60% 100% at 50% 50%, rgba(34, 211, 238, 0.15) 0%, transparent 80%)'
+                  'radial-gradient(ellipse 60% 100% at 50% 50%, rgba(34, 211, 238, 0.18) 0%, transparent 80%)'
               }}
             />
           </div>
@@ -165,14 +165,14 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       {/* =================================================================== */}
       {/* 3. ETIQUETA EXTERIOR INDEPENDIENTE (FUERA DEL CONTENEDOR DEL OJO)   */}
       {/* =================================================================== */}
-      <div className="mt-4 sm:mt-5 inline-flex items-center justify-center gap-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1.5 shadow-2xs transition-all duration-200">
+      <div className="mt-4 sm:mt-5 inline-flex items-center justify-center gap-2.5 bg-cyan-500/10 border border-cyan-500/25 rounded-full px-5 py-2 shadow-2xs transition-all duration-200">
         <span
-          className={`w-1.5 h-1.5 rounded-full ${
+          className={`w-2 h-2 rounded-full ${
             isBlinking ? 'bg-cyan-500 animate-ping' : 'bg-cyan-500 animate-pulse'
           }`}
         />
-        <span className="text-xs font-sans font-semibold text-cyan-600 dark:text-cyan-400 tracking-wide">
-          TRACKING {trackingPoints} PTS <span className="text-cyan-400 mx-1">•</span> EAR{' '}
+        <span className="text-xs sm:text-sm font-sans font-bold text-cyan-600 dark:text-cyan-400 tracking-wide">
+          TRACKING {trackingPoints} PTS <span className="text-cyan-400 mx-1.5">•</span> EAR{' '}
           <span className="font-extrabold text-cyan-700 dark:text-cyan-300">
             {typeof ear === 'number' ? ear.toFixed(2) : ear}
           </span>

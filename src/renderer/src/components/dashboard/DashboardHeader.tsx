@@ -31,20 +31,20 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   return (
     <div className="flex flex-col select-none">
-      <h1 className="text-2xl font-bold tracking-tight text-gray-900 mb-0.5">
+      <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-1">
         Salud Ocular
       </h1>
-      <p className="text-xs font-medium text-gray-500 mb-3">
+      <p className="text-sm sm:text-base font-medium text-gray-500 mb-4">
         Control Biométrico de Fatiga y Enfoque
       </p>
 
-      <div className="flex items-center gap-2.5 flex-wrap">
+      <div className="flex items-center gap-3 flex-wrap">
         <Button
           variant="primary"
-          className="px-3.5 py-1.5 text-xs shadow-sm"
+          className="px-4 py-2 text-xs sm:text-sm font-semibold shadow-sm"
           onClick={handleTriggerBreak}
           icon={
-            <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
             </svg>
           }
@@ -54,11 +54,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
         <Button
           variant="outline"
-          className="px-3.5 py-1.5 text-xs"
+          className="px-4 py-2 text-xs sm:text-sm font-semibold"
           onClick={onToggleMonitoring}
           icon={
             <svg
-              className="w-3.5 h-3.5 text-gray-700"
+              className="w-4 h-4 text-gray-700"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
