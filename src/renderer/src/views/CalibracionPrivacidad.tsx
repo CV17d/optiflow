@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import { useBiometrics } from '../hooks/useBiometrics'
@@ -26,6 +27,7 @@ const LIPS_OUTER = [
 ]
 
 export const CalibracionPrivacidad: React.FC = () => {
+  const { t } = useTranslation()
   const {
     biometrics,
     calibrationState,
@@ -60,30 +62,30 @@ export const CalibracionPrivacidad: React.FC = () => {
   const activeInstruction = useMemo(() => {
     if (elapsed < 4) {
       return {
-        text: 'Mire fijamente al centro del óvalo...',
-        phase: 'Fase 1 / 4 • Enfoque Central',
-        tip: 'Mantén los ojos abiertos de forma relajada y natural'
+        text: t('calibration.instructions.phase1Text', 'Mire fijamente al centro del óvalo...'),
+        phase: t('calibration.instructions.phase1Phase', 'Fase 1 / 4 • Enfoque Central'),
+        tip: t('calibration.instructions.phase1Tip', 'Mantén los ojos abiertos de forma relajada y natural')
       }
     } else if (elapsed < 8) {
       return {
-        text: 'Gire el rostro levemente a la derecha...',
-        phase: 'Fase 2 / 4 • Calibración Angular Derecha',
-        tip: 'Un giro suave de unos 15° para registrar el ángulo'
+        text: t('calibration.instructions.phase2Text', 'Gire el rostro levemente a la derecha...'),
+        phase: t('calibration.instructions.phase2Phase', 'Fase 2 / 4 • Calibración Angular Derecha'),
+        tip: t('calibration.instructions.phase2Tip', 'Un giro suave de unos 15° para registrar el ángulo')
       }
     } else if (elapsed < 12) {
       return {
-        text: 'Gire levemente a la izquierda...',
-        phase: 'Fase 3 / 4 • Calibración Angular Izquierda',
-        tip: 'Alinea los contornos anatómicos laterales'
+        text: t('calibration.instructions.phase3Text', 'Gire levemente a la izquierda...'),
+        phase: t('calibration.instructions.phase3Phase', 'Fase 3 / 4 • Calibración Angular Izquierda'),
+        tip: t('calibration.instructions.phase3Tip', 'Alinea los contornos anatómicos laterales')
       }
     } else {
       return {
-        text: 'Parpadee con naturalidad...',
-        phase: 'Fase 4 / 4 • Registro de Oclusión (EAR Mínimo)',
-        tip: 'Detectando la contracción palpebral máxima'
+        text: t('calibration.instructions.phase4Text', 'Parpadee con naturalidad...'),
+        phase: t('calibration.instructions.phase4Phase', 'Fase 4 / 4 • Registro de Oclusión (EAR Mínimo)'),
+        tip: t('calibration.instructions.phase4Tip', 'Detectando la contracción palpebral máxima')
       }
     }
-  }, [elapsed])
+  }, [elapsed, t])
 
   // Renderizado dinámico continuo sobre el Canvas 2D
   useEffect(() => {
@@ -206,7 +208,7 @@ export const CalibracionPrivacidad: React.FC = () => {
         ctx.fillStyle = 'rgba(249, 115, 22, 0.8)'
         ctx.font = 'bold 12px ui-monospace, SFMono-Regular, Menlo, monospace'
         ctx.textAlign = 'center'
-        ctx.fillText('ÁREA DE ESCANEO FACIAL', w / 2, h / 2 + 10)
+        ctx.fillText(t('calibration.scanArea', 'ÁREA DE ESCANEO FACIAL'), w / 2, h / 2 + 10)
       }
 
       animationFrameId = requestAnimationFrame(render)
@@ -217,21 +219,24 @@ export const CalibracionPrivacidad: React.FC = () => {
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
-  }, [calibrationState.faceMesh, calibrationState.imageB64, calibrationState.isActive])
+  }, [calibrationState.faceMesh, calibrationState.imageB64, calibrationState.isActive, t])
 
   return (
     <div className="w-full max-w-[1500px] mx-auto h-full flex flex-col justify-between items-center select-none overflow-hidden pb-0.5">
       {/* Encabezado Principal Centrado */}
       <div className="flex flex-col items-center text-center mb-1">
-        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-600 text-[10px] font-bold mb-1 shadow-xs">
+        <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-orange-50 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-800/50 text-orange-600 dark:text-orange-400 text-[10px] font-bold mb-1 shadow-xs">
           <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-ping inline-block" />
-          <span>ESCÁNER ANATÓMICO 3D</span>
+          <span>{t('calibration.badge', 'ESCÁNER ANATÓMICO 3D')}</span>
         </div>
         <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-0.5">
-          Calibración Ocular & Privacidad
+          {t('calibration.title', 'Calibración Ocular & Privacidad')}
         </h1>
         <p className="text-xs font-medium text-slate-500 dark:text-zinc-400 max-w-xl">
-          Ajuste anatómico de Eye Aspect Ratio (EAR) sobre tu feed de video en tiempo real, procesado 100% local.
+          {t(
+            'calibration.subtitle',
+            'Ajuste anatómico de Eye Aspect Ratio (EAR) sobre tu feed de video en tiempo real, procesado 100% local.'
+          )}
         </p>
       </div>
 
@@ -240,10 +245,10 @@ export const CalibracionPrivacidad: React.FC = () => {
         <div
           className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 1
-              ? 'bg-white border-orange-500/70 shadow-sm ring-1 ring-orange-500/20'
+              ? 'bg-white dark:bg-zinc-900 border-orange-500/70 shadow-sm ring-1 ring-orange-500/20'
               : currentStep > 1
-                ? 'bg-orange-50/70 border-orange-300 text-slate-800 dark:text-zinc-200'
-                : 'bg-white/60 border-slate-200 dark:border-zinc-700 opacity-60'
+                ? 'bg-orange-50/70 dark:bg-orange-950/40 border-orange-300 dark:border-orange-800/60 text-slate-800 dark:text-zinc-200'
+                : 'bg-white/60 dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-700 opacity-60'
           }`}
         >
           <div
@@ -252,17 +257,17 @@ export const CalibracionPrivacidad: React.FC = () => {
                 ? 'bg-orange-500 text-white'
                 : currentStep > 1
                   ? 'bg-orange-600 text-white'
-                  : 'bg-slate-100 text-slate-400 dark:text-zinc-400'
+                  : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-400'
             }`}
           >
             {currentStep > 1 ? '✓' : '1'}
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
-              Fase 1
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 leading-none">
+              {t('calibration.steps.phase1', 'Fase 1')}
             </span>
             <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 mt-0.5 leading-none">
-              Standby & Guía
+              {t('calibration.steps.phase1Title', 'Standby & Guía')}
             </span>
           </div>
         </div>
@@ -270,10 +275,10 @@ export const CalibracionPrivacidad: React.FC = () => {
         <div
           className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 2
-              ? 'bg-white border-orange-500 shadow-md ring-2 ring-orange-500/30'
+              ? 'bg-white dark:bg-zinc-900 border-orange-500 shadow-md ring-2 ring-orange-500/30'
               : currentStep > 2
-                ? 'bg-orange-50/70 border-orange-300 text-slate-800 dark:text-zinc-200'
-                : 'bg-white/60 border-slate-200 dark:border-zinc-700 opacity-60'
+                ? 'bg-orange-50/70 dark:bg-orange-950/40 border-orange-300 dark:border-orange-800/60 text-slate-800 dark:text-zinc-200'
+                : 'bg-white/60 dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-700 opacity-60'
           }`}
         >
           <div
@@ -282,17 +287,17 @@ export const CalibracionPrivacidad: React.FC = () => {
                 ? 'bg-orange-500 text-white animate-pulse'
                 : currentStep > 2
                   ? 'bg-orange-600 text-white'
-                  : 'bg-slate-100 text-slate-400 dark:text-zinc-400'
+                  : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-400'
             }`}
           >
             {currentStep > 2 ? '✓' : '2'}
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
-              Fase 2
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 leading-none">
+              {t('calibration.steps.phase2', 'Fase 2')}
             </span>
             <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 mt-0.5 leading-none">
-              Escaneo Facial (15s)
+              {t('calibration.steps.phase2Title', { time: 15 })}
             </span>
           </div>
         </div>
@@ -300,25 +305,25 @@ export const CalibracionPrivacidad: React.FC = () => {
         <div
           className={`rounded-xl p-2 border transition-all duration-300 flex items-center gap-2.5 ${
             currentStep === 3
-              ? 'bg-white border-orange-500 shadow-sm ring-1 ring-orange-500/20'
-              : 'bg-white/60 border-slate-200 dark:border-zinc-700 opacity-60'
+              ? 'bg-white dark:bg-zinc-900 border-orange-500 shadow-sm ring-1 ring-orange-500/20'
+              : 'bg-white/60 dark:bg-zinc-900/60 border-slate-200 dark:border-zinc-700 opacity-60'
           }`}
         >
           <div
             className={`w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs ${
               currentStep === 3
                 ? 'bg-orange-500 text-white'
-                : 'bg-slate-100 text-slate-400 dark:text-zinc-400'
+                : 'bg-slate-100 dark:bg-zinc-800 text-slate-400 dark:text-zinc-400'
             }`}
           >
             3
           </div>
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 leading-none">
-              Fase 3
+            <span className="text-[9px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 leading-none">
+              {t('calibration.steps.phase3', 'Fase 3')}
             </span>
             <span className="text-xs font-bold text-slate-800 dark:text-zinc-200 mt-0.5 leading-none">
-              Umbral & Guardado
+              {t('calibration.steps.phase3Title', 'Umbral & Guardado')}
             </span>
           </div>
         </div>
@@ -328,11 +333,11 @@ export const CalibracionPrivacidad: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 w-full items-start flex-1 min-h-0">
         {/* COLUMNA 1 (IZQUIERDA): TARJETA DE GARANTÍA DE PRIVACIDAD */}
         <div className="lg:col-span-1">
-          <Card className="p-4 border-orange-100 shadow-sm flex flex-col justify-between">
+          <Card className="p-4 border-orange-100 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-orange-50 border border-orange-200/80 flex items-center justify-center text-orange-600">
+                  <div className="w-7 h-7 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                     <svg
                       className="w-3.5 h-3.5"
                       viewBox="0 0 24 24"
@@ -346,45 +351,48 @@ export const CalibracionPrivacidad: React.FC = () => {
                     </svg>
                   </div>
                   <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white leading-tight">
-                    Garantía de Privacidad
+                    {t('calibration.privacy.title', 'Garantía de Privacidad')}
                   </h3>
                 </div>
-                <Badge variant="solid-orange">LOCAL</Badge>
+                <Badge variant="solid-orange">{t('calibration.privacy.badge', 'LOCAL')}</Badge>
               </div>
 
               <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed mb-3">
-                Tu video nunca sale de este equipo. Los fotogramas se procesan en memoria volátil para calcular los vectores e inmediatamente se sobreescriben.
+                {t(
+                  'calibration.privacy.desc',
+                  'Tu video nunca sale de este equipo. Los fotogramas se procesan en memoria volátil para calcular los vectores e inmediatamente se sobreescriben.'
+                )}
               </p>
 
               <div className="flex flex-col gap-2">
-                <div className="p-2.5 rounded-xl bg-orange-50/70 border border-orange-200/70 text-[11px] text-orange-950">
-                  <span className="font-bold block mb-0.5 text-orange-900">
-                    ✓ Inferencia On-Device
+                <div className="p-2.5 rounded-xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/70 dark:border-orange-800/50 text-[11px] text-orange-950 dark:text-orange-200">
+                  <span className="font-bold block mb-0.5 text-orange-900 dark:text-orange-300">
+                    {t('calibration.privacy.feat1Title', '✓ Inferencia On-Device')}
                   </span>
-                  MediaPipe Face Mesh procesa los 468 puntos localmente en tu CPU/GPU.
+                  {t('calibration.privacy.feat1Desc', 'MediaPipe Face Mesh procesa los 468 puntos localmente en tu CPU/GPU.')}
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 dark:border-zinc-800 text-[11px] text-slate-700 dark:text-zinc-300">
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/70 border border-slate-100 dark:border-zinc-800 text-[11px] text-slate-700 dark:text-zinc-300">
                   <span className="font-bold block mb-0.5 text-slate-900 dark:text-white">
-                    ✓ Cero Persistencia de Video
+                    {t('calibration.privacy.feat2Title', '✓ Cero Persistencia de Video')}
                   </span>
-                  No se guardan archivos ni capturas en disco ni en la nube.
+                  {t('calibration.privacy.feat2Desc', 'No se guardan archivos ni capturas en disco ni en la nube.')}
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 dark:border-zinc-800 text-[11px] text-slate-700 dark:text-zinc-300">
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-800/70 border border-slate-100 dark:border-zinc-800 text-[11px] text-slate-700 dark:text-zinc-300">
                   <span className="font-bold block mb-0.5 text-slate-900 dark:text-white">
-                    ✓ Configuración Local
+                    {t('calibration.privacy.feat3Title', '✓ Configuración Local')}
                   </span>
-                  Tu perfil se conserva en <code className="font-mono text-[9px] bg-slate-200/60 px-1 py-0.5 rounded">calibration_config.json</code>.
+                  {t('calibration.privacy.feat3Desc', 'Tu perfil se conserva en calibration_config.json.')}
                 </div>
               </div>
             </div>
 
             <div className="pt-2.5 mt-3 border-t border-slate-100 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-400 flex items-center justify-between">
-              <span>Modo del motor:</span>
-              <span className="text-orange-600 font-bold flex items-center gap-1.5">
+              <span>{t('calibration.privacy.engineMode', 'Modo del motor:')}</span>
+              <span className="text-orange-600 dark:text-orange-400 font-bold flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
-                Offline Estricto
+                {t('calibration.privacy.strictOffline', 'Offline Estricto')}
               </span>
             </div>
           </Card>
@@ -438,25 +446,27 @@ export const CalibracionPrivacidad: React.FC = () => {
             </div>
 
             {/* Píldora de Telemetría Flotante Superior */}
-            <div className="absolute top-0 bg-white/90 backdrop-blur-md border border-orange-300 rounded-full px-3 py-0.5 flex items-center gap-2 shadow-xs select-none">
+            <div className="absolute top-0 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-orange-300 dark:border-zinc-700 rounded-full px-3 py-0.5 flex items-center gap-2 shadow-xs select-none">
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                <span className="text-[10px] font-mono font-bold text-orange-600 tracking-wider">
+                <span className="text-[10px] font-mono font-bold text-orange-600 dark:text-orange-400 tracking-wider">
                   OPTIFLOW HUD
                 </span>
               </div>
-              <span className="text-slate-300">|</span>
+              <span className="text-slate-300 dark:text-zinc-600">|</span>
               <span className="text-[10px] font-mono text-slate-600 dark:text-zinc-300">
                 EAR:{' '}
-                <span className="text-orange-600 font-bold">
+                <span className="text-orange-600 dark:text-orange-400 font-bold">
                   {calibrationState.isActive
                     ? calibrationState.currentEar.toFixed(3)
                     : biometrics.ear.toFixed(2)}
                 </span>
               </span>
-              <span className="text-slate-300">|</span>
-              <span className="text-[10px] font-mono text-orange-600 font-semibold">
-                {calibrationState.isActive ? '468 PUNTOS' : 'STANDBY'}
+              <span className="text-slate-300 dark:text-zinc-600">|</span>
+              <span className="text-[10px] font-mono text-orange-600 dark:text-orange-400 font-semibold">
+                {calibrationState.isActive
+                  ? t('calibration.hud.pointsCount', '468 PUNTOS')
+                  : t('calibration.hud.standby', 'STANDBY')}
               </span>
             </div>
           </div>
@@ -464,10 +474,10 @@ export const CalibracionPrivacidad: React.FC = () => {
           {/* REUBICACIÓN: TEXTOS DINÁMICOS FUERA Y DEBAJO DEL ÓVALO */}
           {calibrationState.isActive ? (
             <div className="w-full max-w-[420px] flex flex-col items-center text-center mt-2">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-orange-600 mb-0.5">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-0.5">
                 {activeInstruction.phase}
               </span>
-              <p className="text-xl sm:text-2xl font-extrabold text-orange-600 leading-tight mb-0.5">
+              <p className="text-xl sm:text-2xl font-extrabold text-orange-600 dark:text-orange-400 leading-tight mb-0.5">
                 {activeInstruction.text}
               </p>
               <p className="text-[11px] text-slate-500 dark:text-zinc-400 mb-2">
@@ -476,12 +486,12 @@ export const CalibracionPrivacidad: React.FC = () => {
 
               {/* Barra de Progreso y Tiempo */}
               <div className="w-full flex items-center justify-between text-[11px] font-mono text-slate-500 dark:text-zinc-400 mb-1">
-                <span>PROGRESO DEL ESCANEO</span>
-                <span className="font-bold text-orange-600 text-xs">
-                  {calibrationState.remainingSeconds.toFixed(1)}s restantes
+                <span>{t('calibration.hud.progressLabel', 'PROGRESO DEL ESCANEO')}</span>
+                <span className="font-bold text-orange-600 dark:text-orange-400 text-xs">
+                  {t('calibration.hud.remaining', { seconds: calibrationState.remainingSeconds.toFixed(1) })}
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden border border-orange-200/80 mb-2">
+              <div className="w-full h-2 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden border border-orange-200/80 dark:border-zinc-700 mb-2">
                 <div
                   className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-150 rounded-full shadow-sm shadow-orange-500/30"
                   style={{ width: `${calibrationState.progress}%` }}
@@ -490,9 +500,9 @@ export const CalibracionPrivacidad: React.FC = () => {
 
               <button
                 onClick={resetCalibration}
-                className="px-3 py-1.5 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+                className="px-3 py-1.5 border border-orange-200 dark:border-orange-800/80 hover:bg-orange-50 dark:hover:bg-zinc-800 text-orange-700 dark:text-orange-300 text-xs font-bold rounded-xl transition-colors cursor-pointer"
               >
-                Cancelar Escaneo
+                {t('calibration.hud.cancel', 'Cancelar Escaneo')}
               </button>
             </div>
           ) : currentStep === 1 ? (
@@ -518,20 +528,20 @@ export const CalibracionPrivacidad: React.FC = () => {
                   <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
                   <circle cx="12" cy="12" r="3" />
                 </svg>
-                <span className="text-xs tracking-wide">Iniciar Escaneo Facial (15s)</span>
+                <span className="text-xs tracking-wide">{t('calibration.hud.startScan', { time: 15 })}</span>
               </button>
 
               <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-zinc-400">
-                <span>Umbral Activo:</span>
-                <span className="font-mono font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200 text-xs">
+                <span>{t('calibration.hud.activeThreshold', 'Umbral Activo:')}</span>
+                <span className="font-mono font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded border border-orange-200 dark:border-orange-800/50 text-xs">
                   {biometrics.ear_threshold.toFixed(2)} EAR
                 </span>
               </div>
             </div>
           ) : (
             /* Modo Completado */
-            <div className="flex items-center gap-2 mt-2 text-xs text-orange-700 font-bold bg-orange-50 px-3.5 py-1.5 rounded-xl border border-orange-200">
-              <span>✓ Escaneo completado. Revisa tu resultado en el panel lateral.</span>
+            <div className="flex items-center gap-2 mt-2 text-xs text-orange-700 dark:text-orange-300 font-bold bg-orange-50 dark:bg-orange-950/40 px-3.5 py-1.5 rounded-xl border border-orange-200 dark:border-orange-800/50">
+              <span>{t('calibration.hud.scanCompletedHint', '✓ Escaneo completado. Revisa tu resultado en el panel lateral.')}</span>
             </div>
           )}
         </div>
@@ -540,44 +550,48 @@ export const CalibracionPrivacidad: React.FC = () => {
         <div className="lg:col-span-1">
           {currentStep === 3 && calibrationState.result ? (
             /* TARJETA DE RESULTADOS EN FASE 3 */
-            <Card className="p-4 border-orange-200 shadow-md shadow-orange-500/5 flex flex-col gap-3">
+            <Card className="p-4 border-orange-200 dark:border-zinc-800 shadow-md shadow-orange-500/5 flex flex-col gap-3">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-6 h-6 rounded-lg bg-orange-500 text-white flex items-center justify-center font-bold text-xs">
                     ✓
                   </div>
                   <h3 className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
-                    Calibración Completada
+                    {t('calibration.results.title', 'Calibración Completada')}
                   </h3>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                  Umbral personalizado obtenido a partir de los 468 puntos MediaPipe.
+                  {t('calibration.results.desc', 'Umbral personalizado obtenido a partir de los 468 puntos MediaPipe.')}
                 </p>
               </div>
 
               {/* Resumen del nuevo umbral */}
-              <div className="bg-orange-50/80 border border-orange-200 rounded-xl p-2.5 flex flex-col text-center">
-                <span className="text-[9px] font-bold text-orange-800 uppercase tracking-wider">
-                  Nuevo Umbral Ocular (EAR)
+              <div className="bg-orange-50/80 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/50 rounded-xl p-2.5 flex flex-col text-center">
+                <span className="text-[9px] font-bold text-orange-800 dark:text-orange-300 uppercase tracking-wider">
+                  {t('calibration.results.newThreshold', 'Nuevo Umbral Ocular (EAR)')}
                 </span>
-                <span className="text-3xl font-mono font-extrabold text-orange-600 my-0.5">
+                <span className="text-3xl font-mono font-extrabold text-orange-600 dark:text-orange-400 my-0.5">
                   {calibrationState.result.threshold.toFixed(3)}
                 </span>
-                <span className="text-[10px] text-orange-700 font-medium">
-                  Punto de corte personalizado
+                <span className="text-[10px] text-orange-700 dark:text-orange-300 font-medium">
+                  {t('calibration.results.cutoffLabel', 'Punto de corte personalizado')}
                 </span>
               </div>
 
               {/* Desglose de apertura palpebral */}
               <div className="flex flex-col gap-1.5">
-                <div className="bg-slate-50 border border-slate-200 dark:border-zinc-700/80 rounded-xl p-2 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-600 dark:text-zinc-300">EAR Mínimo (Cerrados):</span>
+                <div className="bg-slate-50 dark:bg-zinc-800/70 border border-slate-200 dark:border-zinc-700 rounded-xl p-2 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-600 dark:text-zinc-300">
+                    {t('calibration.results.minEar', 'EAR Mínimo (Cerrados):')}
+                  </span>
                   <span className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                     {calibrationState.result.minEar.toFixed(3)}
                   </span>
                 </div>
-                <div className="bg-slate-50 border border-slate-200 dark:border-zinc-700/80 rounded-xl p-2 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-600 dark:text-zinc-300">EAR Máximo (Abiertos):</span>
+                <div className="bg-slate-50 dark:bg-zinc-800/70 border border-slate-200 dark:border-zinc-700 rounded-xl p-2 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-600 dark:text-zinc-300">
+                    {t('calibration.results.maxEar', 'EAR Máximo (Abiertos):')}
+                  </span>
                   <span className="text-xs font-mono font-bold text-slate-900 dark:text-white">
                     {calibrationState.result.maxEar.toFixed(3)}
                   </span>
@@ -592,7 +606,7 @@ export const CalibracionPrivacidad: React.FC = () => {
                   className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-98 text-white text-xs font-bold rounded-xl shadow-md shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-90"
                 >
                   {calibrationState.isSaved ? (
-                    <span>✓ Perfil Biométrico Guardado</span>
+                    <span>{t('calibration.results.saved', '✓ Perfil Biométrico Guardado')}</span>
                   ) : (
                     <>
                       <svg
@@ -606,23 +620,23 @@ export const CalibracionPrivacidad: React.FC = () => {
                         <polyline points="17 21 17 13 7 13 7 21" />
                         <polyline points="7 3 7 8 15 8" />
                       </svg>
-                      <span>Guardar Perfil Biométrico</span>
+                      <span>{t('calibration.results.save', 'Guardar Perfil Biométrico')}</span>
                     </>
                   )}
                 </button>
 
                 <button
                   onClick={startCalibration}
-                  className="w-full py-2 border border-orange-200 hover:bg-orange-50 text-orange-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                  className="w-full py-2 border border-orange-200 dark:border-zinc-700 hover:bg-orange-50 dark:hover:bg-zinc-800 text-orange-700 dark:text-orange-300 text-xs font-bold rounded-xl transition-all cursor-pointer"
                 >
-                  Repetir Escaneo
+                  {t('calibration.results.repeat', 'Repetir Escaneo')}
                 </button>
               </div>
 
               {calibrationState.isSaved && (
-                <div className="p-2 rounded-xl bg-orange-50 border border-orange-200 text-[10px] text-orange-950 flex items-center gap-1.5">
-                  <span className="font-bold text-orange-600">✓</span>
-                  <span>OptiFlow se ha adaptado a tu anatomía palpebral.</span>
+                <div className="p-2 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/50 text-[10px] text-orange-950 dark:text-orange-200 flex items-center gap-1.5">
+                  <span className="font-bold text-orange-600 dark:text-orange-400">✓</span>
+                  <span>{t('calibration.results.successNotice', 'OptiFlow se ha adaptado a tu anatomía palpebral.')}</span>
                 </div>
               )}
             </Card>
@@ -632,37 +646,59 @@ export const CalibracionPrivacidad: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                    Parámetros del Escáner
+                    {t('calibration.params.title', 'Parámetros del Escáner')}
                   </h4>
-                  <Badge variant="solid-orange">MediaPipe</Badge>
+                  <Badge variant="solid-orange">{t('calibration.params.badge', 'MediaPipe')}</Badge>
                 </div>
 
                 <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed mb-3">
-                  Durante el escaneo se registra la variación de los vectores oculares para determinar tu descanso y parpadeo real.
+                  {t(
+                    'calibration.params.desc',
+                    'Durante el escaneo se registra la variación de los vectores oculares para determinar tu descanso y parpadeo real.'
+                  )}
                 </p>
 
                 <div className="flex flex-col gap-1.5 text-[11px]">
                   <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-zinc-800">
-                    <span className="text-slate-400 dark:text-zinc-400">Duración del test:</span>
-                    <span className="font-semibold text-slate-800 dark:text-zinc-200">15.0 segundos</span>
+                    <span className="text-slate-400 dark:text-zinc-400">
+                      {t('calibration.params.durationLabel', 'Duración del test:')}
+                    </span>
+                    <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                      {t('calibration.params.durationVal', '15.0 segundos')}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-zinc-800">
-                    <span className="text-slate-400 dark:text-zinc-400">Puntos anatómicos:</span>
-                    <span className="font-semibold text-slate-800 dark:text-zinc-200">468 landmarks</span>
+                    <span className="text-slate-400 dark:text-zinc-400">
+                      {t('calibration.params.landmarksLabel', 'Puntos anatómicos:')}
+                    </span>
+                    <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                      {t('calibration.params.landmarksVal', '468 landmarks')}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-1 border-b border-slate-100 dark:border-zinc-800">
-                    <span className="text-slate-400 dark:text-zinc-400">Apertura en reposo:</span>
-                    <span className="font-semibold text-orange-600">&gt; 0.20 EAR</span>
+                    <span className="text-slate-400 dark:text-zinc-400">
+                      {t('calibration.params.restOpeningLabel', 'Apertura en reposo:')}
+                    </span>
+                    <span className="font-semibold text-orange-600 dark:text-orange-400">
+                      {t('calibration.params.restOpeningVal', '> 0.20 EAR')}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-slate-400 dark:text-zinc-400">Oclusión de parpadeo:</span>
-                    <span className="font-semibold text-orange-600">&lt; {biometrics.ear_threshold.toFixed(2)} EAR</span>
+                    <span className="text-slate-400 dark:text-zinc-400">
+                      {t('calibration.params.occlusionLabel', 'Oclusión de parpadeo:')}
+                    </span>
+                    <span className="font-semibold text-orange-600 dark:text-orange-400">
+                      {t('calibration.params.occlusionVal', { threshold: biometrics.ear_threshold.toFixed(2) })}
+                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="pt-2.5 mt-2.5 border-t border-slate-100 dark:border-zinc-800 text-[10px] text-slate-400 dark:text-zinc-400">
-                Paso siguiente: Al finalizar el escaneo, aquí aparecerá el cálculo de tu umbral y el botón para guardarlo.
+                {t(
+                  'calibration.params.nextStep',
+                  'Paso siguiente: Al finalizar el escaneo, aquí aparecerá el cálculo de tu umbral y el botón para guardarlo.'
+                )}
               </div>
             </Card>
           )}

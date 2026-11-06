@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { UserSettings } from '../../../../preload/index.d'
 import { OptiFlowIsotype } from '../layout/Logo'
 
 const DEFAULT_BREAK_SECONDS = 20
 
 export const Intercept: React.FC = () => {
+  const { t } = useTranslation()
   const [timeLeft, setTimeLeft] = useState<number>(DEFAULT_BREAK_SECONDS)
   const [totalSeconds, setTotalSeconds] = useState<number>(DEFAULT_BREAK_SECONDS)
   const [strictMode, setStrictMode] = useState<boolean>(false)
@@ -90,7 +92,7 @@ export const Intercept: React.FC = () => {
               </span>
             </div>
             <h2 className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-zinc-400 mt-1 leading-tight">
-              Sesión de Trabajo Temporalmente Suspendida
+              {t('intercept.headerSubtitle', 'Sesión de Trabajo Temporalmente Suspendida')}
             </h2>
           </div>
         </div>
@@ -99,10 +101,10 @@ export const Intercept: React.FC = () => {
         <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/90 dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800 shadow-2xs">
           <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
           <span className="text-[11px] font-bold text-slate-700 dark:text-zinc-200 tracking-wide uppercase">
-            PAUSA ACTIVA OBLIGATORIA
+            {t('intercept.badgeActiveBreak', 'PAUSA ACTIVA OBLIGATORIA')}
           </span>
           <span className="text-xs text-slate-400 dark:text-zinc-400 font-normal ml-1">
-            Regla 20-20-20
+            {t('intercept.rule202020', 'Regla 20-20-20')}
           </span>
         </div>
       </header>
@@ -124,17 +126,16 @@ export const Intercept: React.FC = () => {
             <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
           </svg>
           <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 tracking-wider uppercase">
-            PROTECCIÓN DE SALUD OCULAR & POSTURAL
+            {t('intercept.tagHealth', 'PROTECCIÓN DE SALUD OCULAR & POSTURAL')}
           </span>
         </div>
 
         {/* Título Principal y Descripción */}
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight text-center">
-          Pausa Activa Ocular
+          {t('intercept.title', 'Pausa Activa Ocular')}
         </h1>
         <p className="text-slate-500 dark:text-zinc-400 text-xs sm:text-sm mt-2 text-center max-w-md leading-relaxed">
-          Aparta la mirada del monitor para relajar el músculo ciliar y<br />
-          rehidratar la superficie ocular.
+          {t('intercept.desc', 'Aparta la mirada del monitor para relajar el músculo ciliar y rehidratar la superficie ocular.')}
         </p>
 
         {/* Temporizador Circular Central */}
@@ -168,7 +169,7 @@ export const Intercept: React.FC = () => {
           {/* Núcleo Interior Cálido */}
           <div className="absolute w-44 h-44 sm:w-48 sm:h-48 rounded-full bg-gradient-to-b from-[#FFF5EE] to-[#FDEBD9]/70 dark:from-zinc-900 dark:to-zinc-900/90 flex flex-col items-center justify-center text-center shadow-inner">
             <span className="text-[10px] sm:text-[11px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest leading-none mb-1">
-              TIEMPO RESTANTE
+              {t('intercept.timeLeft', 'TIEMPO RESTANTE')}
             </span>
             <span className="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-mono my-0.5">
               00:{formattedSeconds}
@@ -186,7 +187,7 @@ export const Intercept: React.FC = () => {
                 <circle cx="12" cy="12" r="3" />
                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
               </svg>
-              <span>Fija vista a &gt; 6 metros</span>
+              <span>{t('intercept.lookAway', 'Fija vista a > 6 metros')}</span>
             </div>
           </div>
         </div>
@@ -194,7 +195,7 @@ export const Intercept: React.FC = () => {
         {/* Sección Inferior de Instrucciones */}
         <div className="w-full max-w-4xl mx-auto mt-2">
           <span className="block text-center text-[10px] sm:text-[11px] font-bold text-slate-400 dark:text-zinc-400 tracking-widest uppercase mb-3">
-            INSTRUCCIONES OBLIGATORIAS DE LA PAUSA
+            {t('intercept.instructionsTitle', 'INSTRUCCIONES OBLIGATORIAS DE LA PAUSA')}
           </span>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
@@ -205,14 +206,14 @@ export const Intercept: React.FC = () => {
                   1
                 </span>
                 <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-                  EN CURSO
+                  {t('intercept.step1Badge', 'EN CURSO')}
                 </span>
               </div>
               <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-2.5">
-                Enfoque a Distancia
+                {t('intercept.step1Title', 'Enfoque a Distancia')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
-                Mira a través de una ventana o hacia el objeto más alejado de la habitación para relajar el cristalino.
+                {t('intercept.step1Desc', 'Mira a través de una ventana o hacia el objeto más alejado de la habitación para relajar el cristalino.')}
               </p>
             </div>
 
@@ -223,14 +224,14 @@ export const Intercept: React.FC = () => {
                   2
                 </span>
                 <span className="text-xs text-slate-400 dark:text-zinc-400 font-medium">
-                  Paso Siguiente
+                  {t('intercept.step2Badge', 'Paso Siguiente')}
                 </span>
               </div>
               <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-2.5">
-                Parpadeo Consciente
+                {t('intercept.step2Title', 'Parpadeo Consciente')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
-                Parpadea profundamente 5 veces de forma suave para restaurar la película lagrimal y humectar la córnea.
+                {t('intercept.step2Desc', 'Parpadea profundamente 5 veces de forma suave para restaurar la película lagrimal y humectar la córnea.')}
               </p>
             </div>
 
@@ -241,14 +242,14 @@ export const Intercept: React.FC = () => {
                   3
                 </span>
                 <span className="text-xs text-slate-400 dark:text-zinc-400 font-medium">
-                  Postura
+                  {t('intercept.step3Badge', 'Postura')}
                 </span>
               </div>
               <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-2.5">
-                Distensión Cervical
+                {t('intercept.step3Title', 'Distensión Cervical')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
-                Rueda los hombros suavemente hacia atrás y baja la barbilla para liberar la tensión acumulada del cuello.
+                {t('intercept.step3Desc', 'Rueda los hombros suavemente hacia atrás y baja la barbilla para liberar la tensión acumulada del cuello.')}
               </p>
             </div>
           </div>
@@ -270,16 +271,16 @@ export const Intercept: React.FC = () => {
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
-          <span>Pantalla bloqueada para garantizar tu ergonomía y descanso visual.</span>
+          <span>{t('intercept.footerNotice', 'Pantalla bloqueada para garantizar tu ergonomía y descanso visual.')}</span>
         </div>
 
         <div className="flex items-center gap-2 text-right">
-          <span>Se desbloqueará automáticamente al finalizar el conteo</span>
+          <span>{t('intercept.footerAutoUnlock', 'Se desbloqueará automáticamente al finalizar el conteo')}</span>
           <span>•</span>
           {strictMode ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100/90 dark:bg-orange-950/40 text-orange-800 dark:text-orange-300 text-[11px] font-bold border border-orange-200 dark:border-orange-800/50">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
-              Modo Estricto Activo (Postergación Bloqueada)
+              {t('intercept.strictActive', 'Modo Estricto Activo (Postergación Bloqueada)')}
             </span>
           ) : (
             <button
@@ -287,7 +288,7 @@ export const Intercept: React.FC = () => {
               onClick={handlePostponeBreak}
               className="text-slate-400 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-white underline-offset-2 hover:underline cursor-pointer transition-colors"
             >
-              Posponer 2 min (Emergencia)
+              {t('intercept.postponeButton', 'Posponer 2 min (Emergencia)')}
             </button>
           )}
         </div>

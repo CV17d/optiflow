@@ -38,6 +38,13 @@ export const AnalisisErgonomico: React.FC = () => {
   const isBadPosture = postureStatus === 'Mala Postura'
   const isMildPosture = postureStatus === 'Leve Inclinación'
 
+  const translatedPostureStatus =
+    isBadPosture
+      ? t('ergonomics.posture.statusBad', 'Mala Postura')
+      : isMildPosture
+        ? t('ergonomics.posture.statusMild', 'Leve Inclinación')
+        : t('ergonomics.posture.statusOptimal', 'Óptima')
+
   // Porcentaje de apertura palpebral para los medidores de ojos (0.0 a 0.40 normalizado)
   const leftEarPercent = Math.min(100, Math.max(8, Math.round((leftEar / 0.36) * 100)))
   const rightEarPercent = Math.min(100, Math.max(8, Math.round((rightEar / 0.36) * 100)))
@@ -65,9 +72,9 @@ export const AnalisisErgonomico: React.FC = () => {
               : t('ergonomics.connecting', 'Conectando con Motor...')}
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-xs font-bold text-orange-700 shadow-2xs">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-800/50 text-xs font-bold text-orange-700 dark:text-orange-300 shadow-2xs">
             <svg
-              className="w-3.5 h-3.5 text-orange-600"
+              className="w-3.5 h-3.5 text-orange-600 dark:text-orange-400"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -92,7 +99,7 @@ export const AnalisisErgonomico: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600">
+                <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                   <svg
                     className="w-5 h-5"
                     viewBox="0 0 24 24"
@@ -121,27 +128,27 @@ export const AnalisisErgonomico: React.FC = () => {
 
               {/* Badge Dinámico de Estado */}
               {isDistOptimal && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Óptima
+                  {t('ergonomics.distance.badgeOptimal', 'Óptima')}
                 </span>
               )}
               {isDistTooClose && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-700 border border-orange-200 shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800/50 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                  Muy Cerca
+                  {t('ergonomics.distance.badgeClose', 'Muy Cerca')}
                 </span>
               )}
               {isDistCritical && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200 shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/50 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" />
-                  Riesgo Visual
+                  {t('ergonomics.distance.badgeCritical', 'Riesgo Visual')}
                 </span>
               )}
               {isDistTooFar && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  Distante
+                  {t('ergonomics.distance.badgeFar', 'Distante')}
                 </span>
               )}
             </div>
@@ -153,32 +160,32 @@ export const AnalisisErgonomico: React.FC = () => {
               </span>
               <span className="text-xl font-bold text-slate-400 dark:text-zinc-400 font-sans">cm</span>
               <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400 font-medium font-mono">
-                Ideal: 50 - 70 cm
+                {t('ergonomics.distance.idealRange', 'Ideal: 50 - 70 cm')}
               </span>
             </div>
 
             {/* Barra de Progreso Visual con Escala Graduada */}
             <div className="mt-6">
               <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 dark:text-zinc-400 mb-1.5 font-mono">
-                <span>20 cm (Riesgo)</span>
-                <span className="text-emerald-600 font-semibold">50-70 cm (Óptimo)</span>
-                <span>90 cm</span>
+                <span>{t('ergonomics.distance.scaleRisk', '20 cm (Riesgo)')}</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{t('ergonomics.distance.scaleOptimal', '50-70 cm (Óptimo)')}</span>
+                <span>{t('ergonomics.distance.scaleMax', '90 cm')}</span>
               </div>
 
               {/* Riel Multizona */}
-              <div className="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden flex relative p-0.5">
+              <div className="w-full h-3.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden flex relative p-0.5">
                 {/* Zona Roja (< 35cm) */}
-                <div className="h-full bg-red-200 rounded-l-full" style={{ width: '21%' }} />
+                <div className="h-full bg-red-200 dark:bg-red-950/80 rounded-l-full" style={{ width: '21%' }} />
                 {/* Zona Naranja (35-50cm) */}
-                <div className="h-full bg-orange-200" style={{ width: '22%' }} />
+                <div className="h-full bg-orange-200 dark:bg-orange-950/80" style={{ width: '22%' }} />
                 {/* Zona Verde Óptima (50-70cm) */}
-                <div className="h-full bg-emerald-300" style={{ width: '28%' }} />
+                <div className="h-full bg-emerald-300 dark:bg-emerald-800/80" style={{ width: '28%' }} />
                 {/* Zona Azul (> 70cm) */}
-                <div className="h-full bg-blue-200 rounded-r-full flex-1" />
+                <div className="h-full bg-blue-200 dark:bg-blue-950/80 rounded-r-full flex-1" />
 
                 {/* Marcador / Cursor Dinámico de la Distancia Actual */}
                 <div
-                  className="absolute top-0 bottom-0 w-2.5 bg-slate-900 rounded-full shadow-md -ml-1 transition-all duration-300 ease-out border-2 border-white"
+                  className="absolute top-0 bottom-0 w-2.5 bg-slate-900 dark:bg-white rounded-full shadow-md -ml-1 transition-all duration-300 ease-out border-2 border-white dark:border-black"
                   style={{ left: `${distProgressPercent}%` }}
                 />
               </div>
@@ -189,57 +196,57 @@ export const AnalisisErgonomico: React.FC = () => {
               <div
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistCritical
-                    ? 'bg-red-50 border-red-200 text-red-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
+                    ? 'bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 font-bold'
+                    : 'bg-slate-50/60 dark:bg-zinc-800/40 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
                   className={`w-2.5 h-2.5 rounded-full ${
-                    isDistCritical ? 'bg-red-500 shadow-sm shadow-red-500/50 animate-pulse' : 'bg-slate-300'
+                    isDistCritical ? 'bg-red-500 shadow-sm shadow-red-500/50 animate-pulse' : 'bg-slate-300 dark:bg-zinc-700'
                   }`}
                 />
-                <span className="text-[11px] leading-tight">Riesgo (&lt;35)</span>
+                <span className="text-[11px] leading-tight">{t('ergonomics.distance.ledRisk', 'Riesgo (<35)')}</span>
               </div>
 
               <div
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistTooClose
-                    ? 'bg-orange-50 border-orange-200 text-orange-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
+                    ? 'bg-orange-50 dark:bg-orange-950/50 border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-300 font-bold'
+                    : 'bg-slate-50/60 dark:bg-zinc-800/40 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
                   className={`w-2.5 h-2.5 rounded-full ${
                     isDistTooClose
                       ? 'bg-orange-500 shadow-sm shadow-orange-500/50 animate-pulse'
-                      : 'bg-slate-300'
+                      : 'bg-slate-300 dark:bg-zinc-700'
                   }`}
                 />
-                <span className="text-[11px] leading-tight">Alerta (&lt;50)</span>
+                <span className="text-[11px] leading-tight">{t('ergonomics.distance.ledAlert', 'Alerta (<50)')}</span>
               </div>
 
               <div
                 className={`flex items-center gap-2 p-2.5 rounded-xl border transition-all ${
                   isDistOptimal
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800 font-bold'
-                    : 'bg-slate-50/60 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 font-bold'
+                    : 'bg-slate-50/60 dark:bg-zinc-800/40 border-slate-100 dark:border-zinc-800 text-slate-400 dark:text-zinc-400'
                 }`}
               >
                 <span
                   className={`w-2.5 h-2.5 rounded-full ${
                     isDistOptimal
                       ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50 animate-pulse'
-                      : 'bg-slate-300'
+                      : 'bg-slate-300 dark:bg-zinc-700'
                   }`}
                 />
-                <span className="text-[11px] leading-tight">Óptimo (50-70)</span>
+                <span className="text-[11px] leading-tight">{t('ergonomics.distance.ledOptimal', 'Óptimo (50-70)')}</span>
               </div>
             </div>
           </div>
 
           <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
-            <span className="font-bold text-slate-700 dark:text-zinc-300">Norma ISO 9241-5:</span> Mantén la pantalla
-            a una distancia equivalente a tu brazo extendido para relajar el músculo ciliar.
+            <span className="font-bold text-slate-700 dark:text-zinc-300">{t('ergonomics.distance.isoTitle', 'Norma ISO 9241-5:')}</span>{' '}
+            {t('ergonomics.distance.isoText', 'Mantén la pantalla a una distancia equivalente a tu brazo extendido para relajar el músculo ciliar.')}
           </div>
         </Card>
 
@@ -250,7 +257,7 @@ export const AnalisisErgonomico: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600">
+                <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                   <svg
                     className="w-5 h-5"
                     viewBox="0 0 24 24"
@@ -278,39 +285,39 @@ export const AnalisisErgonomico: React.FC = () => {
               {/* Badge Condicional */}
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border shadow-2xs ${
-                  postureStatus === 'Óptima'
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : postureStatus === 'Leve Inclinación'
-                      ? 'bg-amber-50 text-amber-700 border-amber-200'
-                      : 'bg-orange-50 text-orange-700 border-orange-200'
+                  !isBadPosture && !isMildPosture
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50'
+                    : isMildPosture
+                      ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/50'
+                      : 'bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800/50'
                 }`}
               >
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${
-                    postureStatus === 'Óptima'
+                    !isBadPosture && !isMildPosture
                       ? 'bg-emerald-500'
-                      : postureStatus === 'Leve Inclinación'
+                      : isMildPosture
                         ? 'bg-amber-500'
                         : 'bg-orange-500 animate-pulse'
                   }`}
                 />
-                {postureStatus}
+                {translatedPostureStatus}
               </span>
             </div>
 
             {/* Diagnóstico Central */}
             <div className="mt-6 flex items-baseline gap-2">
               <span className="text-4xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
-                {postureStatus}
+                {translatedPostureStatus}
               </span>
               <span className="ml-auto text-xs font-mono font-bold text-slate-500 dark:text-zinc-400">
-                ~{Math.round(postureAngle)}° Inclinación
+                {t('ergonomics.posture.tiltLabel', { angle: Math.round(postureAngle) })}
               </span>
             </div>
 
             {/* Alerta Visual Naranja cuando se detecta Mala Postura */}
             {isBadPosture ? (
-              <div className="mt-4 p-4 rounded-2xl bg-orange-50 border border-orange-200 flex items-start gap-3 shadow-xs">
+              <div className="mt-4 p-4 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/50 flex items-start gap-3 shadow-xs">
                 <div className="w-8 h-8 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0 mt-0.5">
                   <svg
                     className="w-4 h-4"
@@ -327,27 +334,29 @@ export const AnalisisErgonomico: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <span className="text-xs font-bold text-orange-900 block">
-                    ¡Flexión Cervical Excesiva Detectada!
+                  <span className="text-xs font-bold text-orange-900 dark:text-orange-200 block">
+                    {t('ergonomics.posture.alertBadTitle', '¡Flexión Cervical Excesiva Detectada!')}
                   </span>
-                  <p className="text-[11px] text-orange-800/90 mt-0.5 leading-relaxed">
-                    Tu cabeza está inclinada hacia abajo o ladeada. Levanta el mentón y ajusta la
-                    altura de tu pantalla para evitar sobrecarga en las vértebras C1-C7.
+                  <p className="text-[11px] text-orange-800/90 dark:text-orange-300/90 mt-0.5 leading-relaxed">
+                    {t(
+                      'ergonomics.posture.alertBadDesc',
+                      'Tu cabeza está inclinada hacia abajo o ladeada. Levanta el mentón y ajusta la altura de tu pantalla para evitar sobrecarga en las vértebras C1-C7.'
+                    )}
                   </p>
                 </div>
               </div>
             ) : isMildPosture ? (
-              <div className="mt-4 p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-center gap-3">
+              <div className="mt-4 p-3.5 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/50 flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-amber-500" />
-                <p className="text-xs text-amber-800 font-medium">
-                  Leve ángulo detectado. Mantén la vista alineada con el tercio superior del monitor.
+                <p className="text-xs text-amber-800 dark:text-amber-300 font-medium">
+                  {t('ergonomics.posture.alertMild', 'Leve ángulo detectado. Mantén la vista alineada con el tercio superior del monitor.')}
                 </p>
               </div>
             ) : (
-              <div className="mt-4 p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 flex items-center gap-3">
+              <div className="mt-4 p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/50 flex items-center gap-3">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                <p className="text-xs text-emerald-800 font-medium">
-                  Excelente alineación frontal. Eje cervical en posición ergonómica neutral.
+                <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium">
+                  {t('ergonomics.posture.alertOptimal', 'Excelente alineación frontal. Eje cervical en posición ergonómica neutral.')}
                 </p>
               </div>
             )}
@@ -355,10 +364,10 @@ export const AnalisisErgonomico: React.FC = () => {
             {/* Medidor Angular de Inclinación */}
             <div className="mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800">
               <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500 dark:text-zinc-400 mb-2">
-                <span>Inclinación Frontal</span>
+                <span>{t('ergonomics.posture.meterLabel', 'Inclinación Frontal')}</span>
                 <span className="font-mono text-slate-800 dark:text-zinc-200">{Math.round(postureAngle)}° / 30°</span>
               </div>
-              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5">
+              <div className="w-full h-2.5 bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden p-0.5">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${
                     isBadPosture
@@ -374,8 +383,11 @@ export const AnalisisErgonomico: React.FC = () => {
           </div>
 
           <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
-            <span className="font-bold text-slate-700 dark:text-zinc-300">Impacto Biomecánico:</span> Por cada 15°
-            de inclinación hacia abajo, la cabeza ejerce 12 kg de fuerza extra sobre el cuello.
+            <span className="font-bold text-slate-700 dark:text-zinc-300">{t('ergonomics.posture.impactTitle', 'Impacto Biomecánico:')}</span>{' '}
+            {t(
+              'ergonomics.posture.impactText',
+              'Por cada 15° de inclinación hacia abajo, la cabeza ejerce 12 kg de fuerza extra sobre el cuello.'
+            )}
           </div>
         </Card>
 
@@ -386,7 +398,7 @@ export const AnalisisErgonomico: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600">
+                <div className="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-800/50 flex items-center justify-center text-orange-600 dark:text-orange-400">
                   <svg
                     className="w-5 h-5"
                     viewBox="0 0 24 24"
@@ -414,14 +426,14 @@ export const AnalisisErgonomico: React.FC = () => {
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border shadow-2xs ${
                   earSymmetry >= 90
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50'
+                    : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/50'
                 }`}
               >
                 <span
                   className={`w-1.5 h-1.5 rounded-full ${earSymmetry >= 90 ? 'bg-emerald-500' : 'bg-amber-500'}`}
                 />
-                {earSymmetry >= 90 ? 'Equilibrado' : 'Asimétrico'}
+                {earSymmetry >= 90 ? t('ergonomics.symmetry.balanced', 'Equilibrado') : t('ergonomics.symmetry.unbalanced', 'Asimétrico')}
               </span>
             </div>
 
@@ -430,9 +442,11 @@ export const AnalisisErgonomico: React.FC = () => {
               <span className="text-5xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
                 {earSymmetry.toFixed(1)}%
               </span>
-              <span className="text-sm font-semibold text-slate-400 dark:text-zinc-400 font-sans">balance</span>
+              <span className="text-sm font-semibold text-slate-400 dark:text-zinc-400 font-sans">
+                {t('ergonomics.symmetry.balanceLabel', 'balance')}
+              </span>
               <span className="ml-auto text-xs text-slate-500 dark:text-zinc-400 font-mono">
-                EAR Prom: {avgEar.toFixed(2)}
+                {t('ergonomics.symmetry.avgEar', { ear: avgEar.toFixed(2) })}
               </span>
             </div>
 
@@ -440,42 +454,48 @@ export const AnalisisErgonomico: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 mt-6">
               {/* Medidor Ojo Izquierdo */}
               <div className="bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 rounded-2xl p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-2">
-                  <span>OJO IZQ</span>
-                  <span className="font-mono text-orange-600">{leftEar.toFixed(3)}</span>
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 dark:text-zinc-300 mb-2">
+                  <span>{t('ergonomics.symmetry.leftEye', 'OJO IZQ')}</span>
+                  <span className="font-mono text-orange-600 dark:text-orange-400">{leftEar.toFixed(3)}</span>
                 </div>
-                <div className="w-full h-2.5 bg-slate-200/70 rounded-full overflow-hidden mb-2">
+                <div className="w-full h-2.5 bg-slate-200/70 dark:bg-zinc-700 rounded-full overflow-hidden mb-2">
                   <div
                     className="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full transition-all duration-300"
                     style={{ width: `${leftEarPercent}%` }}
                   />
                 </div>
                 <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-medium">
-                  {leftEar > 0.18 ? 'Apertura normal' : 'Parpadeo / Cierre'}
+                  {leftEar > 0.18
+                    ? t('ergonomics.symmetry.normalOpening', 'Apertura normal')
+                    : t('ergonomics.symmetry.blinkClose', 'Parpadeo / Cierre')}
                 </span>
               </div>
 
               {/* Medidor Ojo Derecho */}
               <div className="bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 rounded-2xl p-3.5 flex flex-col justify-between">
-                <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 mb-2">
-                  <span>OJO DER</span>
-                  <span className="font-mono text-orange-600">{rightEar.toFixed(3)}</span>
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-600 dark:text-zinc-300 mb-2">
+                  <span>{t('ergonomics.symmetry.rightEye', 'OJO DER')}</span>
+                  <span className="font-mono text-orange-600 dark:text-orange-400">{rightEar.toFixed(3)}</span>
                 </div>
-                <div className="w-full h-2.5 bg-slate-200/70 rounded-full overflow-hidden mb-2">
+                <div className="w-full h-2.5 bg-slate-200/70 dark:bg-zinc-700 rounded-full overflow-hidden mb-2">
                   <div
                     className="h-full bg-gradient-to-r from-orange-400 to-amber-500 rounded-full transition-all duration-300"
                     style={{ width: `${rightEarPercent}%` }}
                   />
                 </div>
                 <span className="text-[10px] text-slate-400 dark:text-zinc-400 font-medium">
-                  {rightEar > 0.18 ? 'Apertura normal' : 'Parpadeo / Cierre'}
+                  {rightEar > 0.18
+                    ? t('ergonomics.symmetry.normalOpening', 'Apertura normal')
+                    : t('ergonomics.symmetry.blinkClose', 'Parpadeo / Cierre')}
                 </span>
               </div>
             </div>
 
             {/* Diferencial Bilateral */}
             <div className="mt-4 pt-3 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-xs">
-              <span className="text-slate-500 dark:text-zinc-400 font-medium">Diferencial Bilateral (Δ):</span>
+              <span className="text-slate-500 dark:text-zinc-400 font-medium">
+                {t('ergonomics.symmetry.bilateralDiff', 'Diferencial Bilateral (Δ):')}
+              </span>
               <span className="font-mono font-bold text-slate-800 dark:text-zinc-200">
                 {Math.abs(leftEar - rightEar).toFixed(3)}
               </span>
@@ -483,8 +503,11 @@ export const AnalisisErgonomico: React.FC = () => {
           </div>
 
           <div className="text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed bg-slate-50/80 dark:bg-zinc-800/60 p-3 rounded-2xl border border-slate-100 dark:border-zinc-800">
-            <span className="font-bold text-slate-700 dark:text-zinc-300">Diagnóstico Ocular:</span> Una asimetría
-            prolongada (&gt;15%) indica fatiga lateralizada por ventanas fuera de tu eje visual.
+            <span className="font-bold text-slate-700 dark:text-zinc-300">{t('ergonomics.symmetry.ocularDiagTitle', 'Diagnóstico Ocular:')}</span>{' '}
+            {t(
+              'ergonomics.symmetry.ocularDiagText',
+              'Una asimetría prolongada (>15%) indica fatiga lateralizada por ventanas fuera de tu eje visual.'
+            )}
           </div>
         </Card>
       </div>
@@ -498,29 +521,29 @@ export const AnalisisErgonomico: React.FC = () => {
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Matriz de Telemetría Biomecánica Continua
+                {t('ergonomics.matrix.title', 'Matriz de Telemetría Biomecánica Continua')}
               </h3>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                Auditoría en vivo de parámetros biométricos contrastados con el estándar ISO 9241-5
+                {t('ergonomics.matrix.subtitle', 'Auditoría en vivo de parámetros biométricos contrastados con el estándar ISO 9241-5')}
               </p>
             </div>
-            <Badge variant="solid-orange">ISO 9241-5</Badge>
+            <Badge variant="solid-orange">{t('ergonomics.matrix.badgeIso', 'ISO 9241-5')}</Badge>
           </div>
 
           <div className="overflow-x-auto -mx-2">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-100 dark:border-zinc-800 text-[11px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
-                  <th className="py-3 px-3">PARÁMETRO BIOMÉDICO</th>
-                  <th className="py-3 px-3">VALOR ACTUAL</th>
-                  <th className="py-3 px-3">ESTÁNDAR SALUDABLE</th>
-                  <th className="py-3 px-3 text-right">DIAGNÓSTICO EN VIVO</th>
+                  <th className="py-3 px-3">{t('ergonomics.matrix.thParam', 'PARÁMETRO BIOMÉDICO')}</th>
+                  <th className="py-3 px-3">{t('ergonomics.matrix.thValue', 'VALOR ACTUAL')}</th>
+                  <th className="py-3 px-3">{t('ergonomics.matrix.thStandard', 'ESTÁNDAR SALUDABLE')}</th>
+                  <th className="py-3 px-3 text-right">{t('ergonomics.matrix.thDiagnosis', 'DIAGNÓSTICO EN VIVO')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700 dark:text-zinc-300">
-                <tr className="hover:bg-slate-50/60 transition-colors">
+              <tbody className="divide-y divide-slate-100 dark:divide-zinc-800/80 text-slate-700 dark:text-zinc-300">
+                <tr className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
-                    Distancia Focal a Pantalla
+                    {t('ergonomics.matrix.rowDistance', 'Distancia Focal a Pantalla')}
                   </td>
                   <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {Math.round(distVal)} cm
@@ -528,35 +551,35 @@ export const AnalisisErgonomico: React.FC = () => {
                   <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">50 - 70 cm</td>
                   <td className="py-3 px-3 text-right">
                     {isDistOptimal ? (
-                      <span className="text-emerald-600 font-bold">✓ Rango Óptimo</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('ergonomics.matrix.diagOptimalRange', '✓ Rango Óptimo')}</span>
                     ) : isDistCritical ? (
-                      <span className="text-red-600 font-bold">⚠ Riesgo Visual</span>
+                      <span className="text-red-600 dark:text-red-400 font-bold">{t('ergonomics.matrix.diagVisualRisk', '⚠ Riesgo Visual')}</span>
                     ) : (
-                      <span className="text-orange-600 font-bold">⚠ Fuera de Rango</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-bold">{t('ergonomics.matrix.diagOutOfRange', '⚠ Fuera de Rango')}</span>
                     )}
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/60 transition-colors">
+                <tr className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
-                    Inclinación Cervical Sagital
+                    {t('ergonomics.matrix.rowPosture', 'Inclinación Cervical Sagital')}
                   </td>
                   <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
-                    ~{Math.round(postureAngle)}° ({postureStatus})
+                    ~{Math.round(postureAngle)}° ({translatedPostureStatus})
                   </td>
                   <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">10° - 15°</td>
                   <td className="py-3 px-3 text-right">
-                    {postureStatus === 'Óptima' ? (
-                      <span className="text-emerald-600 font-bold">✓ Alineación Neutral</span>
+                    {!isBadPosture && !isMildPosture ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('ergonomics.matrix.diagNeutralAlignment', '✓ Alineación Neutral')}</span>
                     ) : (
-                      <span className="text-orange-600 font-bold">⚠ Carga Cervical</span>
+                      <span className="text-orange-600 dark:text-orange-400 font-bold">{t('ergonomics.matrix.diagCervicalLoad', '⚠ Carga Cervical')}</span>
                     )}
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/60 transition-colors">
+                <tr className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
-                    Simetría Palpebral Bilateral
+                    {t('ergonomics.matrix.rowSymmetry', 'Simetría Palpebral Bilateral')}
                   </td>
                   <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {earSymmetry.toFixed(1)}%
@@ -564,16 +587,16 @@ export const AnalisisErgonomico: React.FC = () => {
                   <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">&gt; 85.0%</td>
                   <td className="py-3 px-3 text-right">
                     {earSymmetry >= 85 ? (
-                      <span className="text-emerald-600 font-bold">✓ Balance Equilibrado</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('ergonomics.matrix.diagEquilibrium', '✓ Balance Equilibrado')}</span>
                     ) : (
-                      <span className="text-amber-600 font-bold">⚠ Asimetría Focal</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-bold">{t('ergonomics.matrix.diagFocalAsymmetry', '⚠ Asimetría Focal')}</span>
                     )}
                   </td>
                 </tr>
 
-                <tr className="hover:bg-slate-50/60 transition-colors">
+                <tr className="hover:bg-slate-50/60 dark:hover:bg-zinc-800/50 transition-colors">
                   <td className="py-3 px-3 font-semibold text-slate-800 dark:text-zinc-200">
-                    Eye Aspect Ratio Medio (EAR)
+                    {t('ergonomics.matrix.rowEar', 'Eye Aspect Ratio Medio (EAR)')}
                   </td>
                   <td className="py-3 px-3 font-mono font-bold text-slate-900 dark:text-white">
                     {avgEar.toFixed(3)}
@@ -581,9 +604,9 @@ export const AnalisisErgonomico: React.FC = () => {
                   <td className="py-3 px-3 text-slate-500 dark:text-zinc-400 font-mono">&gt; 0.180</td>
                   <td className="py-3 px-3 text-right">
                     {avgEar > 0.18 ? (
-                      <span className="text-emerald-600 font-bold">✓ Ojos Despejados</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">{t('ergonomics.matrix.diagClearEyes', '✓ Ojos Despejados')}</span>
                     ) : (
-                      <span className="text-red-600 font-bold">⚠ Signos de Somnolencia</span>
+                      <span className="text-red-600 dark:text-red-400 font-bold">{t('ergonomics.matrix.diagDrowsiness', '⚠ Signos de Somnolencia')}</span>
                     )}
                   </td>
                 </tr>
@@ -596,58 +619,71 @@ export const AnalisisErgonomico: React.FC = () => {
         <Card className="p-7 flex flex-col justify-between">
           <div>
             <h3 className="font-bold text-base text-slate-900 dark:text-white leading-tight">
-              Recomendaciones Activas
+              {t('ergonomics.recommendations.title', 'Recomendaciones Activas')}
             </h3>
-            <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">OptiFlow Smart Workplace</p>
+            <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
+              {t('ergonomics.recommendations.subtitle', 'OptiFlow Smart Workplace')}
+            </p>
 
             <div className="mt-4 flex flex-col gap-3">
               <div
                 className={`p-3 rounded-2xl border transition-all ${
                   isDistTooClose || isDistCritical
-                    ? 'bg-orange-50 border-orange-200'
+                    ? 'bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800/50'
                     : 'bg-slate-50/80 dark:bg-zinc-800/60 border-slate-100 dark:border-zinc-800'
                 }`}
               >
                 <span
                   className={`text-xs font-bold block ${
-                    isDistTooClose || isDistCritical ? 'text-orange-900' : 'text-slate-800 dark:text-zinc-200'
+                    isDistTooClose || isDistCritical ? 'text-orange-900 dark:text-orange-200' : 'text-slate-800 dark:text-zinc-200'
                   }`}
                 >
-                  1. Distancia de Enfoque
+                  {t('ergonomics.recommendations.rec1Title', '1. Distancia de Enfoque')}
                 </span>
                 <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {isDistTooClose || isDistCritical
-                    ? 'Estás demasiado cerca de la pantalla. Aleja tu monitor 10-15 cm para evitar sobreesfuerzo del iris.'
-                    : 'Mantén tu distancia actual. Estás en la zona ergonómica confortable.'}
+                    ? t(
+                        'ergonomics.recommendations.rec1Warning',
+                        'Estás demasiado cerca de la pantalla. Aleja tu monitor 10-15 cm para evitar sobreesfuerzo del iris.'
+                      )
+                    : t('ergonomics.recommendations.rec1Ok', 'Mantén tu distancia actual. Estás en la zona ergonómica confortable.')}
                 </p>
               </div>
 
               <div
                 className={`p-3 rounded-2xl border transition-all ${
                   isBadPosture
-                    ? 'bg-orange-50 border-orange-200'
+                    ? 'bg-orange-50 dark:bg-orange-950/40 border-orange-200 dark:border-orange-800/50'
                     : 'bg-slate-50/80 dark:bg-zinc-800/60 border-slate-100 dark:border-zinc-800'
                 }`}
               >
                 <span
                   className={`text-xs font-bold block ${
-                    isBadPosture ? 'text-orange-900' : 'text-slate-800 dark:text-zinc-200'
+                    isBadPosture ? 'text-orange-900 dark:text-orange-200' : 'text-slate-800 dark:text-zinc-200'
                   }`}
                 >
-                  2. Elevación del Panel
+                  {t('ergonomics.recommendations.rec2Title', '2. Elevación del Panel')}
                 </span>
                 <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 leading-relaxed">
                   {isBadPosture
-                    ? 'Eleva el soporte de tu monitor para que la primera línea de texto quede frente a tus ojos sin bajar el mentón.'
-                    : 'Tu ángulo de mirada es el idóneo. Evita cruzar las piernas para mantener la simetría lumbar.'}
+                    ? t(
+                        'ergonomics.recommendations.rec2Warning',
+                        'Eleva el soporte de tu monitor para que la primera línea de texto quede frente a tus ojos sin bajar el mentón.'
+                      )
+                    : t(
+                        'ergonomics.recommendations.rec2Ok',
+                        'Tu ángulo de mirada es el idóneo. Evita cruzar las piernas para mantener la simetría lumbar.'
+                      )}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 text-xs text-slate-400 dark:text-zinc-400 flex items-center justify-between">
-            <span>Inferencia:</span>
-            <span className="text-emerald-600 font-bold">MediaPipe Face Mesh (468 pts)</span>
+            <span>{t('ergonomics.recommendations.inference', 'Inferencia:')}</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold">
+              {t('ergonomics.recommendations.inferenceEngine', 'MediaPipe Face Mesh (468 pts)')}
+            </span>
           </div>
         </Card>
       </div>

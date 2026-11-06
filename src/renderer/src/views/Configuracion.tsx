@@ -441,6 +441,12 @@ export const Configuracion: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
                   {[20, 30, 45, 60].map((mins) => {
                     const isSelected = settings.workInterval === mins
+                    const label =
+                      mins === 20
+                        ? t('settings.rules.quickMins20', '20 min (20-20-20)')
+                        : mins === 45
+                          ? t('settings.rules.quickMins45', '45 min (Pomodoro)')
+                          : t('settings.rules.quickMins', '{{mins}} min', { mins })
                     return (
                       <button
                         key={mins}
@@ -452,7 +458,7 @@ export const Configuracion: React.FC = () => {
                             : 'bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'
                         }`}
                       >
-                        {mins} min {mins === 20 ? '(20-20-20)' : mins === 45 ? '(Pomodoro)' : ''}
+                        {label}
                       </button>
                     )
                   })}
@@ -504,10 +510,10 @@ export const Configuracion: React.FC = () => {
                 {/* Botones de Selección Rápida */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
                   {[
-                    { sec: 20, label: '20 seg (20-20-20)' },
-                    { sec: 60, label: '60 seg (1 min)' },
-                    { sec: 180, label: '180 seg (3 min)' },
-                    { sec: 300, label: '300 seg (5 min)' }
+                    { sec: 20, label: t('settings.rules.quickSec20', '20 seg (20-20-20)') },
+                    { sec: 60, label: t('settings.rules.quickSec60', '60 seg (1 min)') },
+                    { sec: 180, label: t('settings.rules.quickSec180', '180 seg (3 min)') },
+                    { sec: 300, label: t('settings.rules.quickSec300', '300 seg (5 min)') }
                   ].map((item) => {
                     const isSelected = settings.pauseDuration === item.sec
                     return (
@@ -733,7 +739,7 @@ export const Configuracion: React.FC = () => {
               </button>
 
               <span className="text-[11px] text-center text-slate-400 block">
-                Los ajustes se sincronizan inmediatamente en disco y memoria.
+                {t('settings.summary.sync_notice', 'Los ajustes se sincronizan inmediatamente en disco y memoria.')}
               </span>
             </div>
           </Card>
@@ -741,26 +747,36 @@ export const Configuracion: React.FC = () => {
           {/* Información Técnica del Software */}
           <Card className="p-7">
             <h3 className="font-bold text-sm text-slate-900 dark:text-white leading-tight">
-              Información del Entorno
+              {t('settings.environment.title', 'Información del Entorno')}
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">OptiFlow Desktop v1.0.0</p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {t('settings.environment.version', 'OptiFlow Desktop v1.0.0')}
+            </p>
 
             <div className="mt-4 flex flex-col gap-2.5 text-xs">
               <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
-                <span className="text-slate-400">Arquitectura:</span>
-                <span className="font-semibold text-slate-800 dark:text-zinc-200">Electron 35 + Node 22</span>
+                <span className="text-slate-400">{t('settings.environment.architecture', 'Arquitectura:')}</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                  {t('settings.environment.architectureVal', 'Electron 35 + Node 22')}
+                </span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
-                <span className="text-slate-400">Persistencia:</span>
-                <span className="font-semibold text-slate-800 dark:text-zinc-200">optiflow_settings.json</span>
+                <span className="text-slate-400">{t('settings.environment.persistence', 'Persistencia:')}</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                  {t('settings.environment.persistenceVal', 'optiflow_settings.json')}
+                </span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-zinc-800">
-                <span className="text-slate-400">Base de Datos:</span>
-                <span className="font-semibold text-slate-800 dark:text-zinc-200">SQLite (user_settings)</span>
+                <span className="text-slate-400">{t('settings.environment.database', 'Base de Datos:')}</span>
+                <span className="font-semibold text-slate-800 dark:text-zinc-200">
+                  {t('settings.environment.databaseVal', 'SQLite (user_settings)')}
+                </span>
               </div>
               <div className="flex items-center justify-between py-1.5">
-                <span className="text-slate-400">Motor de Visión:</span>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">MediaPipe 3D</span>
+                <span className="text-slate-400">{t('settings.environment.visionEngine', 'Motor de Visión:')}</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  {t('settings.environment.visionEngineVal', 'MediaPipe 3D')}
+                </span>
               </div>
             </div>
           </Card>
