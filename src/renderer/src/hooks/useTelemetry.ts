@@ -5,6 +5,9 @@ export interface TelemetryData {
   blink_rate: number
   active_app: string
   app_status?: string
+  appIconBase64?: string
+  app_icon_base64?: string
+  exe_path?: string
   ear?: number
   average_ear?: number
   left_ear?: number
@@ -81,6 +84,8 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   blink_rate: 18,
   active_app: 'VS Code',
   app_status: 'Enfoque Profundo',
+  appIconBase64: '',
+  app_icon_base64: '',
   ear: 0.28,
   average_ear: 0.26,
   left_ear: 0.27,

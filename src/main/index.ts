@@ -936,6 +936,20 @@ app.whenReady().then(() => {
     return getAppUsageStatsFromDB()
   })
 
+  // IPC nativo para extraer y devolver el icono real (.exe) en Base64 usando app.getFileIcon
+  ipcMain.handle('get-app-icon', async (_, appPathOrName: string): Promise<string | null> => {
+    if (!appPathOrName) return null
+    try {
+      if (existsSync(appPathOrName)) {
+        const icon = await app.getFileIcon(appPathOrName, { size: 'normal' })
+        return icon.toDataURL()
+      }
+    } catch (err) {
+      console.error('[Main Process] Error extrayendo icono nativo con app.getFileIcon:', err)
+    }
+    return null
+  })
+
   createWindow()
 
   app.on('activate', function () {

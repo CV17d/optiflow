@@ -2,7 +2,6 @@ import React from 'react'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 import type { AppUsageStat } from '../../hooks/useTelemetry'
-import { getAppIcon } from '../../utils/appIcons'
 
 export interface TelemetryWidgetProps {
   activeApp?: string
@@ -10,6 +9,7 @@ export interface TelemetryWidgetProps {
   active_app?: string
   app_status?: string
   roleDescription?: string
+  appIconBase64?: string
   appUsageStats?: AppUsageStat[]
 }
 
@@ -19,6 +19,7 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
   active_app,
   app_status,
   roleDescription,
+  appIconBase64,
   appUsageStats
 }) => {
   const currentApp = activeApp || active_app || 'Buscando...'
@@ -66,9 +67,29 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
       {/* Contenido Principal: Aplicación Activa y Estado del Sistema */}
       <div className="bg-slate-50/70 border border-slate-100 rounded-2xl p-2.5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          {/* Icono Real Inteligente de la Aplicación */}
-          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0">
-            {getAppIcon(currentApp, 'w-5 h-5')}
+          {/* Icono Nativo del Sistema Operativo con fallback elegante */}
+          <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
+            {appIconBase64 ? (
+              <img
+                src={appIconBase64}
+                alt="App Icon"
+                className="w-8 h-8 object-contain"
+              />
+            ) : (
+              <svg
+                className="w-5 h-5 text-orange-500"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+            )}
           </div>
           <div className="min-w-0">
             <h4
@@ -108,9 +129,11 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
         <div className="flex items-center justify-between text-[11px] text-slate-600 pt-0.5 px-0.5">
           {secondaryApps.map((item, index) => (
             <div key={item.app} className="flex items-center gap-1.5 min-w-0">
-              <span className="shrink-0 flex items-center">
-                {getAppIcon(item.app, 'w-3.5 h-3.5')}
-              </span>
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${
+                  index === 0 ? 'bg-orange-500' : 'bg-slate-300'
+                }`}
+              />
               <span className="truncate max-w-[120px]" title={item.app}>
                 {index + 1}. {item.app}{' '}
                 <span className="text-slate-400 font-medium">({item.percentage}%)</span>

@@ -7,7 +7,8 @@ const api = {
   getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
   getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data'),
   getSettings: (): Promise<unknown> => ipcRenderer.invoke('get-settings'),
-  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings)
+  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings),
+  getAppIcon: (path: string): Promise<string | null> => ipcRenderer.invoke('get-app-icon', path)
 }
 
 const extendedElectron = {
@@ -16,7 +17,8 @@ const extendedElectron = {
   getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
   getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data'),
   getSettings: (): Promise<unknown> => ipcRenderer.invoke('get-settings'),
-  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings)
+  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings),
+  getAppIcon: (path: string): Promise<string | null> => ipcRenderer.invoke('get-app-icon', path)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

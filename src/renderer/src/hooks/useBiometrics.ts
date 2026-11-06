@@ -26,6 +26,7 @@ export interface BiometricsState {
   next_break_minutes: number
   active_app: string
   app_status: string
+  appIconBase64?: string
   tracking_points: number
   ear_threshold: number
 }
@@ -140,6 +141,7 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
       next_break_minutes: nextBreakMinutes,
       active_app: telemetry.active_app || 'VS Code',
       app_status: telemetry.app_status || 'Enfoque Profundo',
+      appIconBase64: telemetry.appIconBase64 || telemetry.app_icon_base64 || '',
       tracking_points: isConnected ? 468 : 0,
       ear_threshold: typeof telemetry.ear_threshold === 'number' ? telemetry.ear_threshold : 0.18
     }

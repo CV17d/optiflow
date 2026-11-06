@@ -53,6 +53,7 @@ export interface CustomElectronAPI extends ElectronAPI {
   getHistoricalData?: () => Promise<HistoricalData>
   getSettings?: () => Promise<UserSettings>
   saveSettings?: (settings: Partial<UserSettings>) => Promise<UserSettings>
+  getAppIcon?: (path: string) => Promise<string | null>
 }
 
 export interface CustomAPI {
@@ -61,6 +62,7 @@ export interface CustomAPI {
   getHistoricalData?: () => Promise<HistoricalData>
   getSettings?: () => Promise<UserSettings>
   saveSettings?: (settings: Partial<UserSettings>) => Promise<UserSettings>
+  getAppIcon?: (path: string) => Promise<string | null>
 }
 
 declare global {

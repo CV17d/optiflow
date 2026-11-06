@@ -123,6 +123,7 @@ export const Dashboard: React.FC = () => {
             activeApp={isMonitoring ? biometrics.active_app : `${biometrics.active_app} (Pausado)`}
             appStatus={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
             roleDescription={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
+            appIconBase64={isMonitoring ? biometrics.appIconBase64 : undefined}
             appUsageStats={currentUsageStats}
           />
         </div>

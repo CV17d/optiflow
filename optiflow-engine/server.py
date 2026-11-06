@@ -39,7 +39,9 @@ def get_fused_payload() -> dict:
         "posture_angle": bio_data.get("posture_angle", 12.0),
         "ear_threshold": bio_data.get("ear_threshold", 0.18),
         "active_app": app_data.get("active_app", "Cursor"),
-        "app_status": app_data.get("app_status", "Enfoque Profundo")
+        "app_status": app_data.get("app_status", "Enfoque Profundo"),
+        "appIconBase64": app_data.get("appIconBase64", ""),
+        "app_icon_base64": app_data.get("app_icon_base64", "")
     }
 
 
