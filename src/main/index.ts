@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
 import { join } from 'path'
 import { existsSync } from 'fs'
-import { spawn, ChildProcess } from 'child_process'
+import { spawn, spawnSync, ChildProcess } from 'child_process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { DatabaseSync } from 'node:sqlite'
 import icon from '../../resources/icon.png?asset'
@@ -184,9 +184,28 @@ function getBreakStatsFromDB(): BreakStats {
 }
 
 /**
+ * Limpia instancias huérfanas previas de server.exe para evitar colisiones en el puerto 8765.
+ */
+function cleanOrphanedPythonProcesses(): void {
+  if (process.platform === 'win32') {
+    try {
+      spawnSync('taskkill', ['/IM', 'server.exe', '/T', '/F'], {
+        windowsHide: true,
+        stdio: 'ignore'
+      })
+    } catch {
+      // Silencioso si no había instancias previas
+    }
+  }
+}
+
+/**
  * Inicia el binario de Python silenciosamente en segundo plano.
  */
 function startPythonBackend(): void {
+  // Asegurar liberación previa de puertos terminando procesos huérfanos
+  cleanOrphanedPythonProcesses()
+
   const binaryPath = getPythonBinaryPath()
   console.log(`[Main Process] Iniciando motor Python desde: ${binaryPath}`)
 
@@ -224,22 +243,38 @@ function startPythonBackend(): void {
 }
 
 /**
- * Termina el proceso hijo de Python limpiamente para evitar procesos huérfanos en el SO.
+ * Termina el proceso hijo de Python de forma síncrona y segura,
+ * garantizando la eliminación del árbol completo de procesos (tree-kill) para liberar el puerto 8765.
  */
 function stopPythonBackend(): void {
-  if (pythonProcess && pythonProcess.pid) {
-    console.log(`[Main Process] Finalizando proceso del motor de Python (PID: ${pythonProcess.pid})...`)
+  if (pythonProcess) {
+    const pid = pythonProcess.pid
+    console.log(`[Main Process] Finalizando proceso del motor de Python (PID: ${pid})...`)
     try {
-      if (process.platform === 'win32') {
-        // En Windows, taskkill /pid /T /F asegura terminar el proceso y todos sus subprocesos
-        spawn('taskkill', ['/pid', pythonProcess.pid.toString(), '/T', '/F'])
-      } else {
-        pythonProcess.kill('SIGTERM')
+      if (pid) {
+        if (process.platform === 'win32') {
+          // En Windows, taskkill /PID <pid> /T /F de forma síncrona termina el proceso y todos sus subprocesos
+          spawnSync('taskkill', ['/PID', pid.toString(), '/T', '/F'], {
+            windowsHide: true,
+            stdio: 'ignore'
+          })
+          console.log(`[Main Process] taskkill /PID ${pid} /T /F ejecutado síncronamente.`)
+        } else {
+          pythonProcess.kill('SIGTERM')
+        }
       }
     } catch (e) {
       console.error('[Main Process] Error cerrando el proceso de Python:', e)
+    } finally {
+      try {
+        if (pythonProcess && !pythonProcess.killed) {
+          pythonProcess.kill('SIGKILL')
+        }
+      } catch {
+        // Ignorar si ya fue cerrado
+      }
+      pythonProcess = null
     }
-    pythonProcess = null
   }
 }
 
@@ -406,17 +441,39 @@ app.whenReady().then(() => {
 })
 
 // Limpieza garantizada del proceso hijo en todos los eventos de cierre
+app.on('will-quit', () => {
+  if (pythonProcess) {
+    console.log('[Main Process] Evento will-quit: finalizando proceso hijo de Python...')
+    stopPythonBackend()
+  }
+})
+
+app.on('before-quit', () => {
+  if (pythonProcess) {
+    console.log('[Main Process] Evento before-quit: finalizando proceso hijo de Python...')
+    stopPythonBackend()
+  }
+})
+
 app.on('window-all-closed', () => {
-  stopPythonBackend()
+  if (pythonProcess) {
+    stopPythonBackend()
+  }
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
-app.on('will-quit', () => {
+process.on('exit', () => {
   stopPythonBackend()
 })
 
-app.on('before-quit', () => {
+process.on('SIGINT', () => {
   stopPythonBackend()
+  process.exit(0)
+})
+
+process.on('SIGTERM', () => {
+  stopPythonBackend()
+  process.exit(0)
 })
