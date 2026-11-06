@@ -60,6 +60,23 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
     resetCalibration
   } = useTelemetry(url)
   const [elapsedSeconds, setElapsedSeconds] = useState<number>(0)
+  const [workIntervalMinutes, setWorkIntervalMinutes] = useState<number>(20)
+
+  // Cargar configuración de usuario para personalizar intervalo de trabajo
+  useEffect(() => {
+    const loadSettings = async (): Promise<void> => {
+      try {
+        const s =
+          (await window.electron?.getSettings?.()) || (await window.api?.getSettings?.())
+        if (s && typeof s.workInterval === 'number') {
+          setWorkIntervalMinutes(Math.max(1, s.workInterval))
+        }
+      } catch {
+        // Usar 20 min por defecto
+      }
+    }
+    loadSettings()
+  }, [])
 
   // Temporizador dinámico para calcular tiempo de sesión en pantalla
   useEffect(() => {
@@ -79,11 +96,12 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
     return `${minutes}m`
   }, [elapsedSeconds])
 
-  // Cálculo de cuenta regresiva para la regla 20-20-20 (pausa cada 20 minutos)
+  // Cálculo de cuenta regresiva dinámica según el workInterval configurado por el usuario
   const nextBreakMinutes = useMemo(() => {
-    const remainder = 20 - (Math.floor(elapsedSeconds / 60) % 20)
+    const interval = Math.max(1, workIntervalMinutes)
+    const remainder = interval - (Math.floor(elapsedSeconds / 60) % interval)
     return Math.max(1, remainder)
-  }, [elapsedSeconds])
+  }, [elapsedSeconds, workIntervalMinutes])
 
   const biometrics: BiometricsState = useMemo(() => {
     const avgEar =

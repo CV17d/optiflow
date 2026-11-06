@@ -1,10 +1,32 @@
 import React, { useState, useEffect, useRef } from 'react'
+import type { UserSettings } from '../../../../preload/index.d'
 
-const TOTAL_BREAK_SECONDS = 20
+const DEFAULT_BREAK_SECONDS = 20
 
 export const Intercept: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState<number>(TOTAL_BREAK_SECONDS)
+  const [timeLeft, setTimeLeft] = useState<number>(DEFAULT_BREAK_SECONDS)
+  const [totalSeconds, setTotalSeconds] = useState<number>(DEFAULT_BREAK_SECONDS)
+  const [strictMode, setStrictMode] = useState<boolean>(false)
   const isDestroyingRef = useRef<boolean>(false)
+
+  // Cargar configuración de usuario (duración de la pausa y modo estricto)
+  useEffect(() => {
+    const loadSettings = async (): Promise<void> => {
+      try {
+        const s: UserSettings | undefined =
+          (await window.electron?.getSettings?.()) || (await window.api?.getSettings?.())
+        if (s) {
+          const duration = Math.max(5, s.pauseDuration || DEFAULT_BREAK_SECONDS)
+          setTotalSeconds(duration)
+          setTimeLeft(duration)
+          setStrictMode(!!s.strictMode)
+        }
+      } catch (err) {
+        console.error('[Intercept] Error cargando ajustes:', err)
+      }
+    }
+    loadSettings()
+  }, [])
 
   const handleEndBreak = (): void => {
     if (isDestroyingRef.current) return
@@ -17,7 +39,7 @@ export const Intercept: React.FC = () => {
   }
 
   const handlePostponeBreak = (): void => {
-    if (isDestroyingRef.current) return
+    if (strictMode || isDestroyingRef.current) return
     isDestroyingRef.current = true
     if (window.electron?.ipcRenderer) {
       window.electron.ipcRenderer.send('postpone-break')
@@ -44,7 +66,7 @@ export const Intercept: React.FC = () => {
   // Geometría para el progreso circular SVG
   const radius = 96
   const circumference = 2 * Math.PI * radius
-  const progressRatio = timeLeft / TOTAL_BREAK_SECONDS
+  const progressRatio = totalSeconds > 0 ? timeLeft / totalSeconds : 1
   // En cuenta regresiva el arco se reduce o mantiene con el tiempo restante
   const strokeDashoffset = circumference * (1 - progressRatio)
 
@@ -254,13 +276,20 @@ export const Intercept: React.FC = () => {
         <div className="flex items-center gap-2 text-right">
           <span>Se desbloqueará automáticamente al finalizar el conteo</span>
           <span>•</span>
-          <button
-            type="button"
-            onClick={handlePostponeBreak}
-            className="text-slate-400 hover:text-slate-700 underline-offset-2 hover:underline cursor-pointer transition-colors"
-          >
-            Posponer 2 min (Emergencia)
-          </button>
+          {strictMode ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100/90 text-orange-800 text-[11px] font-bold border border-orange-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-pulse" />
+              Modo Estricto Activo (Postergación Bloqueada)
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePostponeBreak}
+              className="text-slate-400 hover:text-slate-700 underline-offset-2 hover:underline cursor-pointer transition-colors"
+            >
+              Posponer 2 min (Emergencia)
+            </button>
+          )}
         </div>
       </footer>
     </div>

@@ -40,16 +40,27 @@ export interface HistoricalData {
   totalHoursMonitored: number
 }
 
+export interface UserSettings {
+  autoStart: boolean
+  workInterval: number
+  pauseDuration: number
+  strictMode: boolean
+}
+
 export interface CustomElectronAPI extends ElectronAPI {
   getAppUsageStats?: () => Promise<AppUsageStat[]>
   getBreakStats?: () => Promise<BreakStats>
   getHistoricalData?: () => Promise<HistoricalData>
+  getSettings?: () => Promise<UserSettings>
+  saveSettings?: (settings: Partial<UserSettings>) => Promise<UserSettings>
 }
 
 export interface CustomAPI {
   getAppUsageStats?: () => Promise<AppUsageStat[]>
   getBreakStats?: () => Promise<BreakStats>
   getHistoricalData?: () => Promise<HistoricalData>
+  getSettings?: () => Promise<UserSettings>
+  saveSettings?: (settings: Partial<UserSettings>) => Promise<UserSettings>
 }
 
 declare global {

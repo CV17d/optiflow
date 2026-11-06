@@ -5,14 +5,18 @@ import { electronAPI } from '@electron-toolkit/preload'
 const api = {
   getAppUsageStats: (): Promise<unknown> => ipcRenderer.invoke('get-app-usage-stats'),
   getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
-  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data')
+  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data'),
+  getSettings: (): Promise<unknown> => ipcRenderer.invoke('get-settings'),
+  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings)
 }
 
 const extendedElectron = {
   ...electronAPI,
   getAppUsageStats: (): Promise<unknown> => ipcRenderer.invoke('get-app-usage-stats'),
   getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
-  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data')
+  getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data'),
+  getSettings: (): Promise<unknown> => ipcRenderer.invoke('get-settings'),
+  saveSettings: (settings: unknown): Promise<unknown> => ipcRenderer.invoke('save-settings', settings)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

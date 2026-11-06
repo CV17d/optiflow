@@ -1,6 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, Notification } from 'electron'
 import { join } from 'path'
-import { existsSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { spawn, spawnSync, ChildProcess } from 'child_process'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { DatabaseSync } from 'node:sqlite'
@@ -47,6 +47,13 @@ function getDatabasePath(): string {
     return altProdPath
   }
   return devPath
+}
+
+export interface UserSettings {
+  autoStart: boolean
+  workInterval: number
+  pauseDuration: number
+  strictMode: boolean
 }
 
 export interface AppUsageStat {
@@ -495,6 +502,163 @@ function getHistoricalDataFromDB(): HistoricalData {
   }
 }
 
+const DEFAULT_SETTINGS: UserSettings = {
+  autoStart: false,
+  workInterval: 20,
+  pauseDuration: 20,
+  strictMode: false
+}
+
+let cachedSettings: UserSettings = { ...DEFAULT_SETTINGS }
+let breakTimer: NodeJS.Timeout | null = null
+
+function getConfigPath(): string {
+  try {
+    return join(app.getPath('userData'), 'optiflow_settings.json')
+  } catch {
+    return join(app.getAppPath(), 'optiflow_settings.json')
+  }
+}
+
+function loadSettingsFromDisk(): UserSettings {
+  const cfgPath = getConfigPath()
+  let settings: UserSettings = { ...DEFAULT_SETTINGS }
+
+  // 1. Cargar desde JSON si existe
+  if (existsSync(cfgPath)) {
+    try {
+      const raw = readFileSync(cfgPath, 'utf-8')
+      const parsed = JSON.parse(raw)
+      settings = { ...settings, ...parsed }
+    } catch (e) {
+      console.warn('[Main Process] Error leyendo archivo de configuración JSON:', e)
+    }
+  }
+
+  // 2. Cargar/respaldar desde SQLite
+  const dbPath = getDatabasePath()
+  if (existsSync(dbPath)) {
+    try {
+      const db = new DatabaseSync(dbPath)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS user_settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      `)
+      const rows = db.prepare('SELECT key, value FROM user_settings').all() as Array<{ key: string; value: string }>
+      for (const row of rows) {
+        if (row.key === 'autoStart') settings.autoStart = row.value === 'true'
+        if (row.key === 'workInterval') settings.workInterval = parseInt(row.value, 10) || 20
+        if (row.key === 'pauseDuration') settings.pauseDuration = parseInt(row.value, 10) || 20
+        if (row.key === 'strictMode') settings.strictMode = row.value === 'true'
+      }
+      db.close()
+    } catch (e) {
+      console.warn('[Main Process] Error cargando ajustes de SQLite:', e)
+    }
+  }
+
+  // 3. Consultar estado real de Electron openAtLogin
+  try {
+    const loginItem = app.getLoginItemSettings()
+    if (typeof loginItem.openAtLogin === 'boolean') {
+      settings.autoStart = loginItem.openAtLogin
+    }
+  } catch {
+    // Silencioso si no está soportado en entorno actual
+  }
+
+  cachedSettings = settings
+  return settings
+}
+
+function saveSettingsToDisk(newSettings: Partial<UserSettings>): UserSettings {
+  cachedSettings = {
+    autoStart: typeof newSettings.autoStart === 'boolean' ? newSettings.autoStart : cachedSettings.autoStart,
+    workInterval: typeof newSettings.workInterval === 'number' ? Math.max(1, newSettings.workInterval) : cachedSettings.workInterval,
+    pauseDuration: typeof newSettings.pauseDuration === 'number' ? Math.max(5, newSettings.pauseDuration) : cachedSettings.pauseDuration,
+    strictMode: typeof newSettings.strictMode === 'boolean' ? newSettings.strictMode : cachedSettings.strictMode
+  }
+
+  // 1. Guardar en JSON
+  try {
+    const cfgPath = getConfigPath()
+    writeFileSync(cfgPath, JSON.stringify(cachedSettings, null, 2), 'utf-8')
+    console.log(`[Main Process] Configuración guardada en ${cfgPath}`)
+  } catch (e) {
+    console.error('[Main Process] Error guardando configuración JSON:', e)
+  }
+
+  // 2. Persistir en SQLite
+  const dbPath = getDatabasePath()
+  if (existsSync(dbPath)) {
+    try {
+      const db = new DatabaseSync(dbPath)
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS user_settings (
+          key TEXT PRIMARY KEY,
+          value TEXT NOT NULL
+        )
+      `)
+      const upsert = db.prepare(`
+        INSERT INTO user_settings (key, value)
+        VALUES (?, ?)
+        ON CONFLICT(key) DO UPDATE SET value = excluded.value
+      `)
+      upsert.run('autoStart', String(cachedSettings.autoStart))
+      upsert.run('workInterval', String(cachedSettings.workInterval))
+      upsert.run('pauseDuration', String(cachedSettings.pauseDuration))
+      upsert.run('strictMode', String(cachedSettings.strictMode))
+      db.close()
+      console.log('[Main Process] Configuración persistida en SQLite (tabla user_settings)')
+    } catch (e) {
+      console.error('[Main Process] Error persistiendo configuración en SQLite:', e)
+    }
+  }
+
+  // 3. Aplicar autoStart en Windows (openAtLogin)
+  try {
+    app.setLoginItemSettings({
+      openAtLogin: cachedSettings.autoStart,
+      openAsHidden: false
+    })
+    console.log(`[Main Process] app.setLoginItemSettings({ openAtLogin: ${cachedSettings.autoStart} })`)
+  } catch (e) {
+    console.warn('[Main Process] No se pudo configurar openAtLogin en el sistema:', e)
+  }
+
+  // 4. Reiniciar temporizador con el nuevo workInterval
+  restartBreakTimer()
+
+  return cachedSettings
+}
+
+function restartBreakTimer(): void {
+  if (breakTimer) {
+    clearInterval(breakTimer)
+    breakTimer = null
+  }
+
+  const minutes = Math.max(1, cachedSettings.workInterval || 20)
+  const intervalMs = minutes * 60 * 1000
+
+  console.log(`[Main Process] Temporizador de pausa activa configurado cada ${minutes} min (${intervalMs} ms).`)
+
+  breakTimer = setInterval(() => {
+    console.log(`[Main Process] Ciclo de trabajo cumplido (${minutes} min). Disparando pausa activa Kiosk...`)
+    if (Notification.isSupported()) {
+      new Notification({
+        title: 'OptiFlow • Pausa Activa Ergonómica',
+        body: `¡Momento de descansar la vista! Mira a 6 metros durante ${cachedSettings.pauseDuration || 20} segundos.`,
+        icon
+      }).show()
+    }
+    logBreakEventInDB('suggested')
+    openInterceptWindow()
+  }, intervalMs)
+}
+
 /**
  * Limpia instancias huérfanas previas de server.exe para evitar colisiones en el puerto 8765.
  */
@@ -676,6 +840,10 @@ app.whenReady().then(() => {
   // Iniciar silenciosamente el backend de Python
   startPythonBackend()
 
+  // Cargar ajustes de usuario e iniciar temporizador dinámico de pausas
+  loadSettingsFromDisk()
+  restartBreakTimer()
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -694,7 +862,7 @@ app.whenReady().then(() => {
     if (Notification.isSupported()) {
       new Notification({
         title: 'OptiFlow • Pausa Activa Ergonómica',
-        body: '¡Momento de descansar la vista! Mira a 6 metros durante 20 segundos (Regla 20-20-20).',
+        body: `¡Momento de descansar la vista! Mira a 6 metros durante ${cachedSettings.pauseDuration || 20} segundos (Regla 20-20-20).`,
         icon
       }).show()
     }
@@ -712,6 +880,7 @@ app.whenReady().then(() => {
     console.log('[Main Process] Pausa Activa completada: registrando en SQLite y destruyendo ventana Kiosk')
     logBreakEventInDB('completed')
     closeInterceptWindow()
+    restartBreakTimer()
   })
 
   // IPC para posponer pausa activa (botón de emergencia en ventana Kiosk)
@@ -719,6 +888,23 @@ app.whenReady().then(() => {
     console.log('[Main Process] Pausa Activa pospuesta por el usuario: registrando en SQLite')
     logBreakEventInDB('postponed')
     closeInterceptWindow()
+
+    // Repetir pausa tras 2 minutos de prórroga de emergencia
+    setTimeout(() => {
+      console.log('[Main Process] Prórroga de 2 minutos cumplida. Reactivando pausa Kiosk...')
+      logBreakEventInDB('suggested')
+      openInterceptWindow()
+    }, 2 * 60 * 1000)
+  })
+
+  // IPC para consultar configuración de usuario
+  ipcMain.handle('get-settings', async () => {
+    return cachedSettings
+  })
+
+  // IPC para guardar configuración de usuario y aplicar cambios
+  ipcMain.handle('save-settings', async (_, newSettings: Partial<UserSettings>) => {
+    return saveSettingsToDisk(newSettings)
   })
 
   // IPC para consultar estadísticas de pausas ergonómicas desde SQLite
