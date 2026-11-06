@@ -806,6 +806,7 @@ function closeInterceptWindow(): void {
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: 'OptiFlow',
     width: 1200,
     height: 800,
     show: false,

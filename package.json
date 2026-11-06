@@ -1,5 +1,6 @@
 {
   "name": "optiflow",
+  "productName": "OptiFlow",
   "version": "1.0.0",
   "description": "OptiFlow Desktop Application",
   "main": "./out/main/index.js",
