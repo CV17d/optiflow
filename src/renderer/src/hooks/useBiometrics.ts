@@ -5,7 +5,11 @@ export interface BiometricsState {
   fatigue_level: number
   bpm: number
   ear: number
+  average_ear: number
+  distance: number
+  distance_cm: string
   session_time: string
+  elapsed_seconds: number
   next_break_minutes: number
   active_app: string
   app_status: string
@@ -54,17 +58,28 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
   }, [elapsedSeconds])
 
   const biometrics: BiometricsState = useMemo(() => {
+    const avgEar =
+      typeof telemetry.average_ear === 'number'
+        ? Number(telemetry.average_ear.toFixed(2))
+        : historyData?.average_ear
+          ? Number(historyData.average_ear.toFixed(2))
+          : 0.26
+
     return {
       fatigue_level: typeof telemetry.fatigue_level === 'number' ? Math.round(telemetry.fatigue_level) : 18,
       bpm: typeof telemetry.blink_rate === 'number' ? telemetry.blink_rate : 16,
       ear: typeof telemetry.ear === 'number' ? Number(telemetry.ear.toFixed(2)) : 0.28,
+      average_ear: avgEar,
+      distance: typeof telemetry.distance === 'number' ? telemetry.distance : 58.4,
+      distance_cm: telemetry.distance_cm || `${typeof telemetry.distance === 'number' ? telemetry.distance : 58.4} cm`,
       session_time: sessionTime,
+      elapsed_seconds: elapsedSeconds,
       next_break_minutes: nextBreakMinutes,
       active_app: telemetry.active_app || 'VS Code',
       app_status: telemetry.app_status || 'Enfoque Profundo',
       tracking_points: isConnected ? 468 : 0
     }
-  }, [telemetry, sessionTime, nextBreakMinutes, isConnected])
+  }, [telemetry, historyData, sessionTime, elapsedSeconds, nextBreakMinutes, isConnected])
 
   const sendAction = (action: 'pause' | 'resume'): void => {
     sendCommand({ action })

@@ -32,22 +32,21 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
   postponed = 'Mínima (2)',
   appUsageStats = []
 }) => {
-  // Gráfico de barras dinamizado con estadísticas reales de uso por aplicación registradas en SQLite
+  // Gráfico de barras dinamizado con el TOP 3 de aplicaciones más usadas devueltas por la telemetría
   const bars = useMemo(() => {
     if (!appUsageStats || appUsageStats.length === 0) {
       return [
-        { label: 'App 1', heightPx: 20, color: 'bg-slate-200/60', title: 'Sin registros' },
-        { label: 'App 2', heightPx: 14, color: 'bg-slate-200/50', title: 'Sin registros' },
-        { label: 'App 3', heightPx: 16, color: 'bg-slate-200/40', title: 'Sin registros' },
-        { label: 'App 4', heightPx: 10, color: 'bg-slate-200/30', title: 'Sin registros' }
+        { label: 'App 1', heightPx: 22, color: 'bg-slate-200/60', title: 'Sin registros' },
+        { label: 'App 2', heightPx: 16, color: 'bg-slate-200/50', title: 'Sin registros' },
+        { label: 'App 3', heightPx: 18, color: 'bg-slate-200/40', title: 'Sin registros' }
       ]
     }
 
-    // Tomar hasta 4 aplicaciones con mayor presencia registradas en la base de datos
-    return appUsageStats.slice(0, 4).map((stat, idx) => {
-      // Normalizar altura de barra entre 18px y 68px según el porcentaje de uso
+    // Tomar exactamente el Top 3 de aplicaciones más usadas
+    return appUsageStats.slice(0, 3).map((stat, idx) => {
+      // Normalizar altura de barra entre 18px y 68px según el porcentaje de uso real
       const heightPx = Math.max(18, Math.min(68, Math.round((stat.percentage / 100) * 68)))
-      const color = idx % 2 === 0 ? 'bg-orange-500' : 'bg-orange-300'
+      const color = idx === 0 ? 'bg-orange-500' : idx === 1 ? 'bg-orange-400' : 'bg-orange-300'
       return {
         label: stat.app,
         heightPx,
@@ -84,24 +83,24 @@ export const PauseRegistryWidget: React.FC<PauseRegistryWidgetProps> = ({
 
       {/* Contenido: Métricas a la izquierda y Gráfico Dinámico de Barras con espaciado amplio */}
       <div className="flex items-end justify-between mt-4 gap-2">
-        {/* Métricas */}
+        {/* Métricas Reactivas */}
         <div className="flex flex-col shrink-0">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             ADHERENCIA 20-20-20
           </span>
-          <span className="text-2xl font-black text-slate-900 mt-0.5">
+          <span className="text-2xl font-black text-slate-900 mt-0.5 font-mono">
             {adherence}
           </span>
 
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
             POSPUESTAS
           </span>
-          <span className="text-sm font-semibold text-slate-800 mt-0.5">
+          <span className="text-sm font-semibold text-slate-800 mt-0.5 font-mono">
             {postponed}
           </span>
         </div>
 
-        {/* Gráfico de Barras con etiquetas truncadas limpias para evitar superposiciones */}
+        {/* Gráfico de Barras con el Top 3 de Aplicaciones */}
         <div className="flex items-end justify-end gap-3.5 h-20 pb-0.5">
           {bars.map((bar, index) => {
             const shortLabel = formatBarLabel(bar.label)

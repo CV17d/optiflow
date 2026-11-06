@@ -29,6 +29,9 @@ def get_fused_payload() -> dict:
         "fatigue_level": bio_data.get("fatigue_level", 18),
         "blink_rate": bio_data.get("blink_rate", 16),
         "ear": bio_data.get("ear", 0.25),
+        "average_ear": bio_data.get("average_ear", 0.26),
+        "distance": bio_data.get("distance", 58.4),
+        "distance_cm": bio_data.get("distance_cm", "58.4 cm"),
         "active_app": app_data.get("active_app", "Cursor"),
         "app_status": app_data.get("app_status", "Enfoque Profundo")
     }
@@ -41,6 +44,7 @@ async def handler(websocket):
     try:
         # Enviar estadísticas históricas agregadas desde SQLite antes del streaming en vivo
         avg_fatigue = await asyncio.to_thread(db_manager.get_average_fatigue)
+        avg_ear = await asyncio.to_thread(db_manager.get_average_ear)
         app_stats = await asyncio.to_thread(db_manager.get_app_usage_stats)
         ear_history = await asyncio.to_thread(db_manager.get_historical_ear)
 
@@ -48,10 +52,12 @@ async def handler(websocket):
             "type": "initial_history",
             "historical_stats": {
                 "average_fatigue": avg_fatigue,
+                "average_ear": avg_ear,
                 "app_usage_stats": app_stats,
                 "historical_ear": ear_history
             },
             "average_fatigue": avg_fatigue,
+            "average_ear": avg_ear,
             "app_usage_stats": app_stats,
             "historical_ear": ear_history
         }

@@ -8,15 +8,22 @@ import VisualHealthIndexWidget from './VisualHealthIndexWidget'
 import PauseRegistryWidget from './PauseRegistryWidget'
 import TemporalCorrelationWidget from './TemporalCorrelationWidget'
 import useBiometrics from '../../hooks/useBiometrics'
-import type { AppUsageStat } from '../../hooks/useTelemetry'
+import type { AppUsageStat, BreakStats } from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
   const { biometrics, historyData, sendAction } = useBiometrics()
   const [isMonitoring, setIsMonitoring] = useState<boolean>(true)
   const [appUsageStats, setAppUsageStats] = useState<AppUsageStat[]>([])
+  const [breakStats, setBreakStats] = useState<BreakStats>({
+    suggested: 6,
+    completed: 5,
+    postponed: 1,
+    adherence: '+84%',
+    adherencePercentage: 84
+  })
   const pausedFatigueRef = useRef<number>(18)
 
-  // Carga reactiva de estadísticas de aplicaciones desde SQLite mediante el canal IPC del preload
+  // Carga reactiva de estadísticas de aplicaciones y pausas ergonómicas desde SQLite vía IPC
   useEffect(() => {
     let isMounted = true
 
@@ -40,8 +47,33 @@ export const Dashboard: React.FC = () => {
       }
     }
 
+    const fetchBreakStats = async (): Promise<void> => {
+      try {
+        if (window.electron?.getBreakStats) {
+          const stats = await window.electron.getBreakStats()
+          if (isMounted && stats) {
+            setBreakStats(stats)
+            return
+          }
+        }
+        if (window.api?.getBreakStats) {
+          const stats = await window.api.getBreakStats()
+          if (isMounted && stats) {
+            setBreakStats(stats)
+          }
+        }
+      } catch (err) {
+        console.error('[Dashboard] Error al consultar estadísticas de pausas vía IPC:', err)
+      }
+    }
+
     fetchAppUsage()
-    const interval = setInterval(fetchAppUsage, 10000)
+    fetchBreakStats()
+
+    const interval = setInterval(() => {
+      fetchAppUsage()
+      fetchBreakStats()
+    }, 5000)
 
     return () => {
       isMounted = false
@@ -117,16 +149,23 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Fila Inferior: Widgets de Salud Visual, Registro de Pausas y Correlación */}
+      {/* Fila Inferior: Widgets Reactivos de Salud Visual, Registro de Pausas y Correlación */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <VisualHealthIndexWidget
+          fatigueLevel={currentFatigue}
           averageFatigue={historyData?.average_fatigue}
         />
         <PauseRegistryWidget
+          adherence={breakStats.adherence}
+          postponed={breakStats.postponed > 0 ? `Mínima (${breakStats.postponed})` : '0'}
           appUsageStats={currentUsageStats}
         />
         <TemporalCorrelationWidget
           ear={biometrics.ear.toFixed(2)}
+          averageEar={biometrics.average_ear}
+          distance={biometrics.distance_cm}
+          fatigueLevel={currentFatigue}
+          sessionSeconds={biometrics.elapsed_seconds}
           earHistory={historyData?.historical_ear}
         />
       </div>

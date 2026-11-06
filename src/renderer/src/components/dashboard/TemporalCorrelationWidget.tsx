@@ -3,7 +3,10 @@ import type { HistoricalEarRecord } from '../../hooks/useTelemetry'
 
 export interface TemporalCorrelationWidgetProps {
   ear?: string
+  averageEar?: number
   distance?: string
+  fatigueLevel?: number
+  sessionSeconds?: number
   earHistory?: HistoricalEarRecord[]
 }
 
@@ -39,17 +42,25 @@ function generateBezierCurve(points: { x: number; y: number }[]): string {
 
 export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps> = ({
   ear = '0.26',
+  averageEar,
   distance = '58.4 cm',
+  fatigueLevel = 18,
   earHistory = []
 }) => {
-  // Calcular promedio real de EAR a partir del historial persistido en SQLite
+  // Conectar al promedio real de EAR del backend Python y del historial
   const displayEar = useMemo(() => {
+    if (typeof averageEar === 'number' && !isNaN(averageEar)) {
+      return averageEar.toFixed(2)
+    }
     if (earHistory && earHistory.length > 0) {
       const sum = earHistory.reduce((acc, curr) => acc + (curr.ear || 0), 0)
       return (sum / earHistory.length).toFixed(2)
     }
     return ear
-  }, [earHistory, ear])
+  }, [averageEar, earHistory, ear])
+
+  // Porcentaje de fatiga acumulada frente a la sesión para la barra horizontal glow
+  const accumulatedLoad = Math.max(5, Math.min(100, Math.round(fatigueLevel)))
 
   // Generar trazado SVG suavizado con curvas de Bézier y relleno degradado
   const { linePath, areaPath, lastPoint } = useMemo(() => {
@@ -128,13 +139,13 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         </button>
       </div>
 
-      {/* Métricas: EAR Promedio Real y Distancia */}
+      {/* Métricas: EAR Promedio Real y Distancia en Tiempo Real */}
       <div className="flex items-center gap-8 mt-4">
         <div className="flex flex-col">
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
             EAR PROM.
           </span>
-          <span className="text-xl font-extrabold text-white mt-0.5">
+          <span className="text-xl font-extrabold text-white mt-0.5 font-mono">
             {displayEar}
           </span>
         </div>
@@ -142,16 +153,16 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
             DISTANCIA
           </span>
-          <span className="text-xl font-extrabold text-white mt-0.5">
+          <span className="text-xl font-extrabold text-white mt-0.5 font-mono">
             {distance}
           </span>
         </div>
       </div>
 
       {/* Gráfico de Tendencia con Curva Bézier Naranja y Relleno Degradado */}
-      <div className="w-full mt-4 pt-2">
+      <div className="w-full mt-3">
         <svg
-          className="w-full h-20 overflow-visible"
+          className="w-full h-16 overflow-visible"
           viewBox="0 0 300 70"
           fill="none"
           preserveAspectRatio="none"
@@ -187,6 +198,20 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
             className="filter drop-shadow-[0_0_6px_rgba(249,115,22,0.8)]"
           />
         </svg>
+      </div>
+
+      {/* Barra Horizontal Inferior (Glow): Fatiga Acumulada */}
+      <div className="w-full mt-3 pt-1">
+        <div className="flex justify-between items-center text-[10px] text-gray-400 mb-1">
+          <span className="font-semibold uppercase tracking-wider">Nivel de Carga Acumulada</span>
+          <span className="font-mono text-orange-400 font-bold">{accumulatedLoad}%</span>
+        </div>
+        <div className="w-full h-2 bg-gray-800/90 rounded-full overflow-hidden p-[1px] relative">
+          <div
+            style={{ width: `${accumulatedLoad}%` }}
+            className="h-full bg-gradient-to-r from-orange-500 via-amber-400 to-orange-400 rounded-full transition-all duration-700 shadow-[0_0_12px_rgba(249,115,22,0.9)]"
+          />
+        </div>
       </div>
     </div>
   )

@@ -1,26 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
 
-export interface SessionStats {
-  avg_fatigue: number
-  most_used_app: string
-  total_records: number
-}
-
 export interface TelemetryData {
   fatigue_level: number
   blink_rate: number
   active_app: string
   app_status?: string
   ear?: number
-  session_stats?: SessionStats
-  avg_fatigue?: number
-  most_used_app?: string
+  average_ear?: number
+  distance?: number
+  distance_cm?: string
 }
 
 export interface AppUsageStat {
   app: string
   count: number
   percentage: number
+}
+
+export interface BreakStats {
+  suggested: number
+  completed: number
+  postponed: number
+  adherence: string
+  adherencePercentage: number
 }
 
 export interface HistoricalEarRecord {
@@ -33,6 +35,7 @@ export interface HistoricalEarRecord {
 
 export interface HistoryData {
   average_fatigue: number
+  average_ear?: number
   app_usage_stats: AppUsageStat[]
   historical_ear: HistoricalEarRecord[]
 }
@@ -50,7 +53,10 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   blink_rate: 18,
   active_app: 'VS Code',
   app_status: 'Enfoque Profundo',
-  ear: 0.28
+  ear: 0.28,
+  average_ear: 0.26,
+  distance: 58.4,
+  distance_cm: '58.4 cm'
 }
 
 const DEFAULT_HISTORY: HistoryData = {
@@ -92,6 +98,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
               const stats = parsed.historical_stats || parsed
               const parsedHistory: HistoryData = {
                 average_fatigue: Number(stats.average_fatigue ?? parsed.average_fatigue ?? 0),
+                average_ear: Number(stats.average_ear ?? parsed.average_ear ?? 0.26),
                 app_usage_stats: Array.isArray(stats.app_usage_stats)
                   ? stats.app_usage_stats
                   : parsed.app_usage_stats || [],

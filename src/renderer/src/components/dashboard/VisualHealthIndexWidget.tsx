@@ -2,45 +2,69 @@ import React, { useMemo } from 'react'
 import Card from '../ui/Card'
 
 export interface VisualHealthIndexWidgetProps {
+  fatigueLevel?: number
+  averageFatigue?: number
   status?: string
   degradation?: string
   score?: number
-  averageFatigue?: number
 }
 
 export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = ({
-  status = 'Excelente',
-  degradation = 'Baja',
-  score = 92,
-  averageFatigue
+  fatigueLevel,
+  averageFatigue,
+  status,
+  degradation,
+  score
 }) => {
-  // Score Ergonómico (0 a 100) basado en el promedio de fatiga acumulado
-  const calculatedScore = useMemo(() => {
-    if (typeof averageFatigue === 'number' && !isNaN(averageFatigue)) {
-      return Math.max(0, Math.min(100, Math.round(100 - averageFatigue)))
-    }
-    return score
-  }, [averageFatigue, score])
+  // Score Ergonómico (0 a 100) basado en la fórmula reactiva: Math.round(100 - fatigueLevel)
+  const effectiveFatigue =
+    typeof fatigueLevel === 'number' && !isNaN(fatigueLevel)
+      ? fatigueLevel
+      : typeof averageFatigue === 'number' && !isNaN(averageFatigue)
+        ? averageFatigue
+        : typeof score === 'number'
+          ? 100 - score
+          : 18
 
-  // Estado descriptivo de salud visual
+  const healthScore = useMemo(() => {
+    return Math.max(0, Math.min(100, Math.round(100 - effectiveFatigue)))
+  }, [effectiveFatigue])
+
+  // Estado descriptivo de salud visual dinámico: Excelente, Bueno, Alerta
   const calculatedStatus = useMemo(() => {
-    if (calculatedScore >= 80) return 'Excelente'
-    if (calculatedScore >= 60) return 'Bueno'
-    if (calculatedScore >= 40) return 'Moderado'
-    return 'Fatigado'
-  }, [calculatedScore])
+    if (status) return status
+    if (healthScore >= 80) return 'Excelente'
+    if (healthScore >= 50) return 'Bueno'
+    return 'Alerta'
+  }, [healthScore, status])
 
-  // Nivel de degradación ocular
+  // Nivel de degradación ocular dinámico: Baja, Media, Alta
   const calculatedDegradation = useMemo(() => {
-    if (calculatedScore >= 80) return 'Baja'
-    if (calculatedScore >= 60) return 'Moderada'
+    if (degradation) return degradation
+    if (healthScore >= 80) return 'Baja'
+    if (healthScore >= 50) return 'Media'
     return 'Alta'
-  }, [calculatedScore])
+  }, [healthScore, degradation])
 
   // Cálculo del arco de velocímetro (240 grados de barrido: de 150° a 390°)
   // Radio 38, circunferencia completa = 2 * PI * 38 = 238.76. Longitud de arco 240° = 159.17
   const arcLength = 159.17
-  const progressOffset = Math.max(0, Math.min(arcLength, (calculatedScore / 100) * arcLength))
+  const progressOffset = Math.max(0, Math.min(arcLength, (healthScore / 100) * arcLength))
+
+  // Color de acento según estado de alerta
+  const statusColorClass =
+    healthScore >= 80
+      ? 'text-emerald-700'
+      : healthScore >= 50
+        ? 'text-slate-800'
+        : 'text-amber-600'
+
+  const degradationColorClass =
+    healthScore >= 80
+      ? 'text-slate-800'
+      : healthScore >= 50
+        ? 'text-amber-600'
+        : 'text-rose-600'
 
   return (
     <Card className="p-6 flex flex-col justify-between select-none">
@@ -67,20 +91,20 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
 
       {/* Contenido: Bloques de estado dinámico y Medidor de Velocímetro (Arco de 240°) */}
       <div className="flex justify-between items-center mt-4">
-        {/* Bloque Izquierdo */}
+        {/* Bloque Izquierdo Reactivo */}
         <div className="flex flex-col">
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
             ESTADO
           </span>
-          <span className="text-sm font-bold text-slate-800 mt-0.5">
-            {calculatedStatus || status}
+          <span className={`text-sm font-bold mt-0.5 ${statusColorClass}`}>
+            {calculatedStatus}
           </span>
 
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-3">
             DEGRADACIÓN
           </span>
-          <span className="text-sm font-bold text-slate-800 mt-0.5">
-            {calculatedDegradation || degradation}
+          <span className={`text-sm font-bold mt-0.5 ${degradationColorClass}`}>
+            {calculatedDegradation}
           </span>
         </div>
 
@@ -124,8 +148,8 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
             <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider leading-none">
               HEALTH SCORE
             </span>
-            <span className="text-base font-black text-slate-900 mt-1 leading-none">
-              {calculatedScore}
+            <span className="text-base font-black text-slate-900 mt-1 leading-none font-mono">
+              {healthScore}
               <span className="text-[11px] font-semibold text-slate-400 ml-0.5">/100</span>
             </span>
           </div>

@@ -16,6 +16,16 @@ export const Intercept: React.FC = () => {
     }
   }
 
+  const handlePostponeBreak = (): void => {
+    if (isDestroyingRef.current) return
+    isDestroyingRef.current = true
+    if (window.electron?.ipcRenderer) {
+      window.electron.ipcRenderer.send('postpone-break')
+    } else {
+      console.log('[Intercept] Pausa activa pospuesta (postpone-break)')
+    }
+  }
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -246,7 +256,7 @@ export const Intercept: React.FC = () => {
           <span>•</span>
           <button
             type="button"
-            onClick={handleEndBreak}
+            onClick={handlePostponeBreak}
             className="text-slate-400 hover:text-slate-700 underline-offset-2 hover:underline cursor-pointer transition-colors"
           >
             Posponer 2 min (Emergencia)
