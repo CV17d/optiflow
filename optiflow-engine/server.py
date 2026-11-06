@@ -91,7 +91,10 @@ async def broadcast_telemetry():
 
     while True:
         payload = get_fused_payload()
-        print(f"Emitiendo: {payload}", flush=True)
+        try:
+            print(f"Emitiendo: {payload}", flush=True)
+        except OSError:
+            pass
 
         now = time.time()
         if now - last_db_save_time >= db_save_interval:
@@ -116,6 +119,8 @@ def listen_stdin_thread():
     """Hilo para recibir comandos JSON enviados a través de stdin desde Electron (IPC nativo)."""
     while True:
         try:
+            if sys.stdin is None:
+                break
             line = sys.stdin.readline()
             if not line:
                 break
@@ -127,6 +132,10 @@ def listen_stdin_thread():
             if action in ("pause", "resume"):
                 vision_engine.handle_command(cmd)
                 logging.info(f"[Stdin IPC] Comando '{action}' aplicado al hardware de la cámara.")
+        except OSError:
+            # En Windows con entornos desacoplados o sin consola, sys.stdin produce OSError (Errno 22).
+            # Manejar silenciosamente sin romper el servidor WebSocket.
+            break
         except Exception as e:
             logging.error(f"Error procesando comando desde stdin: {e}")
 
