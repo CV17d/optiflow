@@ -14,11 +14,10 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
 }) => {
   const isBlinking = ear < 0.20
 
-  // Cálculo reactivo de escala dinámica para el HUD y pupila según el nivel de EAR
+  // Cálculo reactivo de escala dinámica para el HUD según la apertura palpebral (EAR)
   const hudScale = useMemo(() => {
-    if (isBlinking) return 0.94
-    // Escala sutil entre 0.98 y 1.03 según apertura palpebral
-    return Math.max(0.97, Math.min(1.03, 0.97 + (ear / 0.35) * 0.06))
+    if (isBlinking) return 0.95
+    return Math.max(0.98, Math.min(1.02, 0.98 + (ear / 0.35) * 0.04))
   }, [ear, isBlinking])
 
   return (
@@ -26,39 +25,39 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       className={`w-full h-full flex flex-col items-center justify-center relative select-none py-0 ${className}`}
     >
       {/* =================================================================== */}
-      {/* FASE 1: CONTENEDOR CIRCULAR SUAVE Y OJO FOTORREALISTA               */}
+      {/* 1. CONTENEDOR CIRCULAR SUAVE Y OJO FOTORREALISTA NATURAL            */}
       {/* =================================================================== */}
-      <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full border-2 border-orange-500/35 shadow-[0_0_40px_rgba(249,115,22,0.22)] flex items-center justify-center bg-slate-950 overflow-hidden ring-1 ring-orange-400/20">
-        {/* Imagen base fotorrealista de alta resolución del ojo humano */}
+      <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72 rounded-full border border-cyan-400/30 shadow-[0_0_35px_rgba(34,211,238,0.16)] flex items-center justify-center bg-slate-950 overflow-hidden ring-1 ring-cyan-400/20">
+        {/* Imagen base fotorrealista en colores biológicos naturales (sin tintes cálidos) */}
         <img
           src={eyeImage}
-          alt="Ojo Biométrico Fotorrealista"
+          alt="Ojo Biométrico Natural"
           className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none transition-transform duration-200 ease-out"
           style={{
-            transform: isBlinking ? 'scaleY(0.90) scaleX(1.02)' : 'scale(1)',
+            transform: isBlinking ? 'scaleY(0.92) scaleX(1.01)' : 'scale(1)',
             filter: isBlinking
-              ? 'brightness(0.92) contrast(1.05)'
-              : 'brightness(1.0) contrast(1.03)'
+              ? 'brightness(0.94) contrast(1.02)'
+              : 'brightness(1.0) contrast(1.02)'
           }}
         />
 
-        {/* Capa de destellos y reflejos de luz especulares húmedos */}
+        {/* Destellos y reflejos de luz especulares húmedos sin tinte de color */}
         <div
           className="absolute inset-0 pointer-events-none rounded-full"
           style={{
             background:
-              'radial-gradient(ellipse 65% 55% at 50% 40%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 45%, transparent 75%)'
+              'radial-gradient(ellipse 65% 50% at 50% 38%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 50%, transparent 80%)'
           }}
         />
         <div
           className="absolute inset-0 pointer-events-none rounded-full"
           style={{
-            boxShadow: 'inset 0 0 25px 8px rgba(0, 0, 0, 0.45)'
+            boxShadow: 'inset 0 0 24px 6px rgba(0, 0, 0, 0.35)'
           }}
         />
 
         {/* =================================================================== */}
-        {/* FASE 2: HUD NARANJA BIOMÉTRICO E INTERACTIVO (SVG / CANVAS)         */}
+        {/* 2. HUD BIOMÉTRICO EN CIAN / TURQUESA (SVG ULTRA-FINO)               */}
         {/* =================================================================== */}
         <div
           className="absolute inset-0 pointer-events-none flex items-center justify-center transition-transform duration-200 ease-out z-10"
@@ -71,9 +70,9 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
             xmlns="http://www.w3.org/2000/svg"
           >
             <defs>
-              {/* Filtro de resplandor para los trazos naranja flúor del HUD */}
-              <filter id="orangeHudGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2.5" result="blur" />
+              {/* Filtro sutil de resplandor para los trazos en cian biométrico */}
+              <filter id="cyanHudGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="1.8" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
@@ -81,219 +80,190 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
               </filter>
             </defs>
 
-            {/* 1. RETÍCULA CIRCULAR EXTERIOR SEGMENTADA (R=140) */}
-            <g filter="url(#orangeHudGlow)">
+            {/* A. RETÍCULA CIRCULAR SEGMENTADA EXTERIOR (R=140) */}
+            <g filter="url(#cyanHudGlow)" stroke="#22D3EE" strokeWidth="1.4" strokeLinecap="round" strokeOpacity="0.85">
               {/* Cuadrante Superior Derecho */}
-              <path
-                d="M 216.2 44.8 A 140 140 0 0 1 315.2 143.8"
-                stroke="#F97316"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+              <path d="M 216.2 44.8 A 140 140 0 0 1 315.2 143.8" />
               {/* Cuadrante Inferior Derecho */}
-              <path
-                d="M 315.2 216.2 A 140 140 0 0 1 216.2 315.2"
-                stroke="#F97316"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+              <path d="M 315.2 216.2 A 140 140 0 0 1 216.2 315.2" />
               {/* Cuadrante Inferior Izquierdo */}
-              <path
-                d="M 143.8 315.2 A 140 140 0 0 1 44.8 216.2"
-                stroke="#F97316"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+              <path d="M 143.8 315.2 A 140 140 0 0 1 44.8 216.2" />
               {/* Cuadrante Superior Izquierdo */}
-              <path
-                d="M 44.8 143.8 A 140 140 0 0 1 143.8 44.8"
-                stroke="#F97316"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+              <path d="M 44.8 143.8 A 140 140 0 0 1 143.8 44.8" />
 
-              {/* Arcos de Acento en los Polos Superior e Inferior (R=152) */}
-              <path
-                d="M 128.0 37.2 A 152 152 0 0 1 232.0 37.2"
-                stroke="#FF8A00"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 232.0 322.8 A 152 152 0 0 1 128.0 322.8"
-                stroke="#FF8A00"
-                strokeWidth="3.2"
-                strokeLinecap="round"
-              />
+              {/* Acentos Polares Superior e Inferior (R=152) */}
+              <path d="M 132.0 36.5 A 152 152 0 0 1 228.0 36.5" strokeWidth="1.8" stroke="#67E8F9" />
+              <path d="M 228.0 323.5 A 152 152 0 0 1 132.0 323.5" strokeWidth="1.8" stroke="#67E8F9" />
             </g>
 
-            {/* Marcadores de Polo Superior, Inferior, Izquierdo y Derecho */}
-            <line x1="180" y1="24" x2="180" y2="40" stroke="#FF8A00" strokeWidth="2.5" />
-            <line x1="180" y1="320" x2="180" y2="336" stroke="#FF8A00" strokeWidth="2.5" />
-            <line x1="24" y1="180" x2="40" y2="180" stroke="#FF8A00" strokeWidth="2.5" />
-            <line x1="320" y1="180" x2="336" y2="180" stroke="#FF8A00" strokeWidth="2.5" />
+            {/* Marcadores cardinales en los 4 polos */}
+            <line x1="180" y1="26" x2="180" y2="38" stroke="#67E8F9" strokeWidth="1.5" strokeOpacity="0.85" />
+            <line x1="180" y1="322" x2="180" y2="334" stroke="#67E8F9" strokeWidth="1.5" strokeOpacity="0.85" />
+            <line x1="26" y1="180" x2="38" y2="180" stroke="#67E8F9" strokeWidth="1.5" strokeOpacity="0.85" />
+            <line x1="322" y1="180" x2="334" y2="180" stroke="#67E8F9" strokeWidth="1.5" strokeOpacity="0.85" />
 
-            {/* 2. ANILLO CONCÉNTRICO MEDIO DISCONTINUO (R=122) */}
+            {/* B. ANILLOS CONCÉNTRICOS DISCONTINUOS DELGADOS */}
             <circle
               cx="180"
               cy="180"
               r="122"
-              stroke="#EA580C"
-              strokeWidth="1.2"
-              strokeDasharray="4 6"
-              strokeOpacity="0.85"
-            />
-
-            {/* 3. ANILLOS ALREDEDOR DEL IRIS Y PUPILA */}
-            <circle
-              cx="180"
-              cy="180"
-              r="82"
-              stroke="#F97316"
-              strokeWidth="1.2"
-              strokeOpacity="0.75"
+              stroke="#06B6D4"
+              strokeWidth="0.8"
+              strokeDasharray="3 5"
+              strokeOpacity="0.65"
             />
             <circle
               cx="180"
               cy="180"
-              r="45"
-              stroke="#FF8A00"
-              strokeWidth="1.2"
+              r="84"
+              stroke="#22D3EE"
+              strokeWidth="0.8"
+              strokeOpacity="0.6"
+            />
+            <circle
+              cx="180"
+              cy="180"
+              r="46"
+              stroke="#67E8F9"
+              strokeWidth="0.8"
               strokeDasharray="2 3"
-              strokeOpacity="0.8"
+              strokeOpacity="0.7"
             />
 
-            {/* 4. INDICADOR DE CALIDAD / ESCALAS LATERALES (REJILLAS POLARES) */}
-            {/* Rejilla Lateral Izquierda */}
-            <g stroke="#F97316" strokeWidth="0.8" strokeOpacity="0.65">
-              <path d="M 105.7 145.3 A 82 82 0 0 0 105.7 214.7" />
-              <path d="M 96.6 141.1 A 92 92 0 0 0 96.6 218.9" />
-              <path d="M 87.5 136.9 A 102 102 0 0 0 87.5 223.1" />
-              <path d="M 78.5 132.6 A 112 112 0 0 0 78.5 227.4" />
-              <path d="M 69.4 128.4 A 122 122 0 0 0 69.4 231.6" />
+            {/* C. ESCALAS DIGITALES VERTICALES Y GRÁFICOS DE CALIBRACIÓN */}
+            {/* Escala Digital Lateral Izquierda */}
+            <g stroke="#22D3EE" strokeWidth="0.7" strokeOpacity="0.55">
+              <line x1="68" y1="130" x2="68" y2="230" />
+              <line x1="62" y1="140" x2="68" y2="140" />
+              <line x1="64" y1="150" x2="68" y2="150" />
+              <line x1="60" y1="160" x2="68" y2="160" strokeWidth="1.1" />
+              <line x1="64" y1="170" x2="68" y2="170" />
+              <line x1="58" y1="180" x2="68" y2="180" strokeWidth="1.4" stroke="#67E8F9" />
+              <line x1="64" y1="190" x2="68" y2="190" />
+              <line x1="60" y1="200" x2="68" y2="200" strokeWidth="1.1" />
+              <line x1="64" y1="210" x2="68" y2="210" />
+              <line x1="62" y1="220" x2="68" y2="220" />
 
-              {/* Radios de la rejilla izquierda */}
-              <line x1="105.7" y1="145.3" x2="69.4" y2="128.4" />
-              <line x1="91.1" y1="156.4" x2="52.3" y2="148.5" />
-              <line x1="98.3" y1="172.9" x2="58.5" y2="169.4" />
-              <line x1="98.3" y1="187.1" x2="58.5" y2="190.6" />
-              <line x1="91.1" y1="203.6" x2="52.3" y2="211.5" />
-              <line x1="105.7" y1="214.7" x2="69.4" y2="231.6" />
+              {/* Pequeña rejilla lateral de calibración izquierda */}
+              <path d="M 104 148 A 82 82 0 0 0 104 212" strokeDasharray="2 2" strokeOpacity="0.4" />
+              <path d="M 94 143 A 94 94 0 0 0 94 217" strokeDasharray="2 2" strokeOpacity="0.4" />
             </g>
 
-            {/* Rejilla Lateral Derecha */}
-            <g stroke="#F97316" strokeWidth="0.8" strokeOpacity="0.65">
-              <path d="M 254.3 145.3 A 82 82 0 0 1 254.3 214.7" />
-              <path d="M 263.4 141.1 A 92 92 0 0 1 263.4 218.9" />
-              <path d="M 272.5 136.9 A 102 102 0 0 1 272.5 223.1" />
-              <path d="M 281.5 132.6 A 112 112 0 0 1 281.5 227.4" />
-              <path d="M 290.6 128.4 A 122 122 0 0 1 290.6 231.6" />
+            {/* Escala Digital Lateral Derecha */}
+            <g stroke="#22D3EE" strokeWidth="0.7" strokeOpacity="0.55">
+              <line x1="292" y1="130" x2="292" y2="230" />
+              <line x1="292" y1="140" x2="298" y2="140" />
+              <line x1="292" y1="150" x2="296" y2="150" />
+              <line x1="292" y1="160" x2="300" y2="160" strokeWidth="1.1" />
+              <line x1="292" y1="170" x2="296" y2="170" />
+              <line x1="292" y1="180" x2="302" y2="180" strokeWidth="1.4" stroke="#67E8F9" />
+              <line x1="292" y1="190" x2="296" y2="190" />
+              <line x1="292" y1="200" x2="300" y2="200" strokeWidth="1.1" />
+              <line x1="292" y1="210" x2="296" y2="210" />
+              <line x1="292" y1="220" x2="298" y2="220" />
 
-              {/* Radios de la rejilla derecha */}
-              <line x1="254.3" y1="145.3" x2="290.6" y2="128.4" />
-              <line x1="268.9" y1="156.4" x2="307.7" y2="148.5" />
-              <line x1="261.7" y1="172.9" x2="301.5" y2="169.4" />
-              <line x1="261.7" y1="187.1" x2="301.5" y2="190.6" />
-              <line x1="268.9" y1="203.6" x2="307.7" y2="211.5" />
-              <line x1="254.3" y1="214.7" x2="290.6" y2="231.6" />
+              {/* Pequeña rejilla lateral de calibración derecha */}
+              <path d="M 256 148 A 82 82 0 0 1 256 212" strokeDasharray="2 2" strokeOpacity="0.4" />
+              <path d="M 266 143 A 94 94 0 0 1 266 217" strokeDasharray="2 2" strokeOpacity="0.4" />
             </g>
 
-            {/* 5. LÍNEAS DE CRUZAMIENTO (+) CENTRADAS EN LA PUPILA */}
-            {/* Eje Vertical con Marcas de Graduación */}
+            {/* D. FINA CRUZ DE PRECISIÓN (+) QUE SE INTERCEPTA EN LA PUPILA */}
+            {/* Eje Vertical */}
             <line
               x1="180"
-              y1="24"
+              y1="28"
               x2="180"
-              y2="336"
-              stroke="#FF8A00"
-              strokeWidth="1.5"
-              strokeOpacity="0.85"
-              filter="url(#orangeHudGlow)"
+              y2="332"
+              stroke="#22D3EE"
+              strokeWidth="0.9"
+              strokeOpacity="0.75"
+              filter="url(#cyanHudGlow)"
             />
-            {/* Tick marks verticales */}
-            <g stroke="#FF8A00" strokeWidth="1.2" strokeOpacity="0.75">
-              <line x1="175" y1="60" x2="185" y2="60" />
-              <line x1="175" y1="90" x2="185" y2="90" />
-              <line x1="175" y1="120" x2="185" y2="120" />
-              <line x1="175" y1="240" x2="185" y2="240" />
-              <line x1="175" y1="270" x2="185" y2="270" />
-              <line x1="175" y1="300" x2="185" y2="300" />
+            {/* Tick marks del eje vertical */}
+            <g stroke="#67E8F9" strokeWidth="0.8" strokeOpacity="0.65">
+              <line x1="176" y1="70" x2="184" y2="70" />
+              <line x1="176" y1="100" x2="184" y2="100" />
+              <line x1="176" y1="130" x2="184" y2="130" />
+              <line x1="176" y1="230" x2="184" y2="230" />
+              <line x1="176" y1="260" x2="184" y2="260" />
+              <line x1="176" y1="290" x2="184" y2="290" />
             </g>
 
-            {/* Eje Horizontal con Resplandor Focal */}
+            {/* Eje Horizontal */}
             <line
-              x1="20"
+              x1="28"
               y1="180"
-              x2="340"
+              x2="332"
               y2="180"
-              stroke="#FF8A00"
-              strokeWidth="2.2"
-              filter="url(#orangeHudGlow)"
+              stroke="#22D3EE"
+              strokeWidth="1.1"
+              strokeOpacity="0.8"
+              filter="url(#cyanHudGlow)"
             />
-            {/* Tick marks horizontales */}
-            <g stroke="#FF8A00" strokeWidth="1.2" strokeOpacity="0.75">
-              <line x1="60" y1="175" x2="60" y2="185" />
-              <line x1="90" y1="175" x2="90" y2="185" />
-              <line x1="120" y1="175" x2="120" y2="185" />
-              <line x1="240" y1="175" x2="240" y2="185" />
-              <line x1="270" y1="175" x2="270" y2="185" />
-              <line x1="300" y1="175" x2="300" y2="185" />
+            {/* Tick marks del eje horizontal */}
+            <g stroke="#67E8F9" strokeWidth="0.8" strokeOpacity="0.65">
+              <line x1="80" y1="176" x2="80" y2="184" />
+              <line x1="110" y1="176" x2="110" y2="184" />
+              <line x1="140" y1="176" x2="140" y2="184" />
+              <line x1="220" y1="176" x2="220" y2="184" />
+              <line x1="250" y1="176" x2="250" y2="184" />
+              <line x1="280" y1="176" x2="280" y2="184" />
             </g>
 
-            {/* Retícula Central en la Pupila */}
-            <circle cx="180" cy="180" r="3.5" fill="#FFFFFF" filter="url(#orangeHudGlow)" />
-            <circle cx="180" cy="180" r="1.5" fill="#FF8A00" />
+            {/* Punto de mira central en la pupila */}
+            <circle cx="180" cy="180" r="2.5" fill="#22D3EE" filter="url(#cyanHudGlow)" />
+            <circle cx="180" cy="180" r="1.2" fill="#FFFFFF" />
           </svg>
         </div>
 
-        {/* EFECTO DE ESCANEO LÁSER HORIZONTAL (ANIMACIÓN LÁSER NARANJA FLÚOR) */}
+        {/* LÍNEA DE ESCANEO LÁSER HORIZONTAL EN CIAN BRILLANTE */}
         <div
-          className="absolute left-2 right-2 pointer-events-none z-15 flex flex-col items-center"
+          className="absolute left-3 right-3 pointer-events-none z-15 flex flex-col items-center"
           style={{
-            animation: 'laserScanMove 3.6s ease-in-out infinite',
-            height: '2.5px',
+            animation: 'cyanLaserOscillate 3.4s ease-in-out infinite',
+            height: '2px',
             background:
-              'linear-gradient(90deg, transparent 0%, rgba(249, 115, 22, 0.25) 15%, #FF8A00 45%, #FFFFFF 50%, #FF8A00 55%, rgba(249, 115, 22, 0.25) 85%, transparent 100%)',
+              'linear-gradient(90deg, transparent 0%, rgba(34, 211, 238, 0.2) 12%, #22D3EE 42%, #FFFFFF 50%, #22D3EE 58%, rgba(34, 211, 238, 0.2) 88%, transparent 100%)',
             boxShadow:
-              '0 0 14px 3px rgba(255, 138, 0, 0.95), 0 0 28px 6px rgba(234, 88, 12, 0.5)'
+              '0 0 12px 2.5px rgba(34, 211, 238, 0.85), 0 0 24px 5px rgba(6, 182, 212, 0.4)'
           }}
         >
-          {/* Cortina / Halo de escaneo translúcido */}
-          <div className="w-full h-12 -mt-6 bg-gradient-to-b from-orange-500/10 via-orange-500/20 to-transparent pointer-events-none" />
+          {/* Sutil estela descendente translúcida en cian */}
+          <div className="w-full h-10 -mt-5 bg-gradient-to-b from-cyan-400/10 via-cyan-400/15 to-transparent pointer-events-none" />
         </div>
 
         {/* =================================================================== */}
-        {/* FASE 3: ETIQUETA FLOTANTE ENCAPSULADA DE DATOS DE TRACKING DINÁMICOS */}
+        {/* 3. ETIQUETA INFERIOR FLOTANTE DE TRACKING EN CIAN TRANSLÚCIDO       */}
         {/* =================================================================== */}
-        <div className="absolute bottom-2.5 bg-orange-50/85 backdrop-blur-md border border-orange-200/90 rounded-full px-3.5 py-1 flex items-center justify-center gap-1.5 shadow-sm shadow-orange-500/15 select-none z-20 transition-all duration-200">
+        <div className="absolute bottom-2.5 bg-cyan-950/30 backdrop-blur-md border border-cyan-400/35 rounded-full px-3.5 py-0.5 flex items-center justify-center gap-1.5 shadow-sm shadow-cyan-500/10 select-none z-20 transition-all duration-200">
           <span
             className={`w-1.5 h-1.5 rounded-full ${
-              isBlinking ? 'bg-amber-500 animate-ping' : 'bg-orange-500 animate-pulse'
+              isBlinking ? 'bg-cyan-300 animate-ping' : 'bg-cyan-400 animate-pulse'
             }`}
           />
-          <span className="text-[10px] sm:text-[11px] font-mono font-bold text-orange-900 tracking-wider">
-            TRACKING {trackingPoints} PTS <span className="text-orange-400 mx-1">•</span> EAR{' '}
-            <span className="text-orange-600 font-black">
+          <span className="text-[10px] sm:text-[11px] font-sans font-bold text-cyan-300 tracking-wider">
+            TRACKING {trackingPoints} PTS <span className="text-cyan-500/60 mx-1">•</span> EAR{' '}
+            <span className="text-cyan-100 font-extrabold">
               {typeof ear === 'number' ? ear.toFixed(2) : ear}
             </span>
           </span>
         </div>
       </div>
 
-      {/* Keyframes de animación del escaneo láser */}
+      {/* Keyframes de animación del escaneo láser cian */}
       <style>{`
-        @keyframes laserScanMove {
+        @keyframes cyanLaserOscillate {
           0% {
-            top: 22%;
-            opacity: 0.95;
+            top: 24%;
+            opacity: 0.9;
           }
           50% {
-            top: 78%;
+            top: 76%;
             opacity: 1;
           }
           100% {
-            top: 22%;
-            opacity: 0.95;
+            top: 24%;
+            opacity: 0.9;
           }
         }
       `}</style>
