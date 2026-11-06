@@ -1,4 +1,10 @@
 {
+  "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}",
+  "common": {
+    "minutesShort": "min",
+    "options": "Opções",
+    "loading": "Carregando..."
+  },
   "nav": {
     "dashboard": "Painel Principal",
     "ergonomics": "Análise Ergonômica",
@@ -6,6 +12,132 @@
     "calibration": "Calibração & Privacidade",
     "settings": "Configurações",
     "local_processing": "Processamento 100% Local (Privado)"
+  },
+  "dashboard": {
+    "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}",
+    "paused": "(Pausado)",
+    "monitoringPaused": "Monitoramento Pausado",
+    "header": {
+      "title": "Saúde Ocular",
+      "subtitle": "Controle Biométrico de Fadiga e Foco",
+      "tryBreak": "Testar Pausa Ativa",
+      "pauseMonitoring": "Pausar Monitoramento",
+      "resumeMonitoring": "Retomar Monitoramento"
+    },
+    "telemetry": {
+      "title": "Contexto de Software",
+      "subtitle": "Telemetria de Aplicativos",
+      "badgeActive": "ATIVA",
+      "searching": "Buscando...",
+      "deepFocus": "Foco Profundo",
+      "waitingTelemetry": "Aguardando telemetria de janelas ativas..."
+    },
+    "fatigue": {
+      "title": "Nível de Fadiga Ocular",
+      "subtitle": "Modo de Proteção Inteligente",
+      "labelFatigue": "FADIGA",
+      "labelContinuousSession": "SESSÃO CONTÍNUA",
+      "statusHigh": "ALTO",
+      "statusModerate": "MODERADO",
+      "statusOptimal": "ÓTIMO",
+      "nextBreakIn": "Próxima pausa em:"
+    },
+    "blink": {
+      "title": "Taxa de Piscadas",
+      "subtitle": "Frequência Ocular Dinâmica",
+      "labelRhythm": "RITMO DE PISCADAS",
+      "statusHealthy": "Saudável (14 - 25)",
+      "statusStrain": "Tensão Ocular (< 14)",
+      "statusHigh": "Elevado (> 25)",
+      "bpm": "BPM"
+    },
+    "healthIndex": {
+      "title": "Índice de Saúde Visual",
+      "subtitle": "Score Ergonômico",
+      "labelStatus": "STATUS",
+      "labelDegradation": "DEGRADAÇÃO",
+      "labelHealthScore": "HEALTH SCORE",
+      "statusExcellent": "Excelente",
+      "statusGood": "Bom",
+      "statusAlert": "Alerta",
+      "degradationLow": "Baixa",
+      "degradationMedium": "Média",
+      "degradationHigh": "Alta"
+    },
+    "pauseRegistry": {
+      "title": "Registro de Pausas & Contexto",
+      "subtitle": "Hoje vs Sessão Anterior",
+      "labelAdherence": "ADERÊNCIA 20-20-20",
+      "labelPostponed": "ADIADAS",
+      "minimal": "Mínima",
+      "noRecords": "Sem registros"
+    },
+    "temporal": {
+      "title": "Correlação Temporal",
+      "subtitle": "Fadiga vs Carga de Trabalho",
+      "labelAvgEar": "EAR MÉD.",
+      "labelDistance": "DISTÂNCIA",
+      "labelAccumulatedLoad": "Nivel de Carga Acumulada"
+    },
+    "eye": {
+      "alt": "Olho Biométrico Natural",
+      "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}"
+    }
+  },
+  "ergonomics": {
+    "title": "Análise Ergonômica",
+    "subtitle": "Telemetria Postural 3D, Estimativa de Distância e Simetria Ocular em Tempo Real",
+    "streamingActive": "MediaPipe 3D • Streaming Ativo",
+    "connecting": "Conectando ao Motor...",
+    "fpsInference": "60 FPS Inferência",
+    "distance": {
+      "title": "Distância da Tela",
+      "subtitle": "Estimativa euclidiana (pontos 234 - 454)",
+      "statusOptimal": "Ótima (50 - 70 cm)",
+      "statusWarning": "Atenção (< 50 cm)",
+      "statusCritical": "Crítico (< 35 cm)",
+      "statusFar": "Distante (> 70 cm)",
+      "badgeOptimal": "ÓTIMA",
+      "badgeClose": "MUITO PERTO",
+      "badgeFar": "DISTANTE",
+      "rangeMin": "20 cm",
+      "rangeMax": "90 cm",
+      "rangeOptimal": "Zona Ótima (50 - 70 cm)",
+      "advice": "Mantenha o monitor a um braço de distância para prevenir astenopia e miopia postural."
+    },
+    "posture": {
+      "title": "Inclinação da Cabeça",
+      "subtitle": "Pitch & Roll Cervical 3D",
+      "statusOptimal": "Postura Correta",
+      "statusWarning": "Inclinação Leve",
+      "statusBad": "Má Postura (Pescoço)",
+      "labelAngle": "ÂNGULO DE INCLINAÇÃO",
+      "advice": "Alinhe o terço superior do monitor com a altura dos olhos para neutralizar o ângulo cervical."
+    },
+    "symmetry": {
+      "title": "Simetria Ocular (EAR)",
+      "subtitle": "Proporção de abertura palpebral bilateral",
+      "leftEye": "OLHO ESQUERDO",
+      "rightEye": "OLHO DIREITO",
+      "labelSymmetry": "SIMETRIA BILATERAL",
+      "balanced": "Balanceado (> 90%)",
+      "unbalanced": "Desbalanceado (< 90%)"
+    },
+    "summaryTable": {
+      "title": "Métricas Ergonômicas em Tempo Real",
+      "thMetric": "MÉTRICA BIOMÉTRICA",
+      "thValue": "VALOR ATUAL",
+      "thStandard": "PADRÃO RECOMENDADO",
+      "thDiagnosis": "DIAGNÓSTICO",
+      "rowDistance": "Distância Olho-Tela",
+      "rowPosture": "Inclinação Cervical",
+      "rowEar": "EAR Médio (Abertura)",
+      "rowSymmetry": "Simetria Bilateral",
+      "normal": "Normal",
+      "rebalance": "Rebalancear",
+      "healthy": "Saudável",
+      "alert": "Alerta"
+    }
   },
   "settings": {
     "title": "Configurações",
@@ -45,16 +177,16 @@
       "seconds_range": "segundos (faixa: 5 - 600 seg)"
     },
     "kiosk": {
-      "title": "Modo Quiosque de Tela Cheia",
+      "title": "Modo Quiosque em Tela Cheia",
       "subtitle": "Comportamento da janela modal de interceptação",
       "strict_label": "Modo Estrito",
       "no_postpone": "Sem Adiamento",
-      "strict_desc": "Desativa o botão 'Adiar 2 min' na tela de pausa. O computador ficará bloqueado até que o tempo programado se esgote."
+      "strict_desc": "Desativa o botão 'Adiar 2 min' na tela de pausa. O computador ficará bloqueado até a conclusão total dos segundos programados."
     },
     "summary": {
       "title": "Resumo das Configurações",
-      "subtitle": "Estado atual dos parâmetros do OptiFlow",
-      "autostart": "Iniciar com o Windows:",
+      "subtitle": "Status atual dos parâmetros do OptiFlow",
+      "autostart": "Iniciar com Windows:",
       "theme": "Tema:",
       "language": "Idioma:",
       "work_interval": "Intervalo de Trabalho:",

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 
@@ -13,7 +14,14 @@ export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
   sessionDuration = '0m',
   nextBreakMinutes = 20
 }) => {
-  const badgeLabel = fatigueLevel > 60 ? 'ALTO' : fatigueLevel > 30 ? 'MODERADO' : 'OPTIMO'
+  const { t } = useTranslation()
+
+  const badgeLabel =
+    fatigueLevel > 60
+      ? t('dashboard.fatigue.statusHigh', 'ALTO')
+      : fatigueLevel > 30
+        ? t('dashboard.fatigue.statusModerate', 'MODERADO')
+        : t('dashboard.fatigue.statusOptimal', 'OPTIMO')
 
   return (
     <Card className="p-5 flex flex-col justify-between gap-3 select-none">
@@ -21,16 +29,16 @@ export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
-            Nivel de Fatiga Ocular
+            {t('dashboard.fatigue.title', 'Nivel de Fatiga Ocular')}
           </h3>
           <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
-            Modo Protección Inteligente
+            {t('dashboard.fatigue.subtitle', 'Modo Protección Inteligente')}
           </p>
         </div>
         <button
           type="button"
           className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
-          aria-label="Opciones"
+          aria-label={t('common.options', 'Opciones')}
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <circle cx="5" cy="12" r="2" />
@@ -44,13 +52,13 @@ export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
       <div className="flex items-center justify-between gap-4 py-1">
         <div className="flex flex-col">
           <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
-            FATIGA
+            {t('dashboard.fatigue.labelFatigue', 'FATIGA')}
           </span>
           <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-none mt-1">
             {fatigueLevel}%
           </span>
           <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider mt-3">
-            SESIÓN CONTINUA
+            {t('dashboard.fatigue.labelContinuousSession', 'SESIÓN CONTINUA')}
           </span>
           <span className="text-sm sm:text-base font-bold text-slate-800 dark:text-zinc-200 mt-0.5">
             {sessionDuration}
@@ -85,8 +93,10 @@ export const FatigueLevelWidget: React.FC<FatigueLevelWidgetProps> = ({
           <polyline points="12 6 12 12 16 14" />
         </svg>
         <span>
-          Próxima pausa en:{' '}
-          <strong className="font-bold text-slate-800 dark:text-white">{nextBreakMinutes} min</strong>
+          {t('dashboard.fatigue.nextBreakIn', 'Próxima pausa en:')}{' '}
+          <strong className="font-bold text-slate-800 dark:text-white">
+            {nextBreakMinutes} {t('common.minutesShort', 'min')}
+          </strong>
         </span>
       </div>
     </Card>

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { HistoricalEarRecord } from '../../hooks/useTelemetry'
 
 export interface TemporalCorrelationWidgetProps {
@@ -47,6 +48,8 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
   fatigueLevel = 18,
   earHistory = []
 }) => {
+  const { t } = useTranslation()
+
   // Conectar al promedio real de EAR del backend Python y del historial
   const displayEar = useMemo(() => {
     if (typeof averageEar === 'number' && !isNaN(averageEar)) {
@@ -120,16 +123,16 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-bold text-sm sm:text-base text-white leading-tight">
-            Correlación Temporal
+            {t('dashboard.temporal.title', 'Correlación Temporal')}
           </h3>
           <p className="text-xs text-gray-400 dark:text-zinc-400 mt-0.5">
-            Fatiga vs Carga de Trabajo
+            {t('dashboard.temporal.subtitle', 'Fatiga vs Carga de Trabajo')}
           </p>
         </div>
         <button
           type="button"
           className="text-gray-400 dark:text-zinc-400 hover:text-white p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
-          aria-label="Opciones"
+          aria-label={t('common.options', 'Opciones')}
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <circle cx="5" cy="12" r="2" />
@@ -143,7 +146,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
       <div className="flex items-center gap-8 mt-3">
         <div className="flex flex-col">
           <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-zinc-400 uppercase tracking-wider">
-            EAR PROM.
+            {t('dashboard.temporal.labelAvgEar', 'EAR PROM.')}
           </span>
           <span className="text-2xl sm:text-3xl font-black text-white mt-1 font-mono">
             {displayEar}
@@ -151,7 +154,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
         </div>
         <div className="flex flex-col">
           <span className="text-[10px] sm:text-xs font-bold text-gray-400 dark:text-zinc-400 uppercase tracking-wider">
-            DISTANCIA
+            {t('dashboard.temporal.labelDistance', 'DISTANCIA')}
           </span>
           <span className="text-2xl sm:text-3xl font-black text-white mt-1 font-mono">
             {distance}
@@ -203,7 +206,7 @@ export const TemporalCorrelationWidget: React.FC<TemporalCorrelationWidgetProps>
       {/* Barra Horizontal Inferior (Glow): Fatiga Acumulada */}
       <div className="w-full mt-3 pt-1">
         <div className="flex justify-between items-center text-xs text-gray-400 dark:text-zinc-400 mb-1.5">
-          <span className="font-semibold uppercase tracking-wider">Nivel de Carga Acumulada</span>
+          <span className="font-semibold uppercase tracking-wider">{t('dashboard.temporal.labelAccumulatedLoad', 'Nivel de Carga Acumulada')}</span>
           <span className="font-mono text-orange-400 font-bold text-sm">{accumulatedLoad}%</span>
         </div>
         <div className="w-full h-2.5 bg-gray-800/90 dark:bg-zinc-800 rounded-full overflow-hidden p-[1px] relative">

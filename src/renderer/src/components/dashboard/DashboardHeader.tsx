@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import Button from '../ui/Button'
 import { OptiFlowIsotype } from '../layout/Logo'
 
@@ -13,6 +14,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   onToggleMonitoring,
   isMonitoring = true
 }) => {
+  const { t } = useTranslation()
+
   const handleTriggerBreak = (): void => {
     // Si se pasa callback externo, ejecutarlo
     if (onTriggerBreak) {
@@ -33,10 +36,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   return (
     <div className="flex flex-col select-none">
       <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-1">
-        Salud Ocular
+        {t('dashboard.header.title', 'Salud Ocular')}
       </h1>
       <p className="text-sm sm:text-base font-medium text-gray-500 dark:text-zinc-400 mb-4">
-        Control Biométrico de Fatiga y Enfoque
+        {t('dashboard.header.subtitle', 'Control Biométrico de Fatiga y Enfoque')}
       </p>
 
       <div className="flex items-center gap-3 flex-wrap">
@@ -46,7 +49,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           onClick={handleTriggerBreak}
           icon={<OptiFlowIsotype className="w-4 h-4" />}
         >
-          Probar Pausa Activa
+          {t('dashboard.header.tryBreak', 'Probar Pausa Activa')}
         </Button>
 
         <Button
@@ -75,7 +78,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             </svg>
           }
         >
-          {isMonitoring ? 'Pausar Monitoreo' : 'Reanudar Monitoreo'}
+          {isMonitoring
+            ? t('dashboard.header.pauseMonitoring', 'Pausar Monitoreo')
+            : t('dashboard.header.resumeMonitoring', 'Reanudar Monitoreo')}
         </Button>
       </div>
     </div>

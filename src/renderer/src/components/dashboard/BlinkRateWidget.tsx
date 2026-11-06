@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../ui/Card'
 
 export interface BlinkRateWidgetProps {
@@ -12,12 +13,14 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
   statusText,
   percentage
 }) => {
+  const { t } = useTranslation()
+
   const dynamicStatus = useMemo(() => {
     if (statusText) return statusText
-    if (bpm >= 14 && bpm <= 25) return 'Saludable (14 - 25)'
-    if (bpm < 14) return 'Tensión Ocular (< 14)'
-    return 'Elevado (> 25)'
-  }, [bpm, statusText])
+    if (bpm >= 14 && bpm <= 25) return t('dashboard.blink.statusHealthy', 'Saludable (14 - 25)')
+    if (bpm < 14) return t('dashboard.blink.statusStrain', 'Tensión Ocular (< 14)')
+    return t('dashboard.blink.statusHigh', 'Elevado (> 25)')
+  }, [bpm, statusText, t])
 
   // Normalización del ancho de barra reactiva en tiempo real (escala 0 a 35+ BPM)
   const barWidth = useMemo(() => {
@@ -31,16 +34,16 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
-            Tasa de Parpadeo
+            {t('dashboard.blink.title', 'Tasa de Parpadeo')}
           </h3>
           <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
-            Frecuencia Ocular Dinámica
+            {t('dashboard.blink.subtitle', 'Frecuencia Ocular Dinámica')}
           </p>
         </div>
         <button
           type="button"
           className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
-          aria-label="Opciones"
+          aria-label={t('common.options', 'Opciones')}
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <circle cx="5" cy="12" r="2" />
@@ -53,7 +56,7 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
       {/* Contenido: Barra de Progreso Dinámica */}
       <div className="flex flex-col gap-2 mt-1">
         <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
-          RITMO DE PARPADEO
+          {t('dashboard.blink.labelRhythm', 'RITMO DE PARPADEO')}
         </span>
         <div className="w-full h-3 bg-gray-200/80 dark:bg-zinc-800 rounded-full overflow-hidden p-0.5">
           <div
@@ -66,7 +69,7 @@ export const BlinkRateWidget: React.FC<BlinkRateWidgetProps> = ({
       {/* Footer: BPM destacado en gran escala */}
       <div className="flex items-center justify-between pt-1">
         <span className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white leading-none">
-          {bpm} <span className="text-sm sm:text-base font-bold text-slate-500 dark:text-zinc-400">BPM</span>
+          {bpm} <span className="text-sm sm:text-base font-bold text-slate-500 dark:text-zinc-400">{t('dashboard.blink.bpm', 'BPM')}</span>
         </span>
         <span className="text-xs sm:text-sm text-slate-600 dark:text-zinc-300 font-semibold bg-slate-100/80 dark:bg-zinc-800 px-2.5 py-1 rounded-full">
           {dynamicStatus}

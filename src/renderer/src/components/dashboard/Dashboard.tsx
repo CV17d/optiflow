@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import DashboardHeader from './DashboardHeader'
 import TelemetryWidget from './TelemetryWidget'
 import EyeBiometricsWidget from './EyeBiometricsWidget'
@@ -11,6 +12,7 @@ import useBiometrics from '../../hooks/useBiometrics'
 import type { AppUsageStat, BreakStats } from '../../hooks/useTelemetry'
 
 export const Dashboard: React.FC = () => {
+  const { t } = useTranslation()
   const { biometrics, historyData, sendAction } = useBiometrics()
   const [isMonitoring, setIsMonitoring] = useState<boolean>(true)
   const [appUsageStats, setAppUsageStats] = useState<AppUsageStat[]>([])
@@ -120,9 +122,21 @@ export const Dashboard: React.FC = () => {
             onTriggerBreak={handleTriggerBreak}
           />
           <TelemetryWidget
-            activeApp={isMonitoring ? biometrics.active_app : `${biometrics.active_app} (Pausado)`}
-            appStatus={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
-            roleDescription={isMonitoring ? biometrics.app_status : 'Monitoreo en Pausa'}
+            activeApp={
+              isMonitoring
+                ? biometrics.active_app
+                : `${biometrics.active_app} ${t('dashboard.paused', '(Pausado)')}`
+            }
+            appStatus={
+              isMonitoring
+                ? biometrics.app_status
+                : t('dashboard.monitoringPaused', 'Monitoreo en Pausa')
+            }
+            roleDescription={
+              isMonitoring
+                ? biometrics.app_status
+                : t('dashboard.monitoringPaused', 'Monitoreo en Pausa')
+            }
             appIconBase64={isMonitoring ? biometrics.appIconBase64 : undefined}
             appUsageStats={currentUsageStats}
           />

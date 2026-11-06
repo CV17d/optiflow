@@ -1,4 +1,10 @@
 {
+  "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}",
+  "common": {
+    "minutesShort": "min",
+    "options": "Options",
+    "loading": "Loading..."
+  },
   "nav": {
     "dashboard": "Main Dashboard",
     "ergonomics": "Ergonomic Analysis",
@@ -6,6 +12,132 @@
     "calibration": "Calibration & Privacy",
     "settings": "Settings",
     "local_processing": "100% Local Processing (Private)"
+  },
+  "dashboard": {
+    "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}",
+    "paused": "(Paused)",
+    "monitoringPaused": "Monitoring Paused",
+    "header": {
+      "title": "Eye Health",
+      "subtitle": "Biometric Fatigue & Focus Control",
+      "tryBreak": "Test Active Break",
+      "pauseMonitoring": "Pause Monitoring",
+      "resumeMonitoring": "Resume Monitoring"
+    },
+    "telemetry": {
+      "title": "Software Context",
+      "subtitle": "App Telemetry",
+      "badgeActive": "ACTIVE",
+      "searching": "Searching...",
+      "deepFocus": "Deep Focus",
+      "waitingTelemetry": "Waiting for active window telemetry..."
+    },
+    "fatigue": {
+      "title": "Eye Fatigue Level",
+      "subtitle": "Smart Protection Mode",
+      "labelFatigue": "FATIGUE",
+      "labelContinuousSession": "CONTINUOUS SESSION",
+      "statusHigh": "HIGH",
+      "statusModerate": "MODERATE",
+      "statusOptimal": "OPTIMAL",
+      "nextBreakIn": "Next break in:"
+    },
+    "blink": {
+      "title": "Blink Rate",
+      "subtitle": "Dynamic Eye Frequency",
+      "labelRhythm": "BLINK RHYTHM",
+      "statusHealthy": "Healthy (14 - 25)",
+      "statusStrain": "Eye Strain (< 14)",
+      "statusHigh": "Elevated (> 25)",
+      "bpm": "BPM"
+    },
+    "healthIndex": {
+      "title": "Visual Health Index",
+      "subtitle": "Ergonomic Score",
+      "labelStatus": "STATUS",
+      "labelDegradation": "DEGRADATION",
+      "labelHealthScore": "HEALTH SCORE",
+      "statusExcellent": "Excellent",
+      "statusGood": "Good",
+      "statusAlert": "Alert",
+      "degradationLow": "Low",
+      "degradationMedium": "Medium",
+      "degradationHigh": "High"
+    },
+    "pauseRegistry": {
+      "title": "Break Log & Context",
+      "subtitle": "Today vs Previous Session",
+      "labelAdherence": "20-20-20 ADHERENCE",
+      "labelPostponed": "POSTPONED",
+      "minimal": "Minimal",
+      "noRecords": "No records"
+    },
+    "temporal": {
+      "title": "Temporal Correlation",
+      "subtitle": "Fatigue vs Workload",
+      "labelAvgEar": "AVG. EAR",
+      "labelDistance": "DISTANCE",
+      "labelAccumulatedLoad": "Accumulated Workload Level"
+    },
+    "eye": {
+      "alt": "Natural Biometric Eye",
+      "trackingLabel": "TRACKING {{pts}} PTS • EAR {{ear}}"
+    }
+  },
+  "ergonomics": {
+    "title": "Ergonomic Analysis",
+    "subtitle": "3D Postural Telemetry, Distance Estimation & Real-Time Ocular Symmetry",
+    "streamingActive": "MediaPipe 3D • Streaming Active",
+    "connecting": "Connecting to Engine...",
+    "fpsInference": "60 FPS Inference",
+    "distance": {
+      "title": "Screen Distance",
+      "subtitle": "Euclidean estimation (points 234 - 454)",
+      "statusOptimal": "Optimal (50 - 70 cm)",
+      "statusWarning": "Caution (< 50 cm)",
+      "statusCritical": "Critical (< 35 cm)",
+      "statusFar": "Far (> 70 cm)",
+      "badgeOptimal": "OPTIMAL",
+      "badgeClose": "TOO CLOSE",
+      "badgeFar": "DISTANT",
+      "rangeMin": "20 cm",
+      "rangeMax": "90 cm",
+      "rangeOptimal": "Optimal Zone (50 - 70 cm)",
+      "advice": "Keep the monitor an arm's length away to prevent accommodative asthenopia and postural myopia."
+    },
+    "posture": {
+      "title": "Head Tilt",
+      "subtitle": "3D Cervical Pitch & Roll",
+      "statusOptimal": "Proper Posture",
+      "statusWarning": "Slight Tilt",
+      "statusBad": "Poor Posture (Neck)",
+      "labelAngle": "TILT ANGLE",
+      "advice": "Align top third of display with eye level to neutralize cervical angle."
+    },
+    "symmetry": {
+      "title": "Ocular Symmetry (EAR)",
+      "subtitle": "Bilateral eyelid aperture ratio",
+      "leftEye": "LEFT EYE",
+      "rightEye": "RIGHT EYE",
+      "labelSymmetry": "BILATERAL SYMMETRY",
+      "balanced": "Balanced (> 90%)",
+      "unbalanced": "Unbalanced (< 90%)"
+    },
+    "summaryTable": {
+      "title": "Real-Time Ergonomic Metrics",
+      "thMetric": "BIOMETRIC METRIC",
+      "thValue": "CURRENT VALUE",
+      "thStandard": "RECOMMENDED STANDARD",
+      "thDiagnosis": "DIAGNOSIS",
+      "rowDistance": "Eye-Screen Distance",
+      "rowPosture": "Cervical Tilt",
+      "rowEar": "Average EAR (Aperture)",
+      "rowSymmetry": "Bilateral Symmetry",
+      "normal": "Normal",
+      "rebalance": "Rebalance",
+      "healthy": "Healthy",
+      "alert": "Alert"
+    }
   },
   "settings": {
     "title": "Settings",

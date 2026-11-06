@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 import type { AppUsageStat } from '../../hooks/useTelemetry'
@@ -22,8 +23,11 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
   appIconBase64,
   appUsageStats
 }) => {
-  const currentApp = activeApp || active_app || 'Buscando...'
-  const currentStatus = appStatus || app_status || roleDescription || 'Enfoque Profundo'
+  const { t } = useTranslation()
+
+  const currentApp = activeApp || active_app || t('dashboard.telemetry.searching', 'Buscando...')
+  const currentStatus =
+    appStatus || app_status || roleDescription || t('dashboard.telemetry.deepFocus', 'Enfoque Profundo')
 
   const secondaryApps =
     appUsageStats && appUsageStats.length > 0
@@ -56,12 +60,16 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
           </div>
           <div>
             <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
-              Contexto de Software
+              {t('dashboard.telemetry.title', 'Contexto de Software')}
             </h3>
-            <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">Telemetría de Apps</p>
+            <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
+              {t('dashboard.telemetry.subtitle', 'Telemetría de Apps')}
+            </p>
           </div>
         </div>
-        <Badge variant="warning-text" className="text-xs font-bold">ACTIVA</Badge>
+        <Badge variant="warning-text" className="text-xs font-bold">
+          {t('dashboard.telemetry.badgeActive', 'ACTIVA')}
+        </Badge>
       </div>
 
       {/* Contenido Principal: Aplicación Activa y Estado del Sistema */}
@@ -143,7 +151,7 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
         </div>
       ) : (
         <div className="text-xs text-slate-400 dark:text-zinc-500 italic pt-0.5 px-0.5">
-          Esperando telemetría de ventanas activas...
+          {t('dashboard.telemetry.waitingTelemetry', 'Esperando telemetría de ventanas activas...')}
         </div>
       )}
     </Card>

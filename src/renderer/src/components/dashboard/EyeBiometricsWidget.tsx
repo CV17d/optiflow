@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import eyeImage from '../../assets/eye-square.jpg'
 
 export interface EyeBiometricsWidgetProps {
@@ -12,6 +13,7 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
   trackingPoints = 468,
   className = ''
 }) => {
+  const { t } = useTranslation()
   const isBlinking = ear < 0.20
 
   // Escala reactiva sutil para el HUD según la apertura palpebral
@@ -19,6 +21,8 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
     if (isBlinking) return 0.96
     return Math.max(0.98, Math.min(1.02, 0.98 + (ear / 0.35) * 0.04))
   }, [ear, isBlinking])
+
+  const formattedEar = typeof ear === 'number' ? ear.toFixed(2) : ear
 
   return (
     <div
@@ -35,7 +39,7 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
           {/* Imagen base fotorrealista natural */}
           <img
             src={eyeImage}
-            alt="Ojo Biométrico Natural"
+            alt={t('dashboard.eye.alt', 'Ojo Biométrico Natural')}
             className="w-full h-full object-contain pointer-events-none select-none transition-transform duration-200 ease-out"
             style={{
               transform: isBlinking ? 'scaleY(0.93) scaleX(1.01)' : 'scale(1)',
@@ -153,7 +157,7 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
       </div>
 
       {/* =================================================================== */}
-      {/* 3. ETIQUETA EXTERIOR INDEPENDIENTE (FUERA DEL CONTENEDOR DEL OJO)   */}
+      {/* 3. ETIQUETA EXTERIOR INDEPENDIENTE (CON VARIABLES DINÁMICAS i18n)   */}
       {/* =================================================================== */}
       <div className="mt-4 sm:mt-5 inline-flex items-center justify-center gap-2.5 bg-cyan-500/10 dark:bg-cyan-950/40 border border-cyan-500/25 dark:border-cyan-500/30 rounded-full px-5 py-2 shadow-2xs transition-all duration-200">
         <span
@@ -162,10 +166,11 @@ export const EyeBiometricsWidget: React.FC<EyeBiometricsWidgetProps> = ({
           }`}
         />
         <span className="text-xs sm:text-sm font-sans font-bold text-cyan-600 dark:text-cyan-400 tracking-wide">
-          TRACKING {trackingPoints} PTS <span className="text-cyan-400 mx-1.5">•</span> EAR{' '}
-          <span className="font-extrabold text-cyan-700 dark:text-cyan-300">
-            {typeof ear === 'number' ? ear.toFixed(2) : ear}
-          </span>
+          {t('trackingLabel', {
+            pts: trackingPoints,
+            ear: formattedEar,
+            defaultValue: `TRACKING ${trackingPoints} PTS • EAR ${formattedEar}`
+          })}
         </span>
       </div>
 

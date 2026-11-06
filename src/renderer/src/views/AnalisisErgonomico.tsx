@@ -1,9 +1,11 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import { useTelemetry } from '../hooks/useTelemetry'
 
 export const AnalisisErgonomico: React.FC = () => {
+  const { t } = useTranslation()
   const { data, isConnected } = useTelemetry()
 
   // Extracción y normalización de telemetría en tiempo real desde el motor biométrico
@@ -46,10 +48,10 @@ export const AnalisisErgonomico: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-1">
-            Análisis Ergonómico
+            {t('ergonomics.title', 'Análisis Ergonómico')}
           </h1>
           <p className="text-sm font-medium text-slate-500 dark:text-zinc-400">
-            Telemetría Postural 3D, Estimación de Distancia y Simetría Ocular en Tiempo Real
+            {t('ergonomics.subtitle', 'Telemetría Postural 3D, Estimación de Distancia y Simetría Ocular en Tiempo Real')}
           </p>
         </div>
 
@@ -58,7 +60,9 @@ export const AnalisisErgonomico: React.FC = () => {
             <span
               className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`}
             />
-            {isConnected ? 'MediaPipe 3D • Streaming Activo' : 'Conectando con Motor...'}
+            {isConnected
+              ? t('ergonomics.streamingActive', 'MediaPipe 3D • Streaming Activo')
+              : t('ergonomics.connecting', 'Conectando con Motor...')}
           </span>
 
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-xs font-bold text-orange-700 shadow-2xs">
@@ -74,7 +78,7 @@ export const AnalisisErgonomico: React.FC = () => {
               <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
               <circle cx="12" cy="13" r="4" />
             </svg>
-            60 FPS Inferencia
+            {t('ergonomics.fpsInference', '60 FPS Inferencia')}
           </span>
         </div>
       </div>
@@ -107,10 +111,10 @@ export const AnalisisErgonomico: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
-                    Distancia a Pantalla
+                    {t('ergonomics.distance.title', 'Distancia a Pantalla')}
                   </h3>
                   <p className="text-[11px] text-slate-400 dark:text-zinc-400">
-                    Estimación euclidiana (puntos 234 - 454)
+                    {t('ergonomics.distance.subtitle', 'Estimación euclidiana (puntos 234 - 454)')}
                   </p>
                 </div>
               </div>
@@ -263,10 +267,10 @@ export const AnalisisErgonomico: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
-                    Postura Cervical
+                    {t('ergonomics.posture.title', 'Postura Cervical')}
                   </h3>
                   <p className="text-[11px] text-slate-400 dark:text-zinc-400">
-                    Inclinación tridimensional (Pitch &amp; Yaw)
+                    {t('ergonomics.posture.subtitle', 'Inclinación tridimensional (Pitch & Yaw)')}
                   </p>
                 </div>
               </div>
@@ -398,10 +402,10 @@ export const AnalisisErgonomico: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
-                    Simetría Facial &amp; EAR
+                    {t('ergonomics.symmetry.title', 'Simetría Facial & EAR')}
                   </h3>
                   <p className="text-[11px] text-slate-400 dark:text-zinc-400">
-                    Apertura bilateral en tiempo real
+                    {t('ergonomics.symmetry.subtitle', 'Apertura bilateral en tiempo real')}
                   </p>
                 </div>
               </div>

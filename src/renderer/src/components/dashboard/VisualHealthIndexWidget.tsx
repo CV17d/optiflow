@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import Card from '../ui/Card'
 
 export interface VisualHealthIndexWidgetProps {
@@ -16,6 +17,8 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
   degradation,
   score
 }) => {
+  const { t } = useTranslation()
+
   // Score Ergonómico (0 a 100) basado en la fórmula reactiva: Math.round(100 - fatigueLevel)
   const effectiveFatigue =
     typeof fatigueLevel === 'number' && !isNaN(fatigueLevel)
@@ -33,18 +36,18 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
   // Estado descriptivo de salud visual dinámico: Excelente, Bueno, Alerta
   const calculatedStatus = useMemo(() => {
     if (status) return status
-    if (healthScore >= 80) return 'Excelente'
-    if (healthScore >= 50) return 'Bueno'
-    return 'Alerta'
-  }, [healthScore, status])
+    if (healthScore >= 80) return t('dashboard.healthIndex.statusExcellent', 'Excelente')
+    if (healthScore >= 50) return t('dashboard.healthIndex.statusGood', 'Bueno')
+    return t('dashboard.healthIndex.statusAlert', 'Alerta')
+  }, [healthScore, status, t])
 
   // Nivel de degradación ocular dinámico: Baja, Media, Alta
   const calculatedDegradation = useMemo(() => {
     if (degradation) return degradation
-    if (healthScore >= 80) return 'Baja'
-    if (healthScore >= 50) return 'Media'
-    return 'Alta'
-  }, [healthScore, degradation])
+    if (healthScore >= 80) return t('dashboard.healthIndex.degradationLow', 'Baja')
+    if (healthScore >= 50) return t('dashboard.healthIndex.degradationMedium', 'Media')
+    return t('dashboard.healthIndex.degradationHigh', 'Alta')
+  }, [healthScore, degradation, t])
 
   // Cálculo del arco de velocímetro (240 grados de barrido: de 150° a 390°)
   // Radio 38, circunferencia completa = 2 * PI * 38 = 238.76. Longitud de arco 240° = 159.17
@@ -72,14 +75,16 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
-            Índice de Salud Visual
+            {t('dashboard.healthIndex.title', 'Índice de Salud Visual')}
           </h3>
-          <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">Score Ergonómico</p>
+          <p className="text-xs text-slate-400 dark:text-zinc-400 mt-0.5">
+            {t('dashboard.healthIndex.subtitle', 'Score Ergonómico')}
+          </p>
         </div>
         <button
           type="button"
           className="text-slate-400 dark:text-zinc-400 hover:text-slate-600 dark:hover:text-zinc-200 p-1 -mr-1 rounded-lg transition-colors cursor-pointer"
-          aria-label="Opciones"
+          aria-label={t('common.options', 'Opciones')}
         >
           <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
             <circle cx="5" cy="12" r="2" />
@@ -94,14 +99,14 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
         {/* Bloque Izquierdo Reactivo */}
         <div className="flex flex-col">
           <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider">
-            ESTADO
+            {t('dashboard.healthIndex.labelStatus', 'ESTADO')}
           </span>
           <span className={`text-lg sm:text-xl lg:text-2xl font-black mt-0.5 ${statusColorClass}`}>
             {calculatedStatus}
           </span>
 
           <span className="text-[10px] sm:text-xs font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider mt-3">
-            DEGRADACIÓN
+            {t('dashboard.healthIndex.labelDegradation', 'DEGRADACIÓN')}
           </span>
           <span className={`text-base sm:text-lg lg:text-xl font-bold mt-0.5 ${degradationColorClass}`}>
             {calculatedDegradation}
@@ -146,7 +151,7 @@ export const VisualHealthIndexWidget: React.FC<VisualHealthIndexWidgetProps> = (
           {/* Lectura Central de Score */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-3.5 pointer-events-none">
             <span className="text-[9px] font-bold text-slate-400 dark:text-zinc-400 uppercase tracking-wider leading-none">
-              HEALTH SCORE
+              {t('dashboard.healthIndex.labelHealthScore', 'HEALTH SCORE')}
             </span>
             <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1 leading-none font-mono">
               {healthScore}
