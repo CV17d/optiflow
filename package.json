@@ -1,7 +1,7 @@
 {
   "name": "optiflow",
   "productName": "OptiFlow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OptiFlow Desktop Application",
   "main": "./out/main/index.js",
   "author": "OptiFlow Team",
@@ -119,10 +119,7 @@
       "target": [
         "AppImage",
         "deb"
-      ],
-      "maintainer": "OptiFlow Team",
-      "category": "Utility",
-      "icon": "build/icon.png"
+      ]
     },
     "appImage": {
       "artifactName": "${name}-${version}.${ext}"
