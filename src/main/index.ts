@@ -810,7 +810,7 @@ function createWindow(): void {
     height: 800,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -845,7 +845,7 @@ app.whenReady().then(() => {
   restartBreakTimer()
 
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  electronApp.setAppUserModelId('com.optiflow.app')
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

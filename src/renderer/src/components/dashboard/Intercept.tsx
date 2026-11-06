@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import type { UserSettings } from '../../../../preload/index.d'
+import { OptiFlowIsotype } from '../layout/Logo'
 
 const DEFAULT_BREAK_SECONDS = 20
 
@@ -78,19 +79,17 @@ export const Intercept: React.FC = () => {
       <header className="flex items-center justify-between w-full max-w-7xl mx-auto">
         {/* Identidad de la Pausa */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 flex items-center justify-center text-white shadow-sm shadow-orange-500/20">
-            <svg
-              className="w-5 h-5 fill-current"
-              viewBox="0 0 24 24"
-            >
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-          </div>
+          <OptiFlowIsotype className="w-11 h-11" />
           <div>
-            <span className="block text-[11px] font-bold text-orange-600 tracking-wider uppercase leading-none">
-              OPTIFLOW INTERCEPT
-            </span>
-            <h2 className="text-xs sm:text-sm font-semibold text-slate-700 mt-1 leading-tight">
+            <div className="flex items-center gap-2">
+              <span className="font-extrabold text-base tracking-tight text-slate-800">
+                Opti<span className="text-orange-500 font-semibold">Flow</span>
+              </span>
+              <span className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200/80 px-2 py-0.5 rounded-full tracking-wider uppercase">
+                INTERCEPT
+              </span>
+            </div>
+            <h2 className="text-xs sm:text-sm font-semibold text-slate-600 mt-1 leading-tight">
               Sesión de Trabajo Temporalmente Suspendida
             </h2>
           </div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import Badge from '../ui/Badge'
+import Logo from './Logo'
 
 export interface HeaderProps {
   activeTab?: string
@@ -19,19 +20,12 @@ const navTabs = [
 export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   return (
     <header className={`h-20 flex justify-between items-center w-full px-8 py-5 shrink-0 z-10 ${className}`}>
-      {/* Izquierda: Logotipo */}
+      {/* Izquierda: Logotipo Oficial */}
       <NavLink
         to="/"
-        className="flex items-center gap-3 select-none hover:opacity-90 transition-opacity"
+        className="flex items-center select-none hover:opacity-90 transition-opacity"
       >
-        <div className="text-orange-500 flex items-center justify-center">
-          <svg className="w-7 h-7 fill-current" viewBox="0 0 24 24">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-          </svg>
-        </div>
-        <span className="font-extrabold text-2xl tracking-tight text-slate-900">
-          OptiFlow<span className="text-orange-500">.</span>
-        </span>
+        <Logo size="lg" isotypeClassName="w-11 h-11" />
       </NavLink>
 
       {/* Centro: Barra de Navegación con NavLink y estados dinámicos */}

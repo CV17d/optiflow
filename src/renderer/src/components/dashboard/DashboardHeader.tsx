@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from '../ui/Button'
+import { OptiFlowIsotype } from '../layout/Logo'
 
 export interface DashboardHeaderProps {
   onTriggerBreak?: () => void
@@ -43,11 +44,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           variant="primary"
           className="px-4 py-2 text-xs sm:text-sm font-semibold shadow-sm"
           onClick={handleTriggerBreak}
-          icon={
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-          }
+          icon={<OptiFlowIsotype className="w-4 h-4" />}
         >
           Probar Pausa Activa
         </Button>
