@@ -127,6 +127,7 @@ export const Dashboard: React.FC = () => {
                 ? biometrics.active_app
                 : `${biometrics.active_app} ${t('dashboard.paused', '(Pausado)')}`
             }
+            activeAppPath={isMonitoring ? biometrics.exe_path || biometrics.active_app : undefined}
             appStatus={
               isMonitoring
                 ? biometrics.app_status

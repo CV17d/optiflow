@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
 const api = {
+  invoke: (channel: string, ...args: unknown[]): Promise<unknown> => ipcRenderer.invoke(channel, ...args),
   getAppUsageStats: (): Promise<unknown> => ipcRenderer.invoke('get-app-usage-stats'),
   getBreakStats: (): Promise<unknown> => ipcRenderer.invoke('get-break-stats'),
   getHistoricalData: (): Promise<unknown> => ipcRenderer.invoke('get-historical-data'),

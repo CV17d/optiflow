@@ -29,6 +29,7 @@
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "i18next": "^26.7.2",
+    "lucide-react": "^1.70.0",
     "react-i18next": "^17.1.13",
     "react-router-dom": "^7.18.5",
     "three": "^0.187.0"

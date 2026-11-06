@@ -991,18 +991,24 @@ app.whenReady().then(() => {
     return getAppUsageStatsFromDB()
   })
 
-  // IPC nativo para extraer y devolver el icono real (.exe) en Base64 usando app.getFileIcon
-  ipcMain.handle('get-app-icon', async (_, appPathOrName: string): Promise<string | null> => {
-    if (!appPathOrName) return null
+  // IPC nativo para extraer y devolver el icono real de la app en Base64 con soporte seguro y fallback en Linux
+  ipcMain.handle('get-app-icon', async (_event, appPath: string): Promise<string | null> => {
+    // Si es Linux, retornar null inmediatamente para evitar consumo innecesario
+    if (process.platform === 'linux' || !appPath) {
+      return null
+    }
+
+    // En Windows o macOS, utilizar la API nativa de Electron app.getFileIcon
     try {
-      if (existsSync(appPathOrName)) {
-        const icon = await app.getFileIcon(appPathOrName, { size: 'normal' })
+      if (existsSync(appPath)) {
+        const icon = await app.getFileIcon(appPath, { size: 'normal' })
         return icon.toDataURL()
       }
-    } catch (err) {
-      console.error('[Main Process] Error extrayendo icono nativo con app.getFileIcon:', err)
+      const icon = await app.getFileIcon(appPath, { size: 'normal' })
+      return icon.toDataURL()
+    } catch {
+      return null
     }
-    return null
   })
 
   createWindow()

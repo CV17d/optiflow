@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AppWindow } from 'lucide-react'
 import Card from '../ui/Card'
 import Badge from '../ui/Badge'
 import type { AppUsageStat } from '../../hooks/useTelemetry'
@@ -11,6 +12,7 @@ export interface TelemetryWidgetProps {
   app_status?: string
   roleDescription?: string
   appIconBase64?: string
+  activeAppPath?: string
   appUsageStats?: AppUsageStat[]
 }
 
@@ -21,13 +23,56 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
   app_status,
   roleDescription,
   appIconBase64,
+  activeAppPath,
   appUsageStats
 }) => {
   const { t } = useTranslation()
+  const [iconData, setIconData] = useState<string | null>(appIconBase64 || null)
 
   const currentApp = activeApp || active_app || t('dashboard.telemetry.searching', 'Buscando...')
   const currentStatus =
     appStatus || app_status || roleDescription || t('dashboard.telemetry.deepFocus', 'Enfoque Profundo')
+
+  // Escuchar cambios en la ruta de la app activa para extraer el icono nativo vía IPC con fallback
+  useEffect(() => {
+    let isMounted = true
+
+    const fetchIcon = async (): Promise<void> => {
+      const target = activeAppPath || activeApp || active_app
+
+      if (!target) {
+        if (isMounted) setIconData(appIconBase64 || null)
+        return
+      }
+
+      try {
+        let result: string | null = null
+        if (window.api?.invoke) {
+          result = (await window.api.invoke('get-app-icon', target)) as string | null
+        } else if (window.api?.getAppIcon) {
+          result = await window.api.getAppIcon(target)
+        } else if (window.electron?.getAppIcon) {
+          result = await window.electron.getAppIcon(target)
+        } else if (window.electron?.ipcRenderer?.invoke) {
+          result = (await window.electron.ipcRenderer.invoke('get-app-icon', target)) as string | null
+        }
+
+        if (isMounted) {
+          setIconData(result || appIconBase64 || null)
+        }
+      } catch {
+        if (isMounted) {
+          setIconData(appIconBase64 || null)
+        }
+      }
+    }
+
+    fetchIcon()
+
+    return () => {
+      isMounted = false
+    }
+  }, [activeAppPath, activeApp, active_app, appIconBase64])
 
   const secondaryApps =
     appUsageStats && appUsageStats.length > 0
@@ -75,28 +120,16 @@ export const TelemetryWidget: React.FC<TelemetryWidgetProps> = ({
       {/* Contenido Principal: Aplicación Activa y Estado del Sistema */}
       <div className="bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-100 dark:border-zinc-800 rounded-2xl p-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          {/* Icono Nativo del Sistema Operativo con fallback elegante */}
+          {/* Icono Nativo del Sistema Operativo con fallback elegante SVG */}
           <div className="w-11 h-11 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200/80 dark:border-zinc-700 shadow-xs flex items-center justify-center shrink-0 overflow-hidden p-0.5">
-            {appIconBase64 ? (
+            {iconData ? (
               <img
-                src={appIconBase64}
+                src={iconData}
                 alt="App Icon"
-                className="w-9 h-9 object-contain"
+                className="w-8 h-8 object-contain rounded-md"
               />
             ) : (
-              <svg
-                className="w-6 h-6 text-orange-500"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect x="2" y="3" width="20" height="14" rx="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
+              <AppWindow className="w-6 h-6 text-orange-500 dark:text-orange-400" />
             )}
           </div>
           <div className="min-w-0">

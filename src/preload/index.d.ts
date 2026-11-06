@@ -57,6 +57,7 @@ export interface CustomElectronAPI extends ElectronAPI {
 }
 
 export interface CustomAPI {
+  invoke?: (channel: string, ...args: any[]) => Promise<any>
   getAppUsageStats?: () => Promise<AppUsageStat[]>
   getBreakStats?: () => Promise<BreakStats>
   getHistoricalData?: () => Promise<HistoricalData>
