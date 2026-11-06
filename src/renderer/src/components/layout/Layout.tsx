@@ -13,7 +13,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, className = '' }) => {
 
   return (
     <div
-      className={`h-screen w-full bg-[#F5F5F7] text-gray-900 flex flex-col font-sans antialiased overflow-hidden ${className}`}
+      className={`h-screen w-full bg-[#F5F5F7] dark:bg-slate-950 text-gray-900 dark:text-slate-100 flex flex-col font-sans antialiased overflow-hidden transition-colors duration-200 ${className}`}
     >
       <Header />
       <main

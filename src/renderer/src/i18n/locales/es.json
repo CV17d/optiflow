@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Panel Principal",
+    "ergonomics": "Análisis Ergonómico",
+    "history": "Historial y Pausas",
+    "calibration": "Calibración & Privacidad",
+    "settings": "Configuración",
+    "local_processing": "Procesamiento 100% Local (Privado)"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Preferencias del Sistema, Apariencia, Idioma y Modo Kiosco",
+    "badge_preferences": "PREFERENCIAS",
+    "persistence_active": "Persistencia Activa (JSON & SQLite)",
+    "appearance": {
+      "title": "Apariencia & Tema",
+      "subtitle": "Personaliza el aspecto visual de OptiFlow en tu pantalla",
+      "theme_label": "Modo de Pantalla",
+      "light": "Modo Claro",
+      "dark": "Modo Oscuro"
+    },
+    "language": {
+      "title": "Idioma de la Aplicación",
+      "subtitle": "Selecciona el idioma de la interfaz",
+      "select_label": "Idioma",
+      "es": "Español",
+      "en": "English",
+      "pt": "Português"
+    },
+    "system": {
+      "title": "Sistema & Arranque",
+      "subtitle": "Control de inicio y ejecución en segundo plano",
+      "autostart_label": "Iniciar automáticamente con el sistema",
+      "autostart_desc": "Lanza OptiFlow silenciosamente al encender el equipo o iniciar sesión en Windows (openAtLogin)."
+    },
+    "rules": {
+      "title": "Reglas de Prevención Ergonómica",
+      "subtitle": "Frecuencia de descanso y duración de los ciclos",
+      "work_interval_label": "Intervalo de Trabajo (Foco Continuo)",
+      "work_interval_desc": "Minutos continuos de trabajo antes de sugerir o forzar una pausa activa.",
+      "pause_duration_label": "Duración de la Pausa (Descanso Visual)",
+      "pause_duration_desc": "Segundos que dura la ventana modal Kiosk para relajar la acomodación ocular.",
+      "custom": "Personalizado:",
+      "minutes_range": "minutos (rango: 5 - 180 min)",
+      "seconds_range": "segundos (rango: 5 - 600 seg)"
+    },
+    "kiosk": {
+      "title": "Modo Kiosco de Pantalla Completa",
+      "subtitle": "Comportamiento de la ventana modal de interceptación",
+      "strict_label": "Modo Estricto",
+      "no_postpone": "Sin Postergación",
+      "strict_desc": "Deshabilita el botón de 'Posponer 2 min' en la pantalla de pausa. El ordenador quedará bloqueado hasta completar la totalidad de los segundos programados."
+    },
+    "summary": {
+      "title": "Resumen de Configuración",
+      "subtitle": "Estado actual de los parámetros de OptiFlow",
+      "autostart": "Inicio con Windows:",
+      "theme": "Tema:",
+      "language": "Idioma:",
+      "work_interval": "Intervalo de Trabajo:",
+      "pause_duration": "Duración de Pausa:",
+      "strict_mode": "Modo Estricto:",
+      "enabled": "Habilitado",
+      "disabled": "Deshabilitado",
+      "active": "Activo (Bloqueo Total)",
+      "flexible": "Flexible (Permite Posponer)",
+      "save_button": "Guardar Ajustes",
+      "saving_button": "Sincronizando...",
+      "success_toast": "¡Ajustes guardados y aplicados exitosamente en OptiFlow!",
+      "error_toast": "Error al sincronizar ajustes con Electron"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Painel Principal",
+    "ergonomics": "Análise Ergonômica",
+    "history": "Histórico e Pausas",
+    "calibration": "Calibração & Privacidade",
+    "settings": "Configurações",
+    "local_processing": "Processamento 100% Local (Privado)"
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Preferências do Sistema, Aparência, Idioma e Modo Quiosque",
+    "badge_preferences": "PREFERÊNCIAS",
+    "persistence_active": "Persistência Ativa (JSON & SQLite)",
+    "appearance": {
+      "title": "Aparência & Tema",
+      "subtitle": "Personalize o aspecto visual do OptiFlow na sua tela",
+      "theme_label": "Modo de Tela",
+      "light": "Modo Claro",
+      "dark": "Modo Escuro"
+    },
+    "language": {
+      "title": "Idioma do Aplicativo",
+      "subtitle": "Selecione o idioma da interface",
+      "select_label": "Idioma",
+      "es": "Español",
+      "en": "English",
+      "pt": "Português"
+    },
+    "system": {
+      "title": "Sistema & Inicialização",
+      "subtitle": "Controle de inicialização e execução em segundo plano",
+      "autostart_label": "Iniciar automaticamente com o sistema",
+      "autostart_desc": "Inicia o OptiFlow silenciosamente ao ligar o computador ou fazer login no Windows (openAtLogin)."
+    },
+    "rules": {
+      "title": "Regras de Prevenção Ergonômica",
+      "subtitle": "Frequência de descanso e duração dos ciclos",
+      "work_interval_label": "Intervalo de Trabalho (Foco Contínuo)",
+      "work_interval_desc": "Minutos contínuos de trabalho antes de sugerir ou forçar uma pausa ativa.",
+      "pause_duration_label": "Duração da Pausa (Descanso Visual)",
+      "pause_duration_desc": "Segundos que dura a janela modal Quiosque para relaxar a acomodação ocular.",
+      "custom": "Personalizado:",
+      "minutes_range": "minutos (faixa: 5 - 180 min)",
+      "seconds_range": "segundos (faixa: 5 - 600 seg)"
+    },
+    "kiosk": {
+      "title": "Modo Quiosque de Tela Cheia",
+      "subtitle": "Comportamento da janela modal de interceptação",
+      "strict_label": "Modo Estrito",
+      "no_postpone": "Sem Adiamento",
+      "strict_desc": "Desativa o botão 'Adiar 2 min' na tela de pausa. O computador ficará bloqueado até que o tempo programado se esgote."
+    },
+    "summary": {
+      "title": "Resumo das Configurações",
+      "subtitle": "Estado atual dos parâmetros do OptiFlow",
+      "autostart": "Iniciar com o Windows:",
+      "theme": "Tema:",
+      "language": "Idioma:",
+      "work_interval": "Intervalo de Trabalho:",
+      "pause_duration": "Duração da Pausa:",
+      "strict_mode": "Modo Estrito:",
+      "enabled": "Ativado",
+      "disabled": "Desativado",
+      "active": "Ativo (Bloqueio Total)",
+      "flexible": "Flexível (Permite Adiar)",
+      "save_button": "Salvar Configurações",
+      "saving_button": "Sincronizando...",
+      "success_toast": "Configurações salvas e aplicadas com sucesso no OptiFlow!",
+      "error_toast": "Erro ao sincronizar configurações com o Electron"
+    }
+  }
+}

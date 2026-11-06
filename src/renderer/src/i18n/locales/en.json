@@ -1,0 +1,73 @@
+{
+  "nav": {
+    "dashboard": "Main Dashboard",
+    "ergonomics": "Ergonomic Analysis",
+    "history": "History & Breaks",
+    "calibration": "Calibration & Privacy",
+    "settings": "Settings",
+    "local_processing": "100% Local Processing (Private)"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "System Preferences, Appearance, Language & Kiosk Mode",
+    "badge_preferences": "PREFERENCES",
+    "persistence_active": "Active Persistence (JSON & SQLite)",
+    "appearance": {
+      "title": "Appearance & Theme",
+      "subtitle": "Customize the visual appearance of OptiFlow on your display",
+      "theme_label": "Screen Mode",
+      "light": "Light Mode",
+      "dark": "Dark Mode"
+    },
+    "language": {
+      "title": "Application Language",
+      "subtitle": "Choose your interface language",
+      "select_label": "Language",
+      "es": "Español",
+      "en": "English",
+      "pt": "Português"
+    },
+    "system": {
+      "title": "System & Startup",
+      "subtitle": "Control startup and background execution",
+      "autostart_label": "Start automatically with system",
+      "autostart_desc": "Launches OptiFlow silently on system startup or Windows user login (openAtLogin)."
+    },
+    "rules": {
+      "title": "Ergonomic Prevention Rules",
+      "subtitle": "Break frequency and cycle durations",
+      "work_interval_label": "Work Interval (Continuous Focus)",
+      "work_interval_desc": "Continuous work minutes before suggesting or enforcing an active break.",
+      "pause_duration_label": "Break Duration (Visual Rest)",
+      "pause_duration_desc": "Duration in seconds of the Kiosk modal window to relax ocular accommodation.",
+      "custom": "Custom:",
+      "minutes_range": "minutes (range: 5 - 180 min)",
+      "seconds_range": "seconds (range: 5 - 600 sec)"
+    },
+    "kiosk": {
+      "title": "Full Screen Kiosk Mode",
+      "subtitle": "Behavior of the intercepting break window",
+      "strict_label": "Strict Mode",
+      "no_postpone": "No Postpone",
+      "strict_desc": "Disables the 'Postpone 2 min' button during breaks. The screen will stay locked until the full scheduled rest duration finishes."
+    },
+    "summary": {
+      "title": "Settings Summary",
+      "subtitle": "Current status of OptiFlow parameters",
+      "autostart": "Windows Startup:",
+      "theme": "Theme:",
+      "language": "Language:",
+      "work_interval": "Work Interval:",
+      "pause_duration": "Break Duration:",
+      "strict_mode": "Strict Mode:",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "active": "Active (Full Lock)",
+      "flexible": "Flexible (Postpone Allowed)",
+      "save_button": "Save Settings",
+      "saving_button": "Saving...",
+      "success_toast": "Settings successfully saved and applied in OptiFlow!",
+      "error_toast": "Error synchronizing settings with Electron"
+    }
+  }
+}
