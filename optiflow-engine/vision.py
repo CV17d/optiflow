@@ -1,3 +1,4 @@
+import base64
 import cv2
 import json
 import logging
@@ -104,6 +105,7 @@ class VisionEngine:
         self.calibration_max_ear = 0.0
         self.calibration_result = None
         self.last_face_mesh = []
+        self.last_image_b64 = ""
 
         self.mp_face_mesh = mp.solutions.face_mesh
         self.face_mesh = self.mp_face_mesh.FaceMesh(
@@ -254,6 +256,15 @@ class VisionEngine:
                         for lm in face_landmarks.landmark
                     ]
 
+                # Codificación de feed de video espejado en Base64 para el HUD ovalado de calibración
+                if self.calibration_mode:
+                    mirrored_frame = cv2.flip(frame, 1)
+                    resized_frame = cv2.resize(mirrored_frame, (640, 480))
+                    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 65]
+                    ret_enc, buffer = cv2.imencode('.jpg', resized_frame, encode_param)
+                    if ret_enc:
+                        self.last_image_b64 = base64.b64encode(buffer).decode('utf-8')
+
                 # Lógica del ciclo de calibración (15 segundos)
                 if self.calibration_mode and self.calibration_start_time:
                     elapsed = time.time() - self.calibration_start_time
@@ -342,6 +353,7 @@ class VisionEngine:
             "remaining_seconds": round(remaining, 1),
             "current_ear": round(self.current_ear, 3),
             "face_mesh": self.last_face_mesh,
+            "image_b64": self.last_image_b64,
             "result": self.calibration_result
         }
 

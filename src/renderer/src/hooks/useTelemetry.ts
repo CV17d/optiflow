@@ -25,6 +25,7 @@ export interface CalibrationState {
   remainingSeconds: number
   currentEar: number
   faceMesh: number[][]
+  imageB64?: string
   result: CalibrationResult | null
   isSaved: boolean
 }
@@ -88,6 +89,7 @@ const DEFAULT_CALIBRATION: CalibrationState = {
   remainingSeconds: 15,
   currentEar: 0.25,
   faceMesh: [],
+  imageB64: '',
   result: null,
   isSaved: false
 }
@@ -140,6 +142,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
                 currentEar:
                   typeof parsed.current_ear === 'number' ? parsed.current_ear : prev.currentEar,
                 faceMesh: Array.isArray(parsed.face_mesh) ? parsed.face_mesh : prev.faceMesh,
+                imageB64: typeof parsed.image_b64 === 'string' ? parsed.image_b64 : prev.imageB64,
                 result: parsed.result
                   ? {
                       threshold: parsed.result.threshold,
@@ -258,6 +261,7 @@ export function useTelemetry(url: string = 'ws://localhost:8765'): UseTelemetryR
       remainingSeconds: 15,
       currentEar: 0.25,
       faceMesh: [],
+      imageB64: '',
       result: null,
       isSaved: false
     })
