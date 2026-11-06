@@ -12,18 +12,13 @@ function App(): React.JSX.Element {
   return (
     <HashRouter>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Layout>
-              <Dashboard />
-            </Layout>
-          }
-        />
-        <Route path="/analisis" element={<AnalisisErgonomico />} />
-        <Route path="/historial" element={<HistorialPausas />} />
-        <Route path="/calibracion" element={<CalibracionPrivacidad />} />
-        <Route path="/configuracion" element={<Configuracion />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/analisis" element={<AnalisisErgonomico />} />
+          <Route path="/historial" element={<HistorialPausas />} />
+          <Route path="/calibracion" element={<CalibracionPrivacidad />} />
+          <Route path="/configuracion" element={<Configuracion />} />
+        </Route>
         <Route path="/intercept" element={<Intercept />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

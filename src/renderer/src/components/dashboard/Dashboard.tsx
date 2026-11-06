@@ -109,7 +109,7 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto flex flex-col">
+    <div className="w-full max-w-[1600px] mx-auto flex flex-col pb-12">
       {/* Fila Superior: Controles, Escáner Biométrico y Estado Ocular */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
         {/* Columna Izquierda: Títulos, acciones y telemetría de aplicaciones */}

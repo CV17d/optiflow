@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useMemo } from 'react'
-import Header from '../components/layout/Header'
 import Card from '../components/ui/Card'
 import Badge from '../components/ui/Badge'
 import { useBiometrics } from '../hooks/useBiometrics'
@@ -196,11 +195,8 @@ export const CalibracionPrivacidad: React.FC = () => {
   }, [calibrationState.faceMesh])
 
   return (
-    <div className="min-h-screen w-full bg-[#F5F5F7] text-gray-900 flex flex-col font-sans antialiased">
-      <Header />
-      <main className="flex-1 p-8 pt-2">
-        <div className="w-full max-w-[1600px] mx-auto flex flex-col select-none">
-          {/* Encabezado Principal */}
+    <div className="w-full max-w-[1600px] mx-auto flex flex-col select-none pb-12">
+      {/* Encabezado Principal */}
           <div className="flex flex-col mb-6">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-2">
               Calibración Anatómica & Privacidad
@@ -676,8 +672,6 @@ export const CalibracionPrivacidad: React.FC = () => {
               </Card>
             </div>
           </div>
-        </div>
-      </main>
 
       {/* Keyframes de la animación de Scanline */}
       <style>{`

@@ -18,7 +18,7 @@ const navTabs = [
 
 export const Header: React.FC<HeaderProps> = ({ className = '' }) => {
   return (
-    <header className={`flex justify-between items-center w-full px-8 py-4 ${className}`}>
+    <header className={`flex justify-between items-center w-full px-8 py-4 shrink-0 z-10 ${className}`}>
       {/* Izquierda: Logotipo */}
       <NavLink
         to="/"
