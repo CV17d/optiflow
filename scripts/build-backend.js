@@ -17,11 +17,11 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // Determinar el ejecutable de Python
-let pythonExecutable = isWin
+let pythonExecutable = process.env.PYTHON || (isWin
   ? path.join(engineDir, '.venv', 'Scripts', 'python.exe')
-  : path.join(engineDir, '.venv', 'bin', 'python')
+  : path.join(engineDir, '.venv', 'bin', 'python'))
 
-if (!fs.existsSync(pythonExecutable)) {
+if (!process.env.PYTHON && !fs.existsSync(pythonExecutable)) {
   pythonExecutable = isWin ? 'python' : 'python3'
 }
 

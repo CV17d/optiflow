@@ -62,6 +62,11 @@
   "build": {
     "appId": "com.optiflow.app",
     "productName": "OptiFlow",
+    "publish": {
+      "provider": "github",
+      "owner": "CV17d",
+      "repo": "optiflow"
+    },
     "directories": {
       "buildResources": "build"
     },
@@ -117,7 +122,7 @@
       ],
       "maintainer": "OptiFlow Team",
       "category": "Utility",
-      "icon": "build/icons"
+      "icon": "build/icon.png"
     },
     "appImage": {
       "artifactName": "${name}-${version}.${ext}"

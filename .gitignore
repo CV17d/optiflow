@@ -3,6 +3,11 @@ dist/
 **/dist/
 build/
 **/build/
+!build/icon.ico
+!build/icon.icns
+!build/icon.png
+!build/icons/**
+!build/entitlements.mac.plist
 out/
 .vscode/
 .idea/
