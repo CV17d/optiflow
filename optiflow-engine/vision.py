@@ -124,20 +124,73 @@ class VisionEngine:
         self.fatigue_level = 18.0
         self.smooth_distance = 58.4
         self.current_distance = 58.4
+        self.posture_status = "Óptima"
+        self.posture_angle = 12.0
+        self.smooth_posture_angle = 12.0
+        self.left_ear = 0.27
+        self.right_ear = 0.27
+        self.ear_symmetry = 98.2
         self.last_update_time = time.time()
 
     def _extract_eye_points(self, landmarks, indices, w: int, h: int) -> list:
         return [(landmarks.landmark[idx].x * w, landmarks.landmark[idx].y * h) for idx in indices]
 
-    def _update_distance(self, left_eye: list, right_eye: list):
-        """Estima la distancia ergonómica hacia la pantalla en centímetros usando la inversa del ancho de ojos."""
-        if len(left_eye) > 0 and len(right_eye) > 0:
-            eye_span = euclidean_dist(left_eye[0], right_eye[0])
-            if eye_span > 10.0:
-                raw_dist = 5840.0 / eye_span
-                clamped_dist = max(35.0, min(95.0, raw_dist))
-                self.smooth_distance = round(0.85 * self.smooth_distance + 0.15 * clamped_dist, 1)
-                self.current_distance = self.smooth_distance
+    def _update_distance_and_posture(self, face_landmarks, w: int, h: int):
+        """
+        Calcula la distancia focal en cm y la postura cervical en 3D
+        a partir de los landmarks faciales de MediaPipe.
+        """
+        # 1. Distancia a la pantalla usando extremos izquierdo (234) y derecho (454) del rostro
+        p234 = (face_landmarks.landmark[234].x * w, face_landmarks.landmark[234].y * h)
+        p454 = (face_landmarks.landmark[454].x * w, face_landmarks.landmark[454].y * h)
+        face_width_pixels = euclidean_dist(p234, p454)
+
+        if face_width_pixels > 20.0:
+            # Constante focal empírica: ~208 px a 640x480 corresponde a ~60 cm
+            focal_constant = 12500.0
+            raw_dist = focal_constant / face_width_pixels
+            clamped_dist = max(25.0, min(110.0, raw_dist))
+            self.smooth_distance = round(0.85 * self.smooth_distance + 0.15 * clamped_dist, 1)
+            self.current_distance = self.smooth_distance
+
+        # 2. Postura Cervical (Head Pose / Inclinación) usando eje Z de MediaPipe
+        # Puntos clave:
+        # 1: Punta de la nariz
+        # 152: Mentón
+        # 10: Frente
+        # 234: Sien izquierda
+        # 454: Sien derecha
+        lm1 = face_landmarks.landmark[1]
+        lm152 = face_landmarks.landmark[152]
+        lm10 = face_landmarks.landmark[10]
+        lm234 = face_landmarks.landmark[234]
+        lm454 = face_landmarks.landmark[454]
+
+        face_h = max(0.01, abs(lm152.y - lm10.y))
+        face_w = max(0.01, abs(lm454.x - lm234.x))
+
+        # Inclinación sagital (Pitch): profundidad relativa frente vs mentón
+        # En flexión cervical hacia abajo, la frente se acerca a la cámara (Z menor) y el mentón se aleja (Z mayor).
+        pitch_diff = (lm10.z - lm152.z) / face_h
+
+        # Inclinación transversal (Yaw): giro lateral comparando profundidad de sienes
+        yaw_diff = abs(lm234.z - lm454.z) / face_w
+
+        # Inclinación frontal (Roll): desnivel vertical entre sienes
+        roll_diff = abs(lm234.y - lm454.y) / face_w
+
+        # Estimación de ángulo equivalente en grados
+        angle = round(max(abs(pitch_diff), yaw_diff, roll_diff) * 55.0, 1)
+        self.smooth_posture_angle = round(0.8 * self.smooth_posture_angle + 0.2 * angle, 1)
+        self.posture_angle = self.smooth_posture_angle
+
+        # Clasificación del estado ergonómico cervical
+        if pitch_diff < -0.25 or yaw_diff > 0.30 or roll_diff > 0.26 or self.posture_angle >= 22.0:
+            self.posture_status = 'Mala Postura'
+        elif pitch_diff < -0.15 or yaw_diff > 0.18 or roll_diff > 0.16 or self.posture_angle >= 13.0:
+            self.posture_status = 'Leve Inclinación'
+        else:
+            self.posture_status = 'Óptima'
 
     def _update_metrics(self, ear: float):
         """
@@ -247,8 +300,13 @@ class VisionEngine:
                     right_ear = calculate_ear(right_eye)
                     avg_ear = (left_ear + right_ear) / 2.0
 
+                    self.left_ear = round(left_ear, 3)
+                    self.right_ear = round(right_ear, 3)
+                    max_e = max(0.001, max(left_ear, right_ear))
+                    self.ear_symmetry = round((min(left_ear, right_ear) / max_e) * 100.0, 1)
+
                     self._update_metrics(avg_ear)
-                    self._update_distance(left_eye, right_eye)
+                    self._update_distance_and_posture(face_landmarks, w, h)
 
                     # Extraer coordenadas 2D normalizadas de la malla facial (0.0 a 1.0)
                     self.last_face_mesh = [
@@ -365,15 +423,20 @@ class VisionEngine:
             self.thread.start()
 
     def get_telemetry_payload(self) -> dict:
-        """Devuelve la telemetría actual procesada por la cámara incluyendo distancia estimada, EAR promedio y umbral."""
+        """Devuelve la telemetría actual procesada por la cámara incluyendo distancia estimada, EAR promedio, postura y umbral."""
         return {
             "fatigue_level": round(float(self.fatigue_level), 1),
             "blink_rate": int(self.blink_rate),
             "active_app": "VS Code",
             "ear": self.current_ear,
             "average_ear": round(float(self.smooth_ear), 3),
+            "left_ear": round(float(self.left_ear), 3),
+            "right_ear": round(float(self.right_ear), 3),
+            "ear_symmetry": round(float(self.ear_symmetry), 1),
             "distance": self.smooth_distance,
-            "distance_cm": f"{self.smooth_distance} cm",
+            "distance_cm": self.smooth_distance,
+            "posture_status": self.posture_status,
+            "posture_angle": self.posture_angle,
             "ear_threshold": self.ear_threshold
         }
 

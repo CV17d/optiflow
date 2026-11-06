@@ -7,8 +7,13 @@ export interface TelemetryData {
   app_status?: string
   ear?: number
   average_ear?: number
+  left_ear?: number
+  right_ear?: number
+  ear_symmetry?: number
   distance?: number
-  distance_cm?: string
+  distance_cm?: number | string
+  posture_status?: 'Óptima' | 'Leve Inclinación' | 'Mala Postura' | string
+  posture_angle?: number
   ear_threshold?: number
 }
 
@@ -78,8 +83,13 @@ const DEFAULT_TELEMETRY: TelemetryData = {
   app_status: 'Enfoque Profundo',
   ear: 0.28,
   average_ear: 0.26,
+  left_ear: 0.27,
+  right_ear: 0.27,
+  ear_symmetry: 98.2,
   distance: 58.4,
-  distance_cm: '58.4 cm',
+  distance_cm: 58.4,
+  posture_status: 'Óptima',
+  posture_angle: 12.0,
   ear_threshold: 0.18
 }
 

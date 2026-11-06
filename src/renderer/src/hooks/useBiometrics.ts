@@ -14,8 +14,13 @@ export interface BiometricsState {
   bpm: number
   ear: number
   average_ear: number
+  left_ear: number
+  right_ear: number
+  ear_symmetry: number
   distance: number
   distance_cm: string
+  posture_status: string
+  posture_angle: number
   session_time: string
   elapsed_seconds: number
   next_break_minutes: number
@@ -88,13 +93,30 @@ export function useBiometrics(url: string = 'ws://localhost:8765'): UseBiometric
           ? Number(historyData.average_ear.toFixed(2))
           : 0.26
 
+    const numDist =
+      typeof telemetry.distance === 'number'
+        ? telemetry.distance
+        : typeof telemetry.distance_cm === 'number'
+          ? telemetry.distance_cm
+          : parseFloat(String(telemetry.distance_cm || '58.4')) || 58.4
+
+    const strDistCm =
+      typeof telemetry.distance_cm === 'string'
+        ? telemetry.distance_cm
+        : `${numDist} cm`
+
     return {
       fatigue_level: typeof telemetry.fatigue_level === 'number' ? Math.round(telemetry.fatigue_level) : 18,
       bpm: typeof telemetry.blink_rate === 'number' ? telemetry.blink_rate : 16,
       ear: typeof telemetry.ear === 'number' ? Number(telemetry.ear.toFixed(2)) : 0.28,
       average_ear: avgEar,
-      distance: typeof telemetry.distance === 'number' ? telemetry.distance : 58.4,
-      distance_cm: telemetry.distance_cm || `${typeof telemetry.distance === 'number' ? telemetry.distance : 58.4} cm`,
+      left_ear: typeof telemetry.left_ear === 'number' ? Number(telemetry.left_ear.toFixed(2)) : 0.27,
+      right_ear: typeof telemetry.right_ear === 'number' ? Number(telemetry.right_ear.toFixed(2)) : 0.27,
+      ear_symmetry: typeof telemetry.ear_symmetry === 'number' ? Number(telemetry.ear_symmetry.toFixed(1)) : 98.2,
+      distance: numDist,
+      distance_cm: strDistCm,
+      posture_status: telemetry.posture_status || 'Óptima',
+      posture_angle: typeof telemetry.posture_angle === 'number' ? telemetry.posture_angle : 12.0,
       session_time: sessionTime,
       elapsed_seconds: elapsedSeconds,
       next_break_minutes: nextBreakMinutes,
