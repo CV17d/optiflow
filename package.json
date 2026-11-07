@@ -1,10 +1,10 @@
 {
   "name": "optiflow",
   "productName": "OptiFlow",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "OptiFlow Desktop Application",
   "main": "./out/main/index.js",
-  "author": "OptiFlow Team",
+  "author": "Cristian Velasco <cj29772@gmail.com>",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
